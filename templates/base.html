@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+        <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="/css/normalize.css">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/style.css">
+        <title>{% block title %}{% endblock %} - RecBlast</title>
+    {% endblock %}
+</head>
+<body>
+<header class="main-header">
+    <img src="/imgs/RecBlast.jpg" alt="RecBlast" style="width:304px;height:228px;">
+</header>
+
+<div id="content">{% block content %}{% endblock %}</div>
+<div id="footer">
+    {% block footer %}
+        <p>All rights reserved to Moran and Efrat</p>
+    {% endblock %}
+</div>
+</body>
+</html>

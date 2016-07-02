@@ -1,49 +1,22 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+    <h1>Index</h1>
+    <div class="container">
+        <h2 class="name">Welcome to RecBlast</h2><br>
+        <h1 class="subname">High throughput orthology discovery method</h1>
+        <h3 id=home><a href="/">Home</a></h3>
+    </div>
 
-
- <head>
-
-	<title>RecBlast</title>
-	<link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="static/css/normalize.css">
-	<link rel="stylesheet" href="static/css/style.css">
-
-   <header class="main-header">
-       <img src="static/img/RecBlast.jpg" alt="RecBlast" style="width:304px;height:228px;">
-  <a href="https://github.com/you"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/567c3a48d796e2fc06ea80409cc9dd82bf714434/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png"></a>
-  <div class="container">
-    <h2 class="name">Welcome to RecBlast</h2><br>
-    <h1 class="subname">High throughput orthology discovery method</h1>
-    <h3 id=home><a href="index">Home</a></h3>
-  </div></header>
-</head>
- <body>
-   <div class='wrap'>
-      <div class="container">
-        <h3>High throughput Reciprocal Blast</h3>
-        <p>
-        <p>
-          Recblast is the fastest and most robust way to discover orthologs..blah blah,Recblast is the fastest and most robust way to discover orthologs..blah blah,Recblast is the fastest and most robust way to discover orthologs..blah blah,Recblast is the fastest and most robust way to discover orthologs..blah blah,Recblast is the fastest and most robust way to discover orthologs..blah blah <br><br>.
-        </p>
-        <nav>
-        <ul id="buttons">
-          <li><a href="about">About Us</a></li>
-          <li><a href="downloads">Downloads</a></li>
-          <li><a href="documentation">Documentation</a></li>
-          <li><a href="server">Web Server</a></li>
-        </ul>
-
-        </nav>
-      </div>
-     </div>
-    <br><br><br><br><br>
-		<footer class="main-footer">
-			<p>All rights reserved to Moran and Efrat</p>
-			<a href="#top">Back to top &raquo;</a>
-		</footer>
-  </body>
-</html>
+    <h3>High throughput Reciprocal Blast</h3>
+    <p>
+    <p>
+        Recblast is the fastest and most robust way to discover orthologs..blah blah,Recblast is the fastest and
+        most robust way to discover orthologs..blah blah,Recblast is the fastest and most robust way to discover
+        orthologs..blah blah,Recblast is the fastest and most robust way to discover orthologs..blah blah,Recblast
+        is the fastest and most robust way to discover orthologs.
+    </p>
+{% endblock %}
 
 
 

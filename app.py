@@ -1,8 +1,7 @@
 # import os
 from uuid import uuid4
 
-from flask import (Flask, render_template, redirect,
-                   url_for, request, flash)
+from flask import Flask, render_template, redirect, url_for, request, flash, send_from_directory
 from werkzeug.utils import secure_filename
 
 import csv_transformer
@@ -10,13 +9,10 @@ import taxa_to_taxid
 import utils
 from utils import *
 
-app = Flask(__name__)
-app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
-
 UPLOAD_FOLDER = 'r"C:\Users\Efrat\PycharmProjects\recblast\uploaded_files\"'
 ALLOWED_EXTENSIONS = {'txt', 'csv'}
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='public', static_url_path='')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
@@ -47,6 +43,18 @@ def about():
 @app.route('/downloads')
 def downloads():
     return render_template('downloads.html')
+
+
+@app.route('/imgs/<path:filename>')
+def serve_images(filename):
+    return send_from_directory('public/imgs',
+                               filename)
+
+
+@app.route('/css/<path:filename>')
+def serve_css(filename):
+    return send_from_directory('public/css',
+                               filename)
 
 
 @app.route('/server')
