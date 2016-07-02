@@ -10,6 +10,7 @@ import users
 import utils
 from taxa import get_name_by_value, get_value_by_name
 from utils import *
+import queue
 
 UPLOAD_FOLDER = 'r"C:\Users\Efrat\PycharmProjects\recblast\uploaded_files\"'
 ALLOWED_EXTENSIONS = {'txt', 'csv'}
@@ -249,6 +250,12 @@ def handle_data():
 @app.route('/results/<user_id>')
 def results(user_id):
     return render_template('results.html')
+
+
+@app.route('/run_queue')
+def run_queue():
+    queue.run_part_one(100)
+    return 'ok'
 
 
 if __name__ == "__main__":
