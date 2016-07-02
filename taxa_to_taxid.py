@@ -1,5 +1,6 @@
 #! /usr/bin/env python2
 from utils import is_number, strip
+from taxa import get_value_by_name
 
 
 def create_tax_dict(tax_db):
@@ -15,7 +16,7 @@ def create_tax_dict(tax_db):
     return tax_dict
 
 
-def convert_tax_to_taxid(tax_dict, tax_list_file, output_path=None):  # TODO: maybe save the dict as a pickle?
+def convert_tax_to_taxid(tax_list_file, output_path=None):  # TODO: maybe save the dict as a pickle?
     """
     Receives a dictionary of taxa and their tax_id, a file containing taxa name, and an optional update_match_results path.
     :param tax_dict:  a dict where key=tax_name, value=tax_id made by create_tax_dict
@@ -31,8 +32,11 @@ def convert_tax_to_taxid(tax_dict, tax_list_file, output_path=None):  # TODO: ma
         with open(output_path, "wb") as output:  # writing update_match_results file
             for line in f:
                 line = strip(line)
+                if not line:
+                    continue
+
                 try:
-                    tax_id = tax_dict[line]
+                    tax_id = get_value_by_name(line)
                     output.write("{}\n".format(tax_id))
                 except KeyError:
                     if is_number(line):  # guess it's already a tax id
@@ -47,4 +51,3 @@ def convert_tax_to_taxid(tax_dict, tax_list_file, output_path=None):  # TODO: ma
         return output_path, bad_tax_list, False
     # returning the list of the bad taxa
     return output_path, bad_tax_list, True
-

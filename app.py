@@ -6,7 +6,9 @@ from werkzeug.utils import secure_filename
 
 import csv_transformer
 import taxa_to_taxid
+import users
 import utils
+from taxa import get_name_by_value, get_value_by_name
 from utils import *
 
 UPLOAD_FOLDER = 'r"C:\Users\Efrat\PycharmProjects\recblast\uploaded_files\"'
@@ -59,8 +61,7 @@ def serve_css(filename):
 
 @app.route('/server')
 def server():
-    user_id = str(uuid4())  # should I move to somewhere else?
-    return render_template("server.html", user_id=user_id)
+    return render_template("server.html")
 
 
 def allowed_file(filename):
@@ -82,7 +83,8 @@ def validate_data(value_list):
 
     # check email
     email = value_list[9]
-    if utils.check_if_email_exists(email):
+
+    if users.has_job_for_email(email):
         error_list.append("There's already a job running for this email: %s" % email)
 
     # check if files/lists are not empty:
@@ -98,10 +100,6 @@ def validate_data(value_list):
     # taxa database
     # script folder
     script_folder = "/groups/igv/moranne/scripts/RecBlast_AWS/"  # TODO: Change to a fixed path
-    tax_db = os.path.join(script_folder, "DB/taxdump/tax_names.txt")
-    # parsing and creating taxa files and parameters:
-    tax_name_dict = taxa_to_taxid.create_tax_dict(tax_db)
-    tax_id_dict = dict((v, k) for k, v in tax_name_dict.iteritems())  # the reverse dict
 
     reference_taxa = value_list[7]
     # validate reference taxa!
@@ -110,7 +108,7 @@ def validate_data(value_list):
         org_tax_id = reference_taxa
         try:
 
-            origin_species = tax_id_dict[org_tax_id]
+            origin_species = get_name_by_value(org_tax_id).capitalize()
         except KeyError:
             error_list.append("Unknown tax id: {}!".format(org_tax_id))
             origin_species = ""
@@ -119,7 +117,7 @@ def validate_data(value_list):
         origin_species = reference_taxa
         # convert it to tax id and write it to a file
         try:
-            org_tax_id = tax_name_dict[origin_species.capitalize()]
+            org_tax_id = get_value_by_name(origin_species)
         except KeyError:
             error_list.append("Unknown taxon name: {}!".format(origin_species))
             org_tax_id = ""
@@ -153,7 +151,7 @@ def validate_data(value_list):
 
     # validate taxa list
     # converting taxa names list
-    (taxa_list_file, bad_tax_list, conversion_succeeded) = taxa_to_taxid.convert_tax_to_taxid(tax_name_dict, taxa_file)
+    (taxa_list_file, bad_tax_list, conversion_succeeded) = taxa_to_taxid.convert_tax_to_taxid(taxa_file)
     if conversion_succeeded:
         if bad_tax_list:
             taxa_warning = "Bad taxa names found in the file provided: {}.Ignoring them.".format(
@@ -188,14 +186,15 @@ def upload(request):
 # unique output page per user, displays one out of several options:
 # 1. error (+ go back button)
 # 2. success! check back soon, we also sent you an email
-@app.route('/output/<user_id>', methods=['POST'])
+@app.route('/output', methods=['POST'])
 # @app.route('/output', methods=['POST'])
-def handle_data(user_id):
-    email = (request.form['email'])
-    run_name = (request.form['run_name'])
-    reference_taxa = (request.form['reference_taxa'])
+def handle_data():
+    email = request.form['email']
+    user_id = users.user_id_for_email(email)
+    run_name = request.form['run_name']
+    reference_taxa = request.form['reference_taxa']
 
-    taxa_list = (request.form['taxa_list'])
+    taxa_list = request.form['taxa_list']
     taxa_list = taxa_list.split("\n")
     taxa_list = [i.strip() for i in taxa_list]
     path_to_taxa = utils.prepare_files(taxa_list, "taxons", user_id)
@@ -210,11 +209,11 @@ def handle_data(user_id):
     # file = request.form.files['taxa_file']
     # file.save(os.path.join(app.config['UPLOAD_FOLDER'], file))
 
-    evalue = (request.form['evalue'])
-    back_evalue = (request.form['back_evalue'])
-    identity = (request.form['identity'])
-    coverage = (request.form['coverage'])
-    string_similarity = (request.form['string_similarity'])
+    evalue = request.form['evalue']
+    back_evalue = request.form['back_evalue']
+    identity = request.form['identity']
+    coverage = request.form['coverage']
+    string_similarity = request.form['string_similarity']
 
     value_list = [float(evalue), float(back_evalue), int(identity), int(coverage), float(string_similarity),
                   path_to_genes, path_to_taxa, reference_taxa, run_name, email, user_id, ip]
@@ -234,7 +233,8 @@ def handle_data(user_id):
             flash('You successfully sent out a job!')
             message = "Your job was sent to the server successfully! You will receive an email with a link" \
                       "and you will be able to check the progress of your job"
-            utils.add_email_empty_file(email, user_id)
+
+            users.set_has_job_for_email(email, True)
             return render_template("page.html", message=message)
         else:
             error = "There was an unknown error with you data. Please try again: "
@@ -252,4 +252,4 @@ def results(user_id):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

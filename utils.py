@@ -17,36 +17,6 @@ def prepare_files(items, file_name, user_id):
     return full_path
 
 
-def add_email_empty_file(email, run_id):
-    corr_email = str(email.replace('@', '.'))
-    full_email_path = os.path.join(TEMP_FILES_PATH, corr_email)
-    with open(full_email_path, 'w') as emailfile:
-        emailfile.write(run_id)
-    return True
-
-
-def check_if_email_exists(email):
-    corr_email = email.replace('@', '.')
-    if os.path.exists(os.path.join(TEMP_FILES_PATH, corr_email)):
-        return True  # exists
-    else:
-        return False
-
-
-def delete_email(email):
-    corr_email = email.replace('@', '.')
-    full_email_path = os.path.join(TEMP_FILES_PATH, corr_email)
-    if os.path.exists(full_email_path):
-        os.remove(full_email_path)
-        return True  # exists
-    else:
-        return False
-
-
-def generate_tax_name_redis_key(name):
-    return "tax.names.{}".format(name.lower().replace(' ', '-'))
-
-
 # debugging function
 def debug_s(debug_string, to_debug):
     """

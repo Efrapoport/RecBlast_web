@@ -1,7 +1,7 @@
 from redis_pool import redis_pool
 
 pipeline = redis_pool.pipeline()
-from utils import generate_tax_name_redis_key
+from taxa import generate_tax_name_redis_key
 
 with open('DB/tax_names.txt', 'rb') as f:
     for idx, line in enumerate(f.xreadlines()):

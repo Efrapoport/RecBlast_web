@@ -1,99 +1,87 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>RecBlast</title>
-	<link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="/static/css/normalize.css">
-	<link rel="stylesheet" href="/static/css/style.css">
-</head>
-
-<header class="main-header">
-  <div class="container">
-    <h2 class="name">Welcome to RecBlast</h2><br>
-    <h1 class="subname">High throughput orthology discovery method</h1>
-    <h3 id=home><a href="index">Home</a></h3>
-    <p>The fastest and most robust way to discover orthologs..blah blah.<br>
-     contact us: recblast@gmail.com</p><br>
-  </div>
-</header>
-
-<body>
-  <div class='wrap'>
-    <form action="/output/{{ user_id }}" method="post" name="name" >
-    <div class='container'>
-    {% if errors %}
-    <p><strong>Please fix the following errors in your request:</strong>
 
 
-   <ul>
-  {% for error in errors %}
-  <li>{{ error }} </li>
-  {% endfor %}
-   </ul>
-  {% endif %}
-    <fieldset><br>
-    <legend>Personal information:</legend>
-    E-mail:<br>
-    <input type="email" name="email" value="example@email.com" autocomplete="on" required><br>
-    Run name:<br>
-    <input type="text" name="run_name" value="my_run" autocomplete="on"><br>
-    </fieldset>
-    </div><br>
+
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+    <div class='wrap'>
+        <form action="/output" method="post" name="name" enctype="multipart/form-data">
+            <div class='container'>
+                {% if errors %}
+                    <p><strong>Please fix the following errors in your request:</strong>
 
 
-    <div class='container'>
-    <fieldset><br>
-    <legend>Taxa definitions:</legend>
-    Reference taxa (e.g 9606, Homo Sapiens) :<br>
-    <input type="text" name="reference_taxa" value="Homo Sapiens" required><br><br>
+                    <ul>
+                        {% for error in errors %}
+                            <li>{{ error }} </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <fieldset><br>
+                    <legend>Personal information:</legend>
+                    E-mail:<br>
+                    <input type="email" name="email" value="example@email.com" autocomplete="on" required><br>
+                    Run name:<br>
+                    <input type="text" name="run_name" value="my_run" autocomplete="on"><br>
+                </fieldset>
+            </div>
+            <br>
 
-    List of taxas to check against (one species/taxa id per list): <br>
-    <textarea name="taxa_list" rows="10" cols="30" maxlength="400">
-    9606
-    5202
-    </textarea><br>
 
-    Or upload file:
-    <input type="file" name="taxons"><br><br>
+            <div class='container'>
+                <fieldset><br>
+                    <legend>Taxa definitions:</legend>
+                    Reference taxa (e.g 9606, Homo Sapiens) :<br>
+                    <input type="text" name="reference_taxa" value="Homo Sapiens" required><br><br>
 
-    List of gene ids (gene name, uniprot ids or accession numbers): <br>
-    <textarea name="gene_list" rows="10" cols="30" maxlength="400">
-  ADCY1
-  CREB1
-    </textarea><br>
-    Or upload file:
-    <input type="file"  name="genes">
+                    List of taxas to check against (one species/taxa id per list): <br>
+                    <textarea name="taxa_list" rows="10" cols="30" maxlength="400"
+                              placeholder="9606
+5202"></textarea><br>
 
-    </fieldset>
-    </div><br>
-    <div class='container'>
-    <fieldset>
-    <legend>Properties:</legend>
+                    Or upload file:
+                    <input type="file" name="taxons"><br><br>
 
-    eValue: <br>
-    <input type="number" name="evalue" value=1e-5 max="10" min="0" size="10" step="any" pattern="((\d|\.|e-)*)" required><br>
-    eValue back: <br>
-    <input type="number" name="back_evalue" value=1e-5 max="10" min="0" size="10" step="any" pattern="((\d|\.|e-)*)"><br>
-    Identity: <br>
-    <input type="number" name="identity" value=37 min="0" max="100" size="10" required><br>
-    Coverage: <br>
-    <input type="number" name="coverage" value=50 min="0" max="100" size="10" required><br>
-    String similarity: <br>
-    <input type="number" name="string_similarity" value=0.4 min="0" max="1" step="any" size="10" required><br>
+                    List of gene ids (gene name, uniprot ids or accession numbers): <br>
+    <textarea name="gene_list" rows="10" cols="30" maxlength="400">ADCY1
+  CREB1</textarea><br>
+                    Or upload file:
+                    <input type="file" name="genes">
 
-    </fieldset>
-    </div><br>
+                </fieldset>
+            </div>
+            <br>
+            <div class='container'>
+                <fieldset>
+                    <legend>Properties:</legend>
 
-    <div class='container'>
-    <input class="btn" type="submit" value="Submit">
+                    eValue: <br>
+                    <input type="number" name="evalue" value=1e-5 max="10" min="0" size="10" step="any"
+                           pattern="((\d|\.|e-)*)" required><br>
+                    eValue back: <br>
+                    <input type="number" name="back_evalue" value=1e-5 max="10" min="0" size="10" step="any"
+                           pattern="((\d|\.|e-)*)"><br>
+                    Identity: <br>
+                    <input type="number" name="identity" value=37 min="0" max="100" size="10" required><br>
+                    Coverage: <br>
+                    <input type="number" name="coverage" value=50 min="0" max="100" size="10" required><br>
+                    String similarity: <br>
+                    <input type="number" name="string_similarity" value=0.4 min="0" max="1" step="any" size="10"
+                           required><br>
+
+                </fieldset>
+            </div>
+            <br>
+
+            <div class='container'>
+                <input class="btn" type="submit" value="Submit">
+            </div>
+        </form>
     </div>
-    </form>
-    </div>
-  <iframe src="" frameborder="0" id="py"></iframe>
-	<footer class="main-footer">
-	<span>&copy;2016 RecBlast, Tel Aviv University</span>
-	</footer>
+    <iframe src="" frameborder="0" id="py"></iframe>
+    <footer class="main-footer">
+        <span>&copy;2016 RecBlast, Tel Aviv University</span>
+    </footer>
 
-</body>
-</html>
+{% endblock %}
 
