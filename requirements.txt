@@ -4,3 +4,5 @@ werkzeug
 biopython
 argparse
 mygene
+redis
+rq

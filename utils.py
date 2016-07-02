@@ -43,6 +43,10 @@ def delete_email(email):
         return False
 
 
+def generate_tax_name_redis_key(name):
+    return "tax.names.{}".format(name.lower().replace(' ', '-'))
+
+
 # debugging function
 def debug_s(debug_string, to_debug):
     """
