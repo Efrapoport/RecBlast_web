@@ -1,5 +1,5 @@
 #! /usr/bin/env python2
-from utils import is_number, strip
+from RecBlastUtils import is_number, strip
 from taxa import get_value_by_name
 
 

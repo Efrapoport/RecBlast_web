@@ -1,18 +1,18 @@
 # import os
-from uuid import uuid4
+# from uuid import uuid4
 
 from flask import Flask, render_template, redirect, url_for, request, flash, send_from_directory
 from werkzeug.utils import secure_filename
-
 import csv_transformer
 import taxa_to_taxid
 import users
-import utils
+import RecBlastUtils
 from taxa import get_name_by_value, get_value_by_name
-from utils import *
+from RecBlastUtils import *
 import queue
 
-UPLOAD_FOLDER = 'r"C:\Users\Efrat\PycharmProjects\recblast\uploaded_files\"'
+# UPLOAD_FOLDER = r'C:\Users\Efrat\PycharmProjects\recblast\uploaded_files\'  # TODO: change later
+UPLOAD_FOLDER = ""
 ALLOWED_EXTENSIONS = {'txt', 'csv'}
 
 app = Flask(__name__, static_folder='public', static_url_path='')
@@ -70,7 +70,7 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
-def send_job_to_backend(value_list):
+def send_job_to_backend(value_list):  # TODO: design the run
     try:
         # sending to the backend main
         return True
@@ -99,8 +99,7 @@ def validate_data(value_list):
         error_list.append("No taxa list or gene file provided!")
 
     # taxa database
-    # script folder
-    script_folder = "/groups/igv/moranne/scripts/RecBlast_AWS/"  # TODO: Change to a fixed path
+    # script_folder = "/groups/igv/moranne/scripts/RecBlast_AWS/"  # no need for this
 
     reference_taxa = value_list[7]
     # validate reference taxa!
@@ -115,7 +114,7 @@ def validate_data(value_list):
             origin_species = ""
             # debug("Tax id given: {0}, which is {1}, no need to convert.".format(org_tax_id, origin_species))
     else:  # it's a tax name
-        origin_species = reference_taxa
+        origin_species = reference_taxa.capitalize()
         # convert it to tax id and write it to a file
         try:
             org_tax_id = get_value_by_name(origin_species)
@@ -198,12 +197,12 @@ def handle_data():
     taxa_list = request.form['taxa_list']
     taxa_list = taxa_list.split("\n")
     taxa_list = [i.strip() for i in taxa_list]
-    path_to_taxa = utils.prepare_files(taxa_list, "taxons", user_id)
+    path_to_taxa = RecBlastUtils.prepare_files(taxa_list, "taxons", user_id)
 
     gene_list = (request.form['gene_list'])
     gene_list = gene_list.split("\n")
     gene_list = [i.strip() for i in gene_list]
-    path_to_genes = utils.prepare_files(gene_list, "genes", user_id)
+    path_to_genes = RecBlastUtils.prepare_files(gene_list, "genes", user_id)
 
     # to do: FIND A WAY TO UPLOAD FILES~~
     # upload(request)
