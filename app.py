@@ -10,6 +10,9 @@ import RecBlastUtils
 from taxa import get_name_by_value, get_value_by_name
 from RecBlastUtils import *
 import queue
+import RecBlastAWS
+
+os.environ['BLASTDB'] = "/blast/db"  # setting the $blastdb # check if it workswq
 
 # UPLOAD_FOLDER = r'C:\Users\Efrat\PycharmProjects\recblast\uploaded_files\'  # TODO: change later
 UPLOAD_FOLDER = ""
@@ -72,6 +75,7 @@ def allowed_file(filename):
 
 def send_job_to_backend(value_list):  # TODO: design the run
     try:
+
         # sending to the backend main
         return True
     except:
@@ -259,3 +263,7 @@ def run_queue():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+# TODO make sure the taxdb is in the blastdb variable
+# we should probably set it
