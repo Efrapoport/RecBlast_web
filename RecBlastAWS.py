@@ -98,8 +98,8 @@ def run_from_web(values_from_web, debug=debug_func):
     # processing db information:
     #############################
 
-    # forward db:  # TODO: choose fixed db path according to the image
-    db = "/blast/"  # default value. Doesn't matter at this point
+    # forward db:
+    db = "/blast/db/nr"  # default value. Doesn't matter at this point
 
     target_db_folder = os.path.join(db_folder, org_tax_id)  # this is where our db should be
     # check if it exists - if so use it as a db
