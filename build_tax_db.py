@@ -19,3 +19,4 @@ with open('DB/tax_names.txt', 'rb') as f:
 
 # redis_pool.execute()
 print "DONE!"
+

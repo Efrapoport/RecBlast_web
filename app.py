@@ -85,6 +85,7 @@ def send_job_to_backend(value_list):  # TODO: design the run
 
 
 def validate_data(value_list):
+    "Validates and modifies value_list."
     print value_list
     error_list = []
 

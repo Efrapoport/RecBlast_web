@@ -19,6 +19,7 @@ def prepare_files(items, file_name, user_id):
 
 
 def move_file_to_s3(file_path):  # TODO: finish this
+    """Move files to s3"""
     # create file path in S3:
     s3_path = ""
 
