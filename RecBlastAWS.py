@@ -65,10 +65,11 @@ def run_from_web(values_from_web, debug=debug_func):
 
     # script folder
     script_folder = os.path.dirname(os.path.abspath(__file__))
+    storage_path = "/home/ubuntu/RecBlast/run_data/"
 
     # defining run folder
-    # run_folder = os.getcwd()   # current folder  # TODO: decide on a basic folder depending on the host
-    run_folder = os.path.join(storage_path, run_id)  # TODO STORAGE PATH??
+    # run_folder = os.getcwd()   # current folder
+    run_folder = os.path.join(storage_path, run_id)
 
     create_folder_if_needed(run_folder)  # creating the folder
 
@@ -87,6 +88,8 @@ def run_from_web(values_from_web, debug=debug_func):
     # tax_db = os.path.join(script_folder, "db/taxdump/tax_names.txt")  # moved to web server
     # database location
     db_folder = os.path.join(script_folder, "db")
+    # TODO: add S3 folders
+
 
     # moved to web server
     # # parsing and creating taxa files and parameters:
@@ -165,10 +168,10 @@ def run_from_web(values_from_web, debug=debug_func):
         print("part 3 done!")
         print("*******************")
 
-    # cleaning:
-    if not DEBUG:
-        if cleanup(run_folder, fasta_path, first_blast_folder, second_blast_folder):
-            print("Files archived, compressed and cleaned.")
+    # # cleaning:
+    # if not DEBUG:  # TODO change cleanup func becasue it doesn't work
+    #     if cleanup(run_folder, fasta_path, first_blast_folder, second_blast_folder):
+    #         print("Files archived, compressed and cleaned.")
 
     print("Program done.")
 
@@ -181,4 +184,5 @@ def run_from_web(values_from_web, debug=debug_func):
         debug("email sent to {}".format(app_contact_email))
 
 
+# TODO: del user from redis
 # TODO: change cleanup func

@@ -6,3 +6,4 @@ argparse
 mygene
 redis
 rq
+boto3

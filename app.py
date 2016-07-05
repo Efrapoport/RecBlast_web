@@ -73,11 +73,13 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
+# def send_job_to_backend(value_list):  # TODO: design the run
 def send_job_to_backend(value_list):  # TODO: design the run
+    app_contact_email, run_name, run_id, email_string = value_list  # temp stuff for test
     try:
-
+        return queue.run_email_func(app_contact_email, run_name, run_id, email_string)
         # sending to the backend main
-        return True
+        # return True
     except:
         return False
 
@@ -232,7 +234,13 @@ def handle_data():
         return render_template("server.html", errors=message_list, user_id=user_id)
 
     elif not message_list:
-        success = send_job_to_backend(value_list)
+        temp_email_string = "Someone sent a new job on RecBlast online!\n" \
+                            "email: {0}, run name: {1}, , run_id: {2}, species of origin: {3} (taxid: {4}), ip: {5}\n" \
+                            "Started at: {6}".format(email, run_name, user_id, reference_taxa, value_list[8], ip,
+                                                     strftime('%H:%M:%S'))
+        new_value_list = ["recblast@gmail.com", run_name, user_id, temp_email_string]
+        # success = send_job_to_backend(value_list)
+        success = send_job_to_backend(new_value_list)  # temp
         if success:
             flash('You successfully sent out a job!')
             message = "Your job was sent to the server successfully! You will receive an email with a link" \

@@ -10,11 +10,25 @@ TEMP_FILES_PATH = os.getcwd()  # TODO: change path for server
 
 
 def prepare_files(items, file_name, user_id):
+    """Receives a list of items and a file to write them to, then writes them to file and returns the file path."""
     full_path = os.path.join(TEMP_FILES_PATH, "_".join([user_id, file_name]))
     with open(full_path, 'w') as f:
         for item in items:
             f.write(item + "\n")
     return full_path
+
+
+def move_file_to_s3(file_path):  # TODO: finish this
+    # create file path in S3:
+    s3_path = ""
+
+    # copy file to S3
+    # TODO: copy file
+
+    # delete local file
+    os.remove(file_path)
+
+    return s3_path
 
 
 # debugging function
@@ -134,7 +148,7 @@ def exists_not_empty(path):
         return False
 
 
-def subset_db(tax_id, gi_file_path, db_path, big_db, run_anyway, DEBUG, debug, attempt_no=0):  # TODO call it, doc it
+def subset_db(tax_id, gi_file_path, db_path, big_db, run_anyway, DEBUG, debug, attempt_no=0):
     """
     Subsets a big blast database into a smaller one based on tax_id.
     The function connects to entrez and retrieves gi identifiers of sequences with the same tax_id.
