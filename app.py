@@ -22,12 +22,12 @@ app = Flask(__name__, static_folder='public', static_url_path='')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
-try:
-    ip = request.remote_addr
-    print ip
-except:
-    ip = "localhost"
-    print ip
+# try:
+#     ip = request.remote_addr
+#     print ip
+# except:
+#     ip = "localhost"
+#     print ip
 
 
 # just temp  # TODO: remove this
