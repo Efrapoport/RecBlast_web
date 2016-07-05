@@ -30,6 +30,14 @@ except:
     print ip
 
 
+# just temp  # TODO: remove this
+@app.route("/get_my_ip", methods=["GET"])
+def get_my_ip():
+    ip = request.remote_addr
+    print ip
+    return ip
+
+
 @app.route('/index')
 @app.route('/')
 def index():
@@ -243,7 +251,7 @@ def handle_data():
         # success = send_job_to_backend(value_list)
         success = send_job_to_backend(new_value_list)  # temp
         if success:
-            flash('You successfully sent out a job!')
+            flash('You successfully sent out a job!')  # TODO: how to show flash?
             message = "Your job was sent to the server successfully! You will receive an email with a link" \
                       "and you will be able to check the progress of your job"
 
@@ -273,6 +281,3 @@ def run_queue():
 if __name__ == "__main__":
     app.run(debug=True)
 
-
-# TODO make sure the taxdb is in the blastdb variable
-# we should probably set it

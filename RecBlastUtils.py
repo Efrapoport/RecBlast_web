@@ -1,10 +1,14 @@
 import os
 import tarfile
+import zipfile
 from time import strftime, sleep
 import re
 import subprocess
 from Bio import Entrez
 import shutil
+import boto3
+import botocore
+
 
 TEMP_FILES_PATH = os.getcwd()  # TODO: change path for server
 
@@ -32,6 +36,23 @@ def move_file_to_s3(file_path):  # TODO: finish this
     return s3_path
 
 
+def zip_results(fasta_output_path, csv_file_path, output_path):  # TODO: finish and doc
+    """
+
+    :param fasta_output_path:
+    :param csv_file_path:
+    :param output_path:
+    :return:
+    """
+    zip_file = os.path.join(output_path, "output.zip")
+    with zipfile.ZipFile(zip_file, mode='w') as zf:
+        # adding all fasta files
+        for fasta in os.listdir(fasta_output_path):
+            zf.write(fasta)
+        zf.write(csv_file_path)
+    return zip_file
+
+
 # debugging function
 def debug_s(debug_string, to_debug):
     """
@@ -55,7 +76,7 @@ def create_folder_if_needed(path):
         os.mkdir(path)
 
 
-def targz_list(archive_name, file_list):
+def targz_list(archive_name, file_list):   # TODO: problem with TAR, debug!
     """
     Returns True after
     :param archive_name:
@@ -69,7 +90,7 @@ def targz_list(archive_name, file_list):
     return True
 
 
-def cleanup(path, fasta_path, first_blast_folder, second_blast_folder):
+def cleanup(path, fasta_path, first_blast_folder, second_blast_folder):  # TODO: problem with TAR, debug!
     """
     Performs tar and gzip on sets of files produced by the program.
     Then deletes the files and folders.
@@ -212,6 +233,16 @@ def subset_db(tax_id, gi_file_path, db_path, big_db, run_anyway, DEBUG, debug, a
               "If you want to run the program anyway against the entire nr "
               "(which is significantly slower than the default run, please use the --run_even_if_no_db_found flag.")
         exit(1)
+
+
+def generate_download_link(user_id, expires=604800):
+    """Generates S3 download link that expires after 1 week."""
+    session = botocore.session.get_session()
+    client = session.create_client('s3')
+    presigned_url = client.generate_presigned_url('get_object', Params={'Bucket': 'recblastdata',
+                                                                        'Key': '{}/output.zip'.format(user_id)},
+                                                  ExpiresIn=expires)
+    return presigned_url
 
 
 # for efficiency

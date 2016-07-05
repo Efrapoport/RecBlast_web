@@ -7,3 +7,4 @@ mygene
 redis
 rq
 boto3
+botocore

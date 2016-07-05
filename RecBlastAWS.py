@@ -66,6 +66,7 @@ def run_from_web(values_from_web, debug=debug_func):
     # script folder
     script_folder = os.path.dirname(os.path.abspath(__file__))
     storage_path = "/home/ubuntu/RecBlast/run_data/"
+    s3_bucket_name = 'recblastdata'
 
     # defining run folder
     # run_folder = os.getcwd()   # current folder
@@ -84,11 +85,11 @@ def run_from_web(values_from_web, debug=debug_func):
     fasta_output_folder = os.path.join(run_folder, "fasta_output")
     create_folder_if_needed(fasta_output_folder)
     csv_output_filename = os.path.join(run_folder, "output_table.csv")
+    s3_output_path = os.path.join(EC2_PATH, 'output.zip')
     # Decide on taxa input:
     # tax_db = os.path.join(script_folder, "db/taxdump/tax_names.txt")  # moved to web server
     # database location
     db_folder = os.path.join(script_folder, "db")
-    # TODO: add S3 folders
 
 
     # moved to web server
@@ -168,6 +169,15 @@ def run_from_web(values_from_web, debug=debug_func):
         print("part 3 done!")
         print("*******************")
 
+    # Zip results:
+    # TODO:
+
+    # S3 client
+    s3 = boto3.client('s3', config=botocore.client.Config(signature_version='s3v4'))
+    s3.upload_file(s3_output_path, s3_bucket_name, '{}/output.zip'.format(run_id))
+    download_url = generate_download_link(run_id)
+    # TODO: compress clean and delete local result files (and work files)
+
     # # cleaning:
     # if not DEBUG:  # TODO change cleanup func becasue it doesn't work
     #     if cleanup(run_folder, fasta_path, first_blast_folder, second_blast_folder):
@@ -185,4 +195,10 @@ def run_from_web(values_from_web, debug=debug_func):
 
 
 # TODO: del user from redis
-# TODO: change cleanup func
+# TODO: change cleanup func - add fasta_output to zip with
+# TODO: compress or clean all other local files after
+# TODO send email to user with the result path (and to us!)
+
+# create new s3 folder for user
+# move result zip to s3
+# set expiration date for s3 file
