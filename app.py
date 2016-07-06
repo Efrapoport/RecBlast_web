@@ -22,13 +22,6 @@ app = Flask(__name__, static_folder='public', static_url_path='')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
-# try:
-#     ip = request.remote_addr
-#     print ip
-# except:
-#     ip = "localhost"
-#     print ip
-
 
 @app.route('/index')
 @app.route('/')
@@ -68,13 +61,13 @@ def server():
     return render_template("server.html")
 
 
-# just temp  # TODO: remove this
-# @app.route("/get_my_ip", methods=["GET"])
-@app.route("/get_my_ip")
-def get_my_ip():
-    ip = request.remote_addr
-    # print ip
-    return "This is your ip: {}".format(ip)
+# # just temp  # TODO: remove this
+# # @app.route("/get_my_ip", methods=["GET"])
+# @app.route("/get_my_ip")
+# def get_my_ip():
+#     ip = request.remote_addr
+#     # print ip
+#     return "This is your ip: {}".format(ip)
 
 
 def allowed_file(filename):
@@ -94,7 +87,7 @@ def send_job_to_backend(value_list):  # TODO: design the run
 
 
 def validate_data(value_list):
-    "Validates and modifies value_list."
+    """Validates and modifies value_list."""
     print value_list
     error_list = []
 
@@ -207,6 +200,10 @@ def upload(request):
 def handle_data():
     email = request.form['email']
     user_id = users.user_id_for_email(email)
+    try:
+        user_ip = request.remote_addr  # get the user ip
+    except:
+        user_ip = 'localhost'  # pretty bad then
     run_name = request.form['run_name']
     reference_taxa = request.form['reference_taxa']
 
@@ -232,7 +229,7 @@ def handle_data():
     string_similarity = request.form['string_similarity']
 
     value_list = [float(evalue), float(back_evalue), int(identity), int(coverage), float(string_similarity),
-                  path_to_genes, path_to_taxa, reference_taxa, run_name, email, user_id, ip]
+                  path_to_genes, path_to_taxa, reference_taxa, run_name, email, user_id, user_ip]
     # message_list is a list of errors we need to pass back to the user
     # if the list is empty, we move on to the run. else, we redirect use back to the form.
     message_list, value_list = validate_data(value_list)
@@ -246,7 +243,7 @@ def handle_data():
     elif not message_list:
         temp_email_string = "Someone sent a new job on RecBlast online!\n" \
                             "email: {0}, run name: {1}, , run_id: {2}, species of origin: {3} (taxid: {4}), ip: {5}\n" \
-                            "Started at: {6}".format(email, run_name, user_id, reference_taxa, value_list[8], ip,
+                            "Started at: {6}".format(email, run_name, user_id, reference_taxa, value_list[8], user_ip,
                                                      strftime('%H:%M:%S'))
         new_value_list = ["recblast@gmail.com", run_name, user_id, temp_email_string]
         # success = send_job_to_backend(value_list)
@@ -264,7 +261,7 @@ def handle_data():
             return render_template("server.html", errors=error, user_id=user_id)
 
     else:
-        error = "unkown error. try again"
+        error = "unknown error. try again"
         return render_template("server.html", errors=error, user_id=user_id)
 
 
