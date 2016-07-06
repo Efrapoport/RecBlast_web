@@ -30,14 +30,6 @@ app.config['SECRET_KEY'] = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 #     print ip
 
 
-# just temp  # TODO: remove this
-@app.route("/get_my_ip", methods=["GET"])
-def get_my_ip():
-    ip = request.remote_addr
-    print ip
-    return ip
-
-
 @app.route('/index')
 @app.route('/')
 def index():
@@ -74,6 +66,15 @@ def serve_css(filename):
 @app.route('/server')
 def server():
     return render_template("server.html")
+
+
+# just temp  # TODO: remove this
+# @app.route("/get_my_ip", methods=["GET"])
+@app.route("/get_my_ip")
+def get_my_ip():
+    ip = request.remote_addr
+    # print ip
+    return "This is your ip: {}".format(ip)
 
 
 def allowed_file(filename):
