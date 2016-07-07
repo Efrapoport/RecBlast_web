@@ -39,3 +39,9 @@ def get_result_by_user_id(user_id):
     """Retrieve download url for user_id."""
     return redis_pool.get('users.jobs.result_url.{}'.format(user_id))
 
+
+def delete_user_id_for_email(email):
+    """Deletes user_id per email.
+    If the email already has a user_id stored, use it. If not, generate a new one."""
+    return bool(redis_pool.delete('users.ids.{}'.format(email)))
+

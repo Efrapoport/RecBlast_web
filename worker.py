@@ -17,6 +17,7 @@ def run_recblast_web(values_from_web):
         return RecBlastAWS.run_from_web(values_from_web)
     except Exception, e:
         users.delete_email(values_from_web[10])
+        users.delete_user_id_for_email(values_from_web[10])
         print("Unknown error: {}\nDeleting email.".format(e))
         raise e
 

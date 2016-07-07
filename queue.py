@@ -24,6 +24,7 @@ def run_recblast_on_worker(values):
         return result
     except Exception, e:
         users.delete_email(values[10])
+        users.delete_user_id_for_email(values[10])
         print("Unknown error: {}\nDeleting email.".format(e))
         raise e
 

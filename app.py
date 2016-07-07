@@ -84,6 +84,7 @@ def send_job_to_backend(value_list):
         # return True
     except Exception, e:
         users.delete_email(value_list[10])
+        users.delete_user_id_for_email(value_list[10])
         print("error: {}\nDeleting email.".format(e))
         print("Unknown error. Please report to recblast@gmail.com.")
         return False
@@ -186,6 +187,7 @@ def validate_data(value_list):
         return error_list, new_value_list
     except Exception, e:  # if any error occurs:
         users.delete_email(email)  # remove the emails
+        users.delete_user_id_for_email(email)  # remove the emails
         print("error: {}\nDeleting email.".format(e))
         return ["Unknown error. Please report to recblast@gmail.com."], []
 

@@ -214,6 +214,7 @@ def run_from_web(values_from_web, debug=debug_func):
 
     # user does not have a running job anymore:
     users.delete_email(user_email)  # deletes user email
+    users.delete_user_id_for_email(user_email)
     return True
 
 
