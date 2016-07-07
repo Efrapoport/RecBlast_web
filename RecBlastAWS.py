@@ -87,7 +87,7 @@ def run_from_web(values_from_web, debug=debug_func):
     fasta_output_folder = os.path.join(run_folder, "fasta_output")
     create_folder_if_needed(fasta_output_folder)
     csv_output_filename = os.path.join(run_folder, "output_table.csv")
-    s3_output_path = os.path.join(storage_path, 'output.zip')
+    # s3_output_path = os.path.join(storage_path, 'output.zip')
     # Decide on taxa input:
     # tax_db = os.path.join(script_folder, "db/taxdump/tax_names.txt")  # moved to web server
     # database location
@@ -178,7 +178,7 @@ def run_from_web(values_from_web, debug=debug_func):
 
     # S3 client
     s3 = boto3.client('s3', config=botocore.client.Config(signature_version='s3v4'))
-    s3.upload_file(s3_output_path, s3_bucket_name, '{}/output.zip'.format(run_id))
+    s3.upload_file(zip_output_path, s3_bucket_name, '{}/output.zip'.format(run_id))
     download_url = generate_download_link(run_id)
     # set the download url for the user:
     users.set_result_for_user_id(run_id, download_url)
