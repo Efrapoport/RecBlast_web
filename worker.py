@@ -12,8 +12,11 @@ import RecBlastAWS
 
 def run_recblast_web(values_from_web):
     """run recblast web (from RecBlastAWS) with values from app.py"""
-    if RecBlastAWS.run_from_web(values_from_web):
-        return True
+    try:
+        return RecBlastAWS.run_from_web(values_from_web)
+    except Exception, e:
+        print("Unkown error: {}".format(e))
+        raise e
 
 
 def run_test_loop(number_of_times):

@@ -18,8 +18,12 @@ queue = rq.Queue(connection=redis_pool)
 
 # Wrapper for worker function
 def run_recblast_on_worker(values):
-    result = queue.enqueue(worker.run_recblast_web, values)
-    return result
+    try:
+        result = queue.enqueue(worker.run_recblast_web, values)
+        return result
+    except Exception, e:
+        print("Unknown error: {}".format(e))
+        raise e
 
 #
 # # Wrapper for worker function

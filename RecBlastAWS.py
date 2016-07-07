@@ -91,7 +91,7 @@ def run_from_web(values_from_web, debug=debug_func):
     # Decide on taxa input:
     # tax_db = os.path.join(script_folder, "db/taxdump/tax_names.txt")  # moved to web server
     # database location
-    db_folder = os.path.join(script_folder, "db")
+    db_folder = os.path.join(script_folder, "DB")
 
     # moved to web server:
     # # parsing and creating taxa files and parameters:
