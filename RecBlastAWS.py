@@ -9,6 +9,9 @@ import part_one
 import part_two
 import part_three
 from email_module import email_status
+import users
+import botocore
+import boto3
 
 # value_list = [evalue, back_evalue, identity, coverage, string_similarity, gene_list, taxa_list,
 #               reference_taxa, run_name, email, run_id]
@@ -38,7 +41,7 @@ def run_from_web(values_from_web, debug=debug_func):
     # defaults
     max_target_seqs = '1000000'
     max_attempts_to_complete_rec_blast = 100
-    cpu = 1  # TODO: decide on CPU
+    cpu = 8  # default cpu: 8
 
     # fixed:
     outfmt = '6 staxids sseqid pident qcovs evalue sscinames sblastnames'
@@ -50,9 +53,6 @@ def run_from_web(values_from_web, debug=debug_func):
 
     # DEBUG flags
     DEBUG = True  # TODO: change it
-
-    # TODO: adapt
-    # making sure the files we received exist and are not empty:  # TODO: move to web server???:
 
     # locating BLASTP path on your system  # TODO: set a fixed path!
     blastp_path = "Not valid"
@@ -67,6 +67,7 @@ def run_from_web(values_from_web, debug=debug_func):
     script_folder = os.path.dirname(os.path.abspath(__file__))
     storage_path = "/home/ubuntu/RecBlast/run_data/"
     s3_bucket_name = 'recblastdata'
+    email_template = 'templates/email_templates/email_template.html'
 
     # defining run folder
     # run_folder = os.getcwd()   # current folder
@@ -119,20 +120,22 @@ def run_from_web(values_from_web, debug=debug_func):
     # Run main code #
     #################
 
-    # TODO: send us emails about the user progress.
     if email_status(app_contact_email, run_name, run_id,
-                    "Someone sent a new job on RecBlast online!\n"
-                    "email: {0}, run name: {1}, , run_id: {2}, species of origin: {3} (taxid: {4}), ip: {5}\n"
-                    "Started at: {6}".format(user_email, run_name, run_id, origin_species, org_tax_id, user_ip,
-                                             strftime('%H:%M:%S'))):
+                        "Someone sent a new job on RecBlast online!<br>"
+                        "email: {0}, run name: {1}, run_id: {2}, species of origin: {3} (taxid: {4}), ip: {5}<br>"
+                        "Started at: {6}".format(user_email, run_name, run_id, origin_species, org_tax_id, user_ip,
+                                                 strftime('%H:%M:%S')), email_template):
         debug("email sent to {}".format(app_contact_email))
-        # TODO: add details about the len of the taxa list and the gene_list_file
+    # TODO: add details about the len of the taxa list and the gene_list_file
+
+
     if email_status(user_email, run_name, run_id,
-                    "You have just sent a new job on RecBlast online!\n"
-                    "Your job is now running on RecBlast online. The following are your run details:\n"
-                    "Run name: {1}\nRun ID: {2}\nSpecies of origin: {3} (taxid: {4})\nStarted at: {5}".format(
-                        user_email, run_name, run_id, origin_species, org_tax_id, user_ip, strftime('%H:%M:%S'))):
-        debug("email sent to {}".format(app_contact_email))
+                    "You have just sent a new job on RecBlast online!<br>"
+                    "Your job is now running on RecBlast online. The following are your run details:<br>"
+                    "Run name: {0}<br>Run ID: {1}<br>Species of origin: {2} (taxid: {3})<br>Started at: {4}".format(
+                        run_name, run_id, origin_species, org_tax_id, strftime('%H:%M:%S')),
+                    email_template):
+        debug("email sent to {}".format(user_email))
 
     # print "Welcome to RecBlast."
     # print "Run {0} started at: {1}".format(run_name, strftime('%H:%M:%S'))
@@ -170,34 +173,57 @@ def run_from_web(values_from_web, debug=debug_func):
         print("*******************")
 
     # Zip results:
-    # TODO:
+    zip_output_path = zip_results(fasta_output_folder, csv_output_filename, run_folder)
 
     # S3 client
     s3 = boto3.client('s3', config=botocore.client.Config(signature_version='s3v4'))
     s3.upload_file(s3_output_path, s3_bucket_name, '{}/output.zip'.format(run_id))
     download_url = generate_download_link(run_id)
-    # TODO: compress clean and delete local result files (and work files)
+    # set the download url for the user:
+    users.set_result_for_user_id(run_id, download_url)
 
     # # cleaning:
-    # if not DEBUG:  # TODO change cleanup func becasue it doesn't work
-    #     if cleanup(run_folder, fasta_path, first_blast_folder, second_blast_folder):
-    #         print("Files archived, compressed and cleaned.")
+    if not DEBUG:  # compresses and cleans everything
+        if cleanup(run_folder, storage_path, run_id):
+            print("Files archived, compressed and cleaned.")
 
+    result_page = "http://www.reciprocalblast.com/results/{}".format(run_id)
     print("Program done.")
 
-    # Tell user about results  # TODO: edit and add link. and email us too!
+    # Tell user about results
     if email_status(user_email, run_name, run_id,
-                    "Your job {} has just finished running on RecBlast online!\n"
-                    "Your job is now running on RecBlast online. The following are your run details:\n"
-                    "Run name: {1}\nRun ID: {2}\nSpecies of origin: {3} (taxid: {4})\nStarted at: {5}".format(
-                        user_email, run_name, run_id, origin_species, org_tax_id, user_ip, strftime('%H:%M:%S'))):
+                    "Your job {0} has just finished running on RecBlast online!<br>"
+                    "The results can be found and downloaded from here:<br>{1}<br>"
+                    "Run name: {1}<br>Run ID: {2}<br>Species of origin: {3} (taxid: {4})<br>Finished at: {5}<br><br>"
+                    "Thanks for using RecBlast!".format(
+                        run_name, result_page, run_id, origin_species, org_tax_id, strftime('%H:%M:%S')),
+                    email_template):
+        debug("email sent to {}".format(user_email))
+
+    if email_status(user_email, run_name, run_id,
+                    "User {0} job {1} has just finished running on RecBlast online!<br>"
+                    "The results can be found and downloaded from here:<br>{2}<br>"
+                    "Run name: {1}<br>Run ID: {3}<br>Species of origin: {4} (taxid: {5})<br>Finished at: {6}<br><br>"
+                    "Thanks for using RecBlast!".format(
+                        user_email, run_name, result_page, run_id, origin_species, org_tax_id, strftime('%H:%M:%S')),
+                    email_template):
         debug("email sent to {}".format(app_contact_email))
 
+    # user does not have a running job anymore:
+    users.set_has_job_for_email(user_email, False)  # don't delete user from redis but still
 
-# TODO: del user from redis
+
+# TODO: send the job
 # TODO: change cleanup func - add fasta_output to zip with
 # TODO: compress or clean all other local files after
-# TODO send email to user with the result path (and to us!)
+# TODO: fix IP
+​
+# create new s3 folder for user
+# move result zip to s3
+# set expiration date for s3 file
+# del user from redis
+# send email to user with the result path (and to us!)
+
 
 # create new s3 folder for user
 # move result zip to s3

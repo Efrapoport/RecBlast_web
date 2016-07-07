@@ -22,23 +22,22 @@ def prepare_files(items, file_name, user_id):
     return full_path
 
 
-def move_file_to_s3(file_path):  # TODO: finish this
-    """Move files to s3"""
-    # create file path in S3:
-    s3_path = ""
+# def move_file_to_s3(file_path):
+#     """Move files to s3"""
+#     # create file path in S3:
+#     s3_path = ""
+#
+#     # copy file to S3
+#
+#     # delete local file
+#     os.remove(file_path)
+#
+#     return s3_path
 
-    # copy file to S3
-    # TODO: copy file
 
-    # delete local file
-    os.remove(file_path)
-
-    return s3_path
-
-
-def zip_results(fasta_output_path, csv_file_path, output_path):  # TODO: finish and doc
+def zip_results(fasta_output_path, csv_file_path, output_path):
     """
-
+    Receives a folder containing fasta sequences and a csv file, adds them all to zip.
     :param fasta_output_path:
     :param csv_file_path:
     :param output_path:
@@ -49,7 +48,7 @@ def zip_results(fasta_output_path, csv_file_path, output_path):  # TODO: finish 
         # adding all fasta files
         for fasta in os.listdir(fasta_output_path):
             zf.write(fasta)
-        zf.write(csv_file_path)
+        zf.write(csv_file_path)  # add csv file
     return zip_file
 
 
@@ -76,51 +75,46 @@ def create_folder_if_needed(path):
         os.mkdir(path)
 
 
-def targz_list(archive_name, file_list):   # TODO: problem with TAR, debug!
+# def targz_list(archive_name, file_list):
+#     """
+#     Returns True after
+#     :param archive_name:
+#     :param file_list:
+#     :return:
+#     """
+#     with tarfile.open(archive_name, "w:gz") as tar:
+#         for file_name in file_list:
+#             tar.add(file_name, arcname=os.path.basename(file_name))
+#             os.remove(file_name)  # removing the sge file
+#     return True
+
+
+def targz_folder(archive_name, folder):
     """
     Returns True after
     :param archive_name:
-    :param file_list:
+    :param folder:
     :return:
     """
     with tarfile.open(archive_name, "w:gz") as tar:
-        for file_name in file_list:
-            tar.add(file_name, arcname=os.path.basename(file_name))
-            os.remove(file_name)  # removing the sge file
+        tar.add(folder, arcname=os.path.basename(folder))
     return True
 
 
-def cleanup(path, fasta_path, first_blast_folder, second_blast_folder):  # TODO: problem with TAR, debug!
+def cleanup(path, storage_folder, run_id):  # TODO: problem with TAR, debug!
     """
     Performs tar and gzip on sets of files produced by the program.
     Then deletes the files and folders.
     :param path:  # the run_folder
-    :param fasta_path:  # the folder containing fasta files
-    :param first_blast_folder:  # the folder containing the first blast results
-    :param second_blast_folder:  # the folder containing the second blast results
+    :param storage_folder:  # the folder containing fasta files
+    :param run_id:  # the folder containing the first blast results
     :return:
     """
-    # clean pickles:
-    pickles = [os.path.join(path, x) for x in os.listdir(path) if x[-2:] == '.p']
-    pickle_archive = os.path.join(path, "pickles.tar.gz")
-    if targz_list(pickle_archive, pickles):
-        # pickles cleaned
-        pass
-    # compress all fasta_path
-    fasta_files = [os.path.join(fasta_path, x) for x in os.listdir(fasta_path)]
-    fasta_archive = os.path.join(path, "fasta_archive.tar.gz")
-    if targz_list(fasta_archive, fasta_files):
-        shutil.rmtree(fasta_path)
-    # compress all first_blast
-    first_blast_files = [os.path.join(first_blast_folder, x) for x in os.listdir(first_blast_folder)]
-    first_blast_archive = os.path.join(path, "first_blast_archive.tar.gz")
-    if targz_list(first_blast_archive, first_blast_files):
-        shutil.rmtree(first_blast_folder)
-    # compress all second_blast (recursive)
-    second_blast_archive = os.path.join(path, "second_blast_archive.tar.gz")
-    with tarfile.open(second_blast_archive, "w:gz") as tar:
-        tar.add(second_blast_folder, arcname=os.path.basename(second_blast_folder))
-        shutil.rmtree(second_blast_folder)
+    # compress all files in path:
+    # fasta_path
+    path_archive = os.path.join(storage_folder, "{}.all.tar.gz".format(run_id))
+    if targz_folder(path_archive, path):  # compress run_folder
+        shutil.rmtree(path)  # delete run folder
     return True
 
 

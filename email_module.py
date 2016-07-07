@@ -4,7 +4,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 
-def email_status(user_email, run_name, run_id, message):
+def email_status(user_email, run_name, run_id, message, template):
     # our_address = "recblast@reciprocalblast.com"
     # our_address = "moranneuhof@mail.tau.ac.il"
 
@@ -18,7 +18,7 @@ def email_status(user_email, run_name, run_id, message):
     msg['From'] = googleapps_user
     msg['To'] = user_email
 
-    with open("templates/email_template.html", 'r') as f:
+    with open(template, 'r') as f:
         html = f.read()
     # print(html)
     msg.attach(MIMEText(html.format(message), 'html'))

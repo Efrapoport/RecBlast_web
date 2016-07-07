@@ -88,7 +88,7 @@ def send_job_to_backend(value_list):  # TODO: design the run
 
 def validate_data(value_list):
     """Validates and modifies value_list."""
-    print value_list
+    print value_list  # DEBUG
     error_list = []
 
     # check email
@@ -106,9 +106,6 @@ def validate_data(value_list):
     taxa_file = value_list[6]
     if not exists_not_empty(taxa_file):
         error_list.append("No taxa list or gene file provided!")
-
-    # taxa database
-    # script_folder = "/groups/igv/moranne/scripts/RecBlast_AWS/"  # no need for this
 
     reference_taxa = value_list[7]
     # validate reference taxa!
@@ -196,7 +193,6 @@ def upload(request):
 # 1. error (+ go back button)
 # 2. success! check back soon, we also sent you an email
 @app.route('/output', methods=['POST'])
-# @app.route('/output', methods=['POST'])
 def handle_data():
     email = request.form['email']
     user_id = users.user_id_for_email(email)
@@ -234,7 +230,6 @@ def handle_data():
     # if the list is empty, we move on to the run. else, we redirect use back to the form.
     message_list, value_list = validate_data(value_list)
 
-    # message_list.append("You forgot something")
     # message_list.append("Your file is not in the right format")
 
     if message_list:  # means there are errors. later we might redirect the user to the form and
