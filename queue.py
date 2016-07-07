@@ -20,7 +20,7 @@ queue = rq.Queue(connection=redis_pool)
 # Wrapper for worker function
 def run_recblast_on_worker(values):
     try:
-        result = queue.enqueue(worker.run_recblast_web, values)
+        result = queue.enqueue(worker.run_recblast_web, values, timeout=1800)
         return result
     except Exception, e:
         users.delete_email(values[10])

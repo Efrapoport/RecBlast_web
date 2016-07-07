@@ -28,6 +28,7 @@ def gene_list_to_csv(gene_list, taxid, out_file):
     # update_match_results file
     with open(out_file, "w") as output:
         # generating the csv we need for the analysis
+        output.write("{}\n".format(",".join(["gene_id", "gene_name", "uniprot_id"])))  # write title
         mg = mygene.MyGeneInfo()
         genes_data = mg.querymany(gene_list, scopes='symbol,namereporter,accession', fields='uniprot,name,symbol',
                                   species=taxid)  # TODO: check this on other species

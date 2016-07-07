@@ -73,6 +73,7 @@ def run_from_web(values_from_web, debug=debug_func):
     s3_bucket_name = 'recblastdata'
     email_template = 'templates/email_templates/email_template.html'
 
+    os.environ['BLASTDB'] = "/blast/db"  # setting the $blastdb # check if it workswq
     # defining run folder
     # run_folder = os.getcwd()   # current folder
     run_folder = os.path.join(storage_path, run_id)
