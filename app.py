@@ -179,12 +179,25 @@ def validate_data(value_list):
             taxa_error = "No valid taxa names or IDs found in the list or file provided: {}.Ignoring them.".format(
                 "\n".join(bad_tax_list))
             error_list.append(taxa_error)
+            taxa_list_file = ""
         # debug("Converted tax list to tax ID files, saved new list in: {}".format(taxa_list_file))
 
-        new_value_list = [value_list[0], value_list[1], value_list[2], value_list[3], value_list[4], csv_path,
-                          taxa_list_file, origin_species, org_tax_id, value_list[8], value_list[9], value_list[10],
+        # submit csv and taxa as lists
+        if taxa_list_file == "":
+            taxa_file_content = ""
+        else:
+            taxa_file_content = file_to_string(taxa_list_file)
+
+        if csv_path == "":
+            gene_file_content = ""
+        else:
+            gene_file_content = file_to_string(csv_path)
+
+        new_value_list = [value_list[0], value_list[1], value_list[2], value_list[3], value_list[4], gene_file_content,
+                          taxa_file_content, origin_species, org_tax_id, value_list[8], value_list[9], value_list[10],
                           value_list[11]]
         return error_list, new_value_list
+
     except Exception, e:  # if any error occurs:
         users.delete_email(email)  # remove the emails
         users.delete_user_id_for_email(email)  # remove the emails

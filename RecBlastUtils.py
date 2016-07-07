@@ -13,13 +13,22 @@ import botocore
 TEMP_FILES_PATH = os.getcwd()  # TODO: change path for server
 
 
-def prepare_files(items, file_name, user_id):
+def prepare_files(items, file_name, user_id, files_path=TEMP_FILES_PATH):
     """Receives a list of items and a file to write them to, then writes them to file and returns the file path."""
-    full_path = os.path.join(TEMP_FILES_PATH, "_".join([user_id, file_name]))
+    full_path = os.path.join(files_path, "_".join([user_id, file_name]))
     with open(full_path, 'w') as f:
         for item in items:
             f.write(item + "\n")
     return full_path
+
+
+def file_to_string(file_name):
+    with open(file_name, 'r') as f:
+        text = f.read()
+    # delete original file
+    os.remove(file_name)
+    return text
+
 
 
 # def move_file_to_s3(file_path):

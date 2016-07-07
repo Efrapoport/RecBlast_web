@@ -34,8 +34,8 @@ def run_from_web(values_from_web, debug=debug_func):
     """
     # (e_value_thresh, back_e_value_thresh, identity_threshold, coverage_threshold, textual_match, gene_list_file,
     #  taxa_list_file, reference_taxa, run_name, user_email, run_id, user_ip) = values_from_web  # old list
-    (e_value_thresh, back_e_value_thresh, identity_threshold, coverage_threshold, textual_match, csv_path,
-     taxa_list_file, origin_species, org_tax_id, run_name, user_email, run_id, user_ip) = values_from_web
+    (e_value_thresh, back_e_value_thresh, identity_threshold, coverage_threshold, textual_match, csv_file_content,
+     taxa_file_content, origin_species, org_tax_id, run_name, user_email, run_id, user_ip) = values_from_web
     if back_e_value_thresh == "":
         back_e_value_thresh = e_value_thresh
 
@@ -95,6 +95,16 @@ def run_from_web(values_from_web, debug=debug_func):
     # tax_db = os.path.join(script_folder, "db/taxdump/tax_names.txt")  # moved to web server
     # database location
     db_folder = os.path.join(script_folder, "DB")
+
+    # write csv file
+    csv_path = os.path.join(run_folder, "input_genes.csv")
+    with open(csv_path) as csv_file:
+        csv_file.write(csv_file_content)
+    # write taxa file
+    taxa_list_file = os.path.join(run_folder, "taxa_file.csv")
+    with open(taxa_list_file) as taxa_file:
+        taxa_file.write(taxa_file_content)
+
 
     # moved to web server:
     # # parsing and creating taxa files and parameters:
