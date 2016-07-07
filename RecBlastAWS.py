@@ -17,6 +17,8 @@ import boto3
 #               reference_taxa, run_name, email, run_id]
 
 # this will be the stand alone version of RecBlast for linux.
+DEBUG = True
+global DEBUG
 
 
 def debug_func(s):
@@ -54,6 +56,7 @@ def run_from_web(values_from_web, debug=debug_func):
 
     # DEBUG flags
     DEBUG = True  # TODO: change it
+    global DEBUG
 
     # locating BLASTP path on your system
     blastp_path = "/usr/bin/blast/blastp"
