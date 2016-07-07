@@ -186,6 +186,7 @@ def run_from_web(values_from_web, debug=debug_func):
     if not DEBUG:  # compresses and cleans everything
         if cleanup(run_folder, storage_path, run_id):
             print("Files archived, compressed and cleaned.")
+            # TODO: move to s3 for temporary storage
 
     result_page = "http://www.reciprocalblast.com/results/{}".format(run_id)
     print("Program done.")
@@ -214,17 +215,9 @@ def run_from_web(values_from_web, debug=debug_func):
 
 
 # TODO: send the job
-# TODO: change cleanup func - add fasta_output to zip with
-# TODO: compress or clean all other local files after
-# TODO: fix IP
-​
+
 # create new s3 folder for user
 # move result zip to s3
 # set expiration date for s3 file
 # del user from redis
 # send email to user with the result path (and to us!)
-
-
-# create new s3 folder for user
-# move result zip to s3
-# set expiration date for s3 file

@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 import csv_transformer
 import taxa_to_taxid
 import users
-import RecBlastUtils
+# import RecBlastUtils
 from taxa import get_name_by_value, get_value_by_name
 from RecBlastUtils import *
 import queue
@@ -97,18 +97,25 @@ def validate_data(value_list):
     if users.has_job_for_email(email):
         error_list.append("There's already a job running for this email: %s" % email)
 
-    # check if files/lists are not empty:
+    # check if files/lists are not empty and not too long:
     gene_file_path = value_list[5]
-
-    if not exists_not_empty(gene_file_path):
+    max_allowed_genes = 10  # this is where we set the maximum allowed genes
+    if exists_not_empty(gene_file_path):
+        if file_len(gene_file_path) > max_allowed_genes:
+            error_list.append("Genes provided exceed the maximum number of allowed genes: {}".format(max_allowed_genes))
+    else:
         error_list.append("No gene list or gene file provided!")
 
     taxa_file = value_list[6]
-    if not exists_not_empty(taxa_file):
+    max_allowed_taxa = 10  # this is where we set the maximum allowed taxa
+    if exists_not_empty(taxa_file):
+        if file_len(taxa_file) > max_allowed_taxa:
+            error_list.append("Genes provided exceed the maximum number of allowed taxa: {}".format(max_allowed_taxa))
+    else:
         error_list.append("No taxa list or gene file provided!")
 
-    reference_taxa = value_list[7]
     # validate reference taxa!
+    reference_taxa = value_list[7]
     # processing original species
     if is_number(reference_taxa):  # already a tax_id
         org_tax_id = reference_taxa

@@ -75,6 +75,13 @@ def create_folder_if_needed(path):
         os.mkdir(path)
 
 
+def file_len(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
+
+
 # def targz_list(archive_name, file_list):
 #     """
 #     Returns True after
