@@ -31,9 +31,10 @@ def format_description(description, regex, species):
     :param species:
     :return:
     """
-    description = replace(lower(description), "predicted: ", "")
-    description = replace(description, "[{}]".format(lower(species)), "")
-    description = replace(description, "{}".format(lower(species)), "")
+    species = lower(str(species))
+    description = replace(lower(str(description)), "predicted: ", "")
+    description = replace(description, "[{}]".format(species), "")
+    description = replace(description, "{}".format(species), "")
     description = replace(description, "unnamed protein product", "")
     description = replace(description, "isoform", "")
     description = strip(re_sub(regex, '', description))
