@@ -2,6 +2,7 @@ import rq
 from redis_pool import redis_pool
 # Import worker functions
 import worker
+import users
 
 queue = rq.Queue(connection=redis_pool)
 
@@ -22,7 +23,8 @@ def run_recblast_on_worker(values):
         result = queue.enqueue(worker.run_recblast_web, values)
         return result
     except Exception, e:
-        print("Unknown error: {}".format(e))
+        users.delete_email(values[10])
+        print("Unknown error: {}\nDeleting email.".format(e))
         raise e
 
 #
