@@ -220,8 +220,8 @@ def subset_db(tax_id, gi_file_path, db_path, big_db, run_anyway, DEBUG, debug, a
     # the new target database path
     create_folder_if_needed(os.path.join(db_path, tax_id))
     target_db = os.path.join(db_path, tax_id, "db")
-    aliastool_command = ["blastdb_aliastool", "-gilist", gi_file_path, "-db", big_db, "-dbtype", "prot", "-out",
-                         target_db]
+    aliastool_command = ["/usr/bin/blast/blastdb_aliastool", "-gilist", gi_file_path, "-db", big_db, "-dbtype", "prot",
+                         "-out", target_db]
     try:
         subprocess.check_call(aliastool_command)
         print("Created DB subset from nr protein for {}".format(tax_id))
