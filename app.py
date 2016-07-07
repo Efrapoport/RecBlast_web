@@ -213,12 +213,12 @@ def handle_data():
     taxa_list = request.form['taxa_list']
     taxa_list = taxa_list.split("\n")
     taxa_list = [i.strip() for i in taxa_list]
-    path_to_taxa = RecBlastUtils.prepare_files(taxa_list, "taxons", user_id)
+    path_to_taxa = prepare_files(taxa_list, "taxons", user_id)
 
     gene_list = (request.form['gene_list'])
     gene_list = gene_list.split("\n")
     gene_list = [i.strip() for i in gene_list]
-    path_to_genes = RecBlastUtils.prepare_files(gene_list, "genes", user_id)
+    path_to_genes = prepare_files(gene_list, "genes", user_id)
 
     # to do: FIND A WAY TO UPLOAD FILES~~
     # upload(request)
