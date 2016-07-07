@@ -211,7 +211,7 @@ def run_from_web(values_from_web, debug=debug_func):
         debug("email sent to {}".format(app_contact_email))
 
     # user does not have a running job anymore:
-    users.set_has_job_for_email(user_email, False)  # don't delete user from redis but still
+    users.delete_email(user_email)  # deletes user email
 
 
 # TODO: send the job

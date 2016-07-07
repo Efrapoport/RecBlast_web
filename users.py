@@ -13,6 +13,11 @@ def set_has_job_for_email(email, value=True):
     return redis_pool.set('users.jobs.email.{}'.format(email), value)
 
 
+def delete_email(email):
+    """Deletes the user email from the database."""
+    return redis_pool.delete('users.jobs.email.{}'.format(email))
+
+
 def user_id_for_email(email):
     """Retrieves a random user_id per email.
     If the email already has a user_id stored, use it. If not, generate a new one."""
