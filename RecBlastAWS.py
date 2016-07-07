@@ -86,7 +86,7 @@ def run_from_web(values_from_web, debug=debug_func):
     fasta_output_folder = os.path.join(run_folder, "fasta_output")
     create_folder_if_needed(fasta_output_folder)
     csv_output_filename = os.path.join(run_folder, "output_table.csv")
-    s3_output_path = os.path.join(EC2_PATH, 'output.zip')
+    s3_output_path = os.path.join(storage_path, 'output.zip')
     # Decide on taxa input:
     # tax_db = os.path.join(script_folder, "db/taxdump/tax_names.txt")  # moved to web server
     # database location
