@@ -23,18 +23,35 @@ def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
 
+def format_description(description, regex, species):
+    """
+
+    :param description:
+    :param regex:
+    :param species:
+    :return:
+    """
+    description = replace(lower(description), "predicted: ", "")
+    description = replace(description, "[{}]".format(lower(species)), "")
+    description = replace(description, "{}".format(lower(species)), "")
+    description = replace(description, "unnamed protein product", "")
+    description = replace(description, "isoform", "")
+    description = strip(re_sub(regex, '', description))
+    return description
+
+
 # structure of update_match_results:
 # {gene_name: { animal1: [ [strict, not strict] ],  animal2: [],  animal3 = [], ...}}
-def update_match_results(enumerator, animal_org, target_name1, this_gene_dic, is_rbh, DEBUG, debug):  # TODO: doc
+def update_match_results(enumerator, animal_org, target_name1, this_gene_dic, is_rbh, DEBUG, debug):
     """
     Prints final update_match_results for each gene
-    :param is_rbh:
+    :param is_rbh: True if the value is RBH, False if not.
     :param this_gene_dic:
     :param enumerator: result number for gene_id
-    :param animal_org:
-    :param target_name1:
-    :param DEBUG:
-    :param debug:
+    :param animal_org:  Name of the organism
+    :param target_name1:  Target gene name
+    :param DEBUG:  The debug flag (True/False)
+    :param debug:  The debug function
     :return:
     """
     try:  # update current animal
@@ -72,7 +89,7 @@ def write_all_output_csv(out_dict, org_list, csv_out_filename, DEBUG, debug):
         csv_file.write(",".join(["gene_name"] + all_org_list))  # write header
         csv_file.write("\n")
         for gene_name in out_dict:  # write every line
-            assert(type(gene_name) == str)
+            assert type(gene_name) == str, "Gene name is not a string!"
             out_line = [gene_name]  # initialize output line: each line starts with the gene name
             for org in all_org_list:
                 try:
@@ -83,7 +100,7 @@ def write_all_output_csv(out_dict, org_list, csv_out_filename, DEBUG, debug):
                     out_line.append("")
                     # out_line.append("[0-0-0]")  # if we want the output that way...
             # formatting and printing the line
-            out_line = [str(x).replace(', ', '-') for x in out_line]
+            out_line = [replace(str(x), ', ', '-') for x in out_line]
             csv_file.write(",".join(out_line))
             csv_file.write("\n")
             debug("Printed gene_name {0} to output file".format(gene_name))
@@ -131,7 +148,7 @@ def get_definition(accession_list, DEBUG, debug, attempt_no=0):
 def prepare_candidates(file_lines_dict, index_set, enumerator, e_val_thresh, id_thresh, cov_thresh, accession_regex,
                        DEBUG, debug):
     """
-
+    Preparing the candidate genes for retrieval. Returning accession list.
     :param file_lines_dict:
     :param index_set: all remaining indexes for which reciprocal blast hasn't been completed. (list of nums)
     :param enumerator: current line number in each file
@@ -145,15 +162,18 @@ def prepare_candidates(file_lines_dict, index_set, enumerator, e_val_thresh, id_
     """
     debug("line number %s in files:" % enumerator)
     debug("remaining indexes: %s" % index_set)
-
+    remove_me = []
     accessions = []
+    index_list = list(index_set)
 
     for index in index_set:
         # going straight to our desired line according to "enumerator":
         try:
             line_list = split(file_lines_dict[index][enumerator - 1], "\t")
         except IndexError:
-            debug("File {0} is probably line number {1}. Moving on to next file!".format(index, enumerator))
+            debug("Line {0} does not exist in file {1} does not exist. Moving on to next file!".format(enumerator,
+                                                                                                       index))
+            remove_me.append(index)  # add the index to remove list
             continue
         identity = float(line_list[2])
         coverage = float(line_list[3])
@@ -169,13 +189,16 @@ def prepare_candidates(file_lines_dict, index_set, enumerator, e_val_thresh, id_
                 result = re_search(accession_regex, line_list[1])
                 accession_v = result.group(1)
             accessions.append(accession_v)
-    return accessions  # a list of accessions/gis
+
+    index_set = set([x for x in index_list if x not in remove_me])
+
+    return accessions, index_set  # a list of accessions/gis
 
 
 def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_threshold, textual_match,
-         textual_sequence_match, species, accession_regex, run_folder, max_attempts_to_complete_rec_blast,
-         csv_output_filename, fasta_output_folder, DEBUG, debug, id_dic=None, second_blast_for_ids_dict=None,
-         gene_paths_list=None):
+         textual_sequence_match, species, accession_regex, description_regex, run_folder,
+         max_attempts_to_complete_rec_blast, csv_output_filename, fasta_output_folder, DEBUG, debug, id_dic=None,
+         second_blast_for_ids_dict=None, gene_paths_list=None):
     """
 
     :param second_blast_folder:
@@ -186,6 +209,7 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
     :param textual_sequence_match:
     :param species:
     :param accession_regex:
+    :param description_regex:
     :param run_folder:
     :param max_attempts_to_complete_rec_blast:
     :param csv_output_filename:
@@ -230,6 +254,8 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
         target_sequence = strip(target[4])
         del target  # don't need it anymore
 
+        debug_file = open(os.path.join(run_folder, "missedhits_for_gene_%s(%s).txt") % (gene_id, target_name1), "w")
+
         # a list containing all the files we are going to work on, for this gene id:
         all_files_in_gene_id = [file_name for file_name in os.listdir(gene_path_folder) if
                                 (os.path.isfile(os.path.join(gene_path_folder, file_name)) and
@@ -250,7 +276,7 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
                 index_files_dict[index] = list(islice(index_infile, max_attempts_to_complete_rec_blast))
 
         index_set = set(indexes_per_id)  # converting to set
-        debug(index_set)  # DEBUG print
+        debug("indexes per id: {}".format(index_set))  # DEBUG print
 
         enumerator = 0  # current line number in each index file
         while index_set:
@@ -261,8 +287,9 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
                 break
 
             # quality check for each line in the files, only those who pass will move on to the next stage
-            accessions = prepare_candidates(index_files_dict, index_set, enumerator, e_value_thresh, identity_threshold,
-                                            coverage_threshold, accession_regex, DEBUG, debug)
+            accessions, index_set = prepare_candidates(index_files_dict, index_set, enumerator, e_value_thresh,
+                                                       identity_threshold, coverage_threshold, accession_regex, DEBUG,
+                                                       debug)
             debug("accessions: {}".format(accessions))
 
             # getting taxa info only for the genes that passed the initial quality text
@@ -272,6 +299,7 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
                 indexes_to_remove = set()  # set of indexes to remove each round
                 index_count = 0
                 loci_list = list(index_set)  # the gene position
+                debug("loci_list: {}".format(loci_list))
 
                 # string comparison:
                 for candidate in candidates:  # for each definition
@@ -280,15 +308,19 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
                     index_count += 1  # increment for next round
 
                     # cleaning strings before string comparison
-                    candidate_name = replace(candidate[0], "PREDICTED: ", "")
-                    candidate_name = replace(candidate_name, "[{}]".format(species.capitalize()), "")
-                    candidate_name = replace(candidate_name, "unnamed protein product", "")
+                    candidate_name = format_description(candidate[0], description_regex, species)
                     candidate_seq = candidate[1]
 
-                    animal_org = second_blast_for_ids_dict[gene_id][int(loc)][1]  # getting from dict of dict
-                    fasta_record = second_blast_for_ids_dict[gene_id][int(loc)][0]  # getting from dict of dict
-                    is_rbh = second_blast_for_ids_dict[gene_id][int(loc)][2]  # boolean representing RBH
+                    try:
+                        animal_org = second_blast_for_ids_dict[gene_id][int(loc)][1]  # getting from dict of dict
+                        fasta_record = second_blast_for_ids_dict[gene_id][int(loc)][0]  # getting from dict of dict
+                        is_rbh = second_blast_for_ids_dict[gene_id][int(loc)][2]  # boolean representing RBH
+                    except KeyError:  # no value for that id, probably empty
+                        debug("No value for index {}".format(loc))
+                        continue
                     # if all goes well, we found the animal
+
+                    target_name2 = format_description(target_name2, description_regex, animal_org)
 
                     # textual matches between the candidate name, description or the sequence itself
                     if similar(upper(candidate_name), upper(target_name1)) > textual_match \
@@ -308,6 +340,8 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
 
                     else:  # couldn't find similarity
                         debug("not similar: %s == %s, %s" % (candidate, target_name2, animal_org))
+                        debug_file.write("%s not similar: %s == %s, %s\n" % (candidate_name, target_name1, target_name2,
+                                                                             animal_org))
 
                 # preparing new index_set, while in loop
                 # removing indexes_per_id for which a match has been found
@@ -333,9 +367,3 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
     print "done!"
     return True
 
-
-# if __name__ == "__main__":
-#     if main():
-#         exit(0)
-#     else:
-#         exit(1)

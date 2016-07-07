@@ -46,6 +46,7 @@ def run_from_web(values_from_web, debug=debug_func):
     # fixed:
     outfmt = '6 staxids sseqid pident qcovs evalue sscinames sblastnames'
     accession_regex = re.compile(r'([A-Z0-9\._]+) ?')
+    description_regex = re.compile(r'\([^)]*\)')
     original_id = 1  # start part_two from 0. change this when you want to start from mid-file
     app_contact_email = "recblast@gmail.com"
     Entrez.email = app_contact_email
@@ -166,7 +167,7 @@ def run_from_web(values_from_web, debug=debug_func):
 
     # part 3:
     if part_three.main(second_blast_folder, back_e_value_thresh, identity_threshold, coverage_threshold, textual_match,
-                       textual_seq_match, origin_species, accession_regex, run_folder,
+                       textual_seq_match, origin_species, accession_regex, description_regex, run_folder,
                        max_attempts_to_complete_rec_blast, csv_output_filename, fasta_output_folder, DEBUG, debug,
                        id_dic, second_blast_for_ids_dict, blast2_gene_id_paths):
         print("part 3 done!")
