@@ -98,11 +98,11 @@ def run_from_web(values_from_web, debug=debug_func):
 
     # write csv file
     csv_path = os.path.join(run_folder, "input_genes.csv")
-    with open(csv_path) as csv_file:
+    with open(csv_path, 'w') as csv_file:
         csv_file.write(csv_file_content)
     # write taxa file
     taxa_list_file = os.path.join(run_folder, "taxa_file.csv")
-    with open(taxa_list_file) as taxa_file:
+    with open(taxa_list_file, 'w') as taxa_file:
         taxa_file.write(taxa_file_content)
 
 
