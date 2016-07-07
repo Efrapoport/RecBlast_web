@@ -121,13 +121,12 @@ def run_from_web(values_from_web, debug=debug_func):
     #################
 
     if email_status(app_contact_email, run_name, run_id,
-                        "Someone sent a new job on RecBlast online!<br>"
-                        "email: {0}, run name: {1}, run_id: {2}, species of origin: {3} (taxid: {4}), ip: {5}<br>"
-                        "Started at: {6}".format(user_email, run_name, run_id, origin_species, org_tax_id, user_ip,
-                                                 strftime('%H:%M:%S')), email_template):
+                    "Someone sent a new job on RecBlast online!<br>"
+                    "email: {0}, run name: {1}, run_id: {2}, species of origin: {3} (taxid: {4}), ip: {5}<br>"
+                    "Started at: {6}".format(user_email, run_name, run_id, origin_species, org_tax_id, user_ip,
+                                             strftime('%H:%M:%S')), email_template):
         debug("email sent to {}".format(app_contact_email))
     # TODO: add details about the len of the taxa list and the gene_list_file
-
 
     if email_status(user_email, run_name, run_id,
                     "You have just sent a new job on RecBlast online!<br>"
@@ -212,6 +211,7 @@ def run_from_web(values_from_web, debug=debug_func):
 
     # user does not have a running job anymore:
     users.delete_email(user_email)  # deletes user email
+    return True
 
 
 # TODO: send the job
