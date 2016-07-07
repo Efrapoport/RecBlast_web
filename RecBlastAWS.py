@@ -93,8 +93,7 @@ def run_from_web(values_from_web, debug=debug_func):
     # database location
     db_folder = os.path.join(script_folder, "db")
 
-
-    # moved to web server
+    # moved to web server:
     # # parsing and creating taxa files and parameters:
     # tax_name_dict = taxa_to_taxid.create_tax_dict(tax_db)
     # tax_id_dict = dict((v, k) for k, v in tax_name_dict.iteritems())  # the reverse dict
