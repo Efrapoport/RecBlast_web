@@ -55,14 +55,14 @@ def run_from_web(values_from_web, debug=debug_func):
     # DEBUG flags
     DEBUG = True  # TODO: change it
 
-    # locating BLASTP path on your system  # TODO: set a fixed path!
-    blastp_path = "Not valid"
-    try:
-        blastp_path = subprocess.check_output(["which", "blastp"], universal_newlines=True).strip()
-        debug("BLASTP found in {}".format(blastp_path))
-    except subprocess.CalledProcessError:
-        print("No BLASTP found. Please check install blast properly or make sure it's in $PATH. Aborting.")
-        exit(1)
+    # locating BLASTP path on your system
+    blastp_path = "/usr/bin/blast/blastp"
+    # try:
+    #     blastp_path = subprocess.check_output(["which", "blastp"], universal_newlines=True).strip()
+    #     debug("BLASTP found in {}".format(blastp_path))
+    # except subprocess.CalledProcessError:
+    #     print("No BLASTP found. Please check install blast properly or make sure it's in $PATH. Aborting.")
+    #     exit(1)
 
     # script folder
     script_folder = os.path.dirname(os.path.abspath(__file__))

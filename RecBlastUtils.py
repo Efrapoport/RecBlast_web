@@ -156,11 +156,11 @@ def is_number(s):
         return False
 
 
-def blastdb_exit():
-    """Exiting if we can't find the $BLASTDB on the local machine"""
-    print("$BLASTDB was not found! Please set the blast DB path to the right location.")
-    print("Make sure blast+ is installed correctly.")
-    exit(1)
+# def blastdb_exit():
+#     """Exiting if we can't find the $BLASTDB on the local machine"""
+#     print("$BLASTDB was not found! Please set the blast DB path to the right location.")
+#     print("Make sure blast+ is installed correctly.")
+#     exit(1)
 
 
 def exists_not_empty(path):
@@ -206,7 +206,8 @@ def subset_db(tax_id, gi_file_path, db_path, big_db, run_anyway, DEBUG, debug, a
         attempt_no += 1
         if attempt_no >= 10:  # If too many:
             print "Tried connecting to Entrez DB more than 10 times. Check your connection or try again later."
-            exit(1)
+            raise e
+            # exit(1)  # can't exit
 
         # try again (recursive until max)
         return subset_db(tax_id, gi_file_path, db_path, big_db, run_anyway, DEBUG, debug, attempt_no)
@@ -233,7 +234,8 @@ def subset_db(tax_id, gi_file_path, db_path, big_db, run_anyway, DEBUG, debug, a
         print("Aborting.\n"
               "If you want to run the program anyway against the entire nr "
               "(which is significantly slower than the default run, please use the --run_even_if_no_db_found flag.")
-        exit(1)
+        raise e
+        # exit(1)
 
 
 def generate_download_link(user_id, expires=604800):
