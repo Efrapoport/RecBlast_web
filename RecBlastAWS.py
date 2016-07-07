@@ -187,11 +187,13 @@ def run_from_web(values_from_web, debug=debug_func):
 
     # Zip results:
     zip_output_path = zip_results(fasta_output_folder, csv_output_filename, run_folder)
+    print("saved zip output to: {}".format(zip_output_path))
 
     # S3 client
     s3 = boto3.client('s3', config=botocore.client.Config(signature_version='s3v4'))
     s3.upload_file(zip_output_path, s3_bucket_name, '{}/output.zip'.format(run_id))
     download_url = generate_download_link(run_id)
+    print("genenrated the following link:\n{}".format(download_url))
     # set the download url for the user:
     users.set_result_for_user_id(run_id, download_url)
 

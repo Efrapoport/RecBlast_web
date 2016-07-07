@@ -30,7 +30,6 @@ def file_to_string(file_name):
     return text
 
 
-
 # def move_file_to_s3(file_path):
 #     """Move files to s3"""
 #     # create file path in S3:
@@ -53,9 +52,10 @@ def zip_results(fasta_output_path, csv_file_path, output_path):
     :return:
     """
     zip_file = os.path.join(output_path, "output.zip")
+    fastas = [os.path.join(fasta_output_path, x) for x in os.listdir(fasta_output_path)]
     with zipfile.ZipFile(zip_file, mode='w') as zf:
         # adding all fasta files
-        for fasta in os.listdir(fasta_output_path):
+        for fasta in fastas:
             zf.write(fasta)
         zf.write(csv_file_path)  # add csv file
     return zip_file
