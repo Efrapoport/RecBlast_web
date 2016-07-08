@@ -302,10 +302,6 @@ def results(user_id):
     return render_template('results.html')
 
 
-@app.route('/run_queue')
-def run_queue():
-    queue.run_part_one(100)
-    return 'ok'
 
 
 if __name__ == "__main__":

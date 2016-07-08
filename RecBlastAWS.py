@@ -20,6 +20,9 @@ import boto3
 DEBUG = True
 global DEBUG
 
+AWS_ACCESS_KEY = 'AKIAISOVBXCFDI3V4XKA'
+AWS_SECRET_KEY = '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'
+
 
 def debug_func(s):
     return debug_s(s, DEBUG)
@@ -106,7 +109,6 @@ def run_from_web(values_from_web, debug=debug_func):
     with open(taxa_list_file, 'w') as taxa_file:
         taxa_file.write(taxa_file_content)
 
-
     # moved to web server:
     # # parsing and creating taxa files and parameters:
     # tax_name_dict = taxa_to_taxid.create_tax_dict(tax_db)
@@ -124,7 +126,7 @@ def run_from_web(values_from_web, debug=debug_func):
     # check if it exists - if so use it as a db
     if os.path.exists(target_db_folder):
         target_db = os.path.join(target_db_folder, 'db')
-        print "{} already has a local version of BLASTP db!" .format(org_tax_id)
+        print "{} already has a local version of BLASTP db!".format(org_tax_id)
     else:  # if not create an alias
         print("No local version of {} database exists. Creating a subset now.".format(org_tax_id))
         gi_file = os.path.join(run_folder, "taxon_gi_file_list.txt")  # the path to the new file
@@ -190,7 +192,7 @@ def run_from_web(values_from_web, debug=debug_func):
     print("saved zip output to: {}".format(zip_output_path))
 
     # S3 client
-    s3 = boto3.client('s3', config=botocore.client.Config(signature_version='s3v4'))
+    s3 = get_s3_client()
     s3.upload_file(zip_output_path, s3_bucket_name, '{}/output.zip'.format(run_id))
     download_url = generate_download_link(run_id)
     print("genenrated the following link:\n{}".format(download_url))
@@ -229,6 +231,16 @@ def run_from_web(values_from_web, debug=debug_func):
     users.delete_email(user_email)  # deletes user email
     users.delete_user_id_for_email(user_email)
     return True
+
+
+def get_s3_client():
+    return boto3.client('s3',
+                        region_name='eu-central-1',
+                        # Hard coded strings as credentials, not recommended.
+                        aws_access_key_id=AWS_ACCESS_KEY,
+                        aws_secret_access_key=AWS_SECRET_KEY,
+                        config=botocore.client.Config(signature_version='s3v4')
+                        )
 
 
 # TODO: send the job

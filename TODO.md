@@ -2,7 +2,7 @@
 
 - [ ] X-Forward-for
 - [X] Flask upload
-- [ ] AWS credentials
+- [X] AWS credentials
 - [ ] DE-UGLIFY
 - [ ] favicon
 - [ ] Flask flash
