@@ -5,4 +5,4 @@
 - [X] AWS credentials
 - [ ] DE-UGLIFY
 - [ ] favicon
-- [ ] Flask flash
+- [X] Flask flash
