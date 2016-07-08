@@ -28,6 +28,15 @@ def debug_func(s):
     return debug_s(s, DEBUG)
 
 
+def get_s3_client():
+    # Hard coded strings as credentials, not recommended.
+    return boto3.client('s3',
+                        region_name='eu-central-1',
+                        aws_access_key_id=AWS_ACCESS_KEY,
+                        aws_secret_access_key=AWS_SECRET_KEY,
+                        config=botocore.client.Config(signature_version='s3v4'))
+
+
 def run_from_web(values_from_web, debug=debug_func):
     """
 
@@ -232,18 +241,6 @@ def run_from_web(values_from_web, debug=debug_func):
     users.delete_user_id_for_email(user_email)
     return True
 
-
-def get_s3_client():
-    return boto3.client('s3',
-                        region_name='eu-central-1',
-                        # Hard coded strings as credentials, not recommended.
-                        aws_access_key_id=AWS_ACCESS_KEY,
-                        aws_secret_access_key=AWS_SECRET_KEY,
-                        config=botocore.client.Config(signature_version='s3v4')
-                        )
-
-
-# TODO: send the job
 
 # create new s3 folder for user
 # move result zip to s3
