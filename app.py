@@ -62,14 +62,6 @@ def server():
     return render_template("server.html")
 
 
-# # just temp  # TODO: remove this
-# # @app.route("/get_my_ip", methods=["GET"])
-# @app.route("/get_my_ip")
-# def get_my_ip():
-#     ip = request.remote_addr
-#     # print ip
-#     return "This is your ip: {}".format(ip)
-
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -242,7 +234,7 @@ def handle_data():
     email = request.form['email']
     user_id = users.user_id_for_email(email)
     try:
-        user_ip = request.remote_addr  # get the user ip
+        user_ip = request.headers.get('X-Forwarded-For') or request.remote_addr  # get the user ip
     except:
         user_ip = 'localhost'  # pretty bad then
     run_name = request.form['run_name']
@@ -253,7 +245,6 @@ def handle_data():
 
     gene_list = form_input_to_list(request.files.get('genes') or request.form.get('gene_list'))
     path_to_genes = prepare_files(gene_list, "genes", user_id)
-
 
     evalue = request.form['evalue']
     back_evalue = request.form['back_evalue']
@@ -300,8 +291,6 @@ def handle_data():
 @app.route('/results/<user_id>')
 def results(user_id):
     return render_template('results.html')
-
-
 
 
 if __name__ == "__main__":
