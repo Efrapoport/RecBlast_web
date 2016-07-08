@@ -8,7 +8,7 @@ from RecBlastUtils import *
 import part_one
 import part_two
 import part_three
-from email_module import email_status
+from email_module import *
 import users
 import botocore
 import boto3

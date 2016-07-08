@@ -6,8 +6,6 @@ import os
 
 
 def email_status(user_email, run_name, run_id, message, template):
-    # our_address = "recblast@reciprocalblast.com"
-    # our_address = "moranneuhof@mail.tau.ac.il"
 
     # TODO: make this more secure
     googleapps_user = 'recblast@gmail.com'
