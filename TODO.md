@@ -4,5 +4,5 @@
 - [X] Flask upload
 - [X] AWS credentials
 - [ ] DE-UGLIFY
-- [ ] favicon
+- [X] favicon
 - [X] Flask flash
