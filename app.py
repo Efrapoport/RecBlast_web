@@ -2,6 +2,7 @@
 # from uuid import uuid4
 
 from flask import Flask, render_template, redirect, url_for, request, flash, send_from_directory
+from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 import csv_transformer
 import taxa_to_taxid
@@ -107,7 +108,8 @@ def validate_data(value_list):
         max_allowed_genes = 10  # this is where we set the maximum allowed genes
         if exists_not_empty(gene_file_path):
             if file_len(gene_file_path) > max_allowed_genes:
-                error_list.append("Genes provided exceed the maximum number of allowed genes: {}".format(max_allowed_genes))
+                error_list.append(
+                    "Genes provided exceed the maximum number of allowed genes: {}".format(max_allowed_genes))
         else:
             error_list.append("No gene list or gene file provided!")
 
@@ -115,7 +117,8 @@ def validate_data(value_list):
         max_allowed_taxa = 10  # this is where we set the maximum allowed taxa
         if exists_not_empty(taxa_file):
             if file_len(taxa_file) > max_allowed_taxa:
-                error_list.append("Genes provided exceed the maximum number of allowed taxa: {}".format(max_allowed_taxa))
+                error_list.append(
+                    "Genes provided exceed the maximum number of allowed taxa: {}".format(max_allowed_taxa))
         else:
             error_list.append("No taxa list or gene file provided!")
 
@@ -219,6 +222,18 @@ def upload(request):
     return
 
 
+def form_input_to_list(string_input):
+    if not string_input:
+        return []
+
+    # Handle file fields
+    if isinstance(string_input, FileStorage):
+        string_input = string_input.stream.read()
+
+    items = string_input.strip().split("\n")
+    return [i.strip() for i in items]
+
+
 # unique output page per user, displays one out of several options:
 # 1. error (+ go back button)
 # 2. success! check back soon, we also sent you an email
@@ -233,20 +248,12 @@ def handle_data():
     run_name = request.form['run_name']
     reference_taxa = request.form['reference_taxa']
 
-    taxa_list = request.form['taxa_list']
-    taxa_list = taxa_list.split("\n")
-    taxa_list = [i.strip() for i in taxa_list]
+    taxa_list = form_input_to_list(request.files.get('taxons') or request.form.get('taxa_list'))
     path_to_taxa = prepare_files(taxa_list, "taxons", user_id)
 
-    gene_list = (request.form['gene_list'])
-    gene_list = gene_list.split("\n")
-    gene_list = [i.strip() for i in gene_list]
+    gene_list = form_input_to_list(request.files.get('genes') or request.form.get('gene_list'))
     path_to_genes = prepare_files(gene_list, "genes", user_id)
 
-    # to do: FIND A WAY TO UPLOAD FILES~~
-    # upload(request)
-    # file = request.form.files['taxa_file']
-    # file.save(os.path.join(app.config['UPLOAD_FOLDER'], file))
 
     evalue = request.form['evalue']
     back_evalue = request.form['back_evalue']
@@ -303,4 +310,3 @@ def run_queue():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
