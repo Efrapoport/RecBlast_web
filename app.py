@@ -11,7 +11,7 @@ import users
 from taxa import get_name_by_value, get_value_by_name
 from RecBlastUtils import *
 import queue
-import RecBlastAWS
+# import RecBlastAWS
 
 os.environ['BLASTDB'] = "/blast/db"  # setting the $blastdb # check if it workswq
 

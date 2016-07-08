@@ -2,6 +2,7 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import os
 
 
 def email_status(user_email, run_name, run_id, message, template):
@@ -10,7 +11,8 @@ def email_status(user_email, run_name, run_id, message, template):
 
     # TODO: make this more secure
     googleapps_user = 'recblast@gmail.com'
-    googleapps_pass = 'Recipr0ca1y'
+    # googleapps_pass = 'Recipr0ca1y'
+    googleapps_pass = os.environ["googleapps_pass"]
 
     BCC = ['efratefrat120@gmail.com', 'neuhofmo@gmail.com']
     msg = MIMEMultipart()
