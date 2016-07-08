@@ -1,87 +1,126 @@
-
-
-
 {% extends "base.html" %}
-{% block title %}Index{% endblock %}
+{% block title %}Queue task{% endblock %}
 {% block content %}
-    <div class='wrap'>
-        <form action="/output" method="post" name="name" enctype="multipart/form-data">
-            <div class='container'>
-                {% if errors %}
-                    <p><strong>Please fix the following errors in your request:</strong>
-
-
-                    <ul>
-                        {% for error in errors %}
-                            <li>{{ error }} </li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-                <fieldset><br>
-                    <legend>Personal information:</legend>
-                    E-mail:<br>
-                    <input type="email" name="email" value="example@email.com" autocomplete="on" required><br>
-                    Run name:<br>
-                    <input type="text" name="run_name" value="my_run" autocomplete="on"><br>
-                </fieldset>
-            </div>
-            <br>
-
-
-            <div class='container'>
-                <fieldset><br>
-                    <legend>Taxa definitions:</legend>
-                    Reference taxa (e.g 9606, Homo Sapiens) :<br>
-                    <input type="text" name="reference_taxa" value="Homo Sapiens" required><br><br>
-
-                    List of taxas to check against (one species/taxa id per list): <br>
-                    <textarea name="taxa_list" rows="10" cols="30" maxlength="400"
-                              placeholder="9606
-5202"></textarea><br>
-
-                    Or upload file:
-                    <input type="file" name="taxons"><br><br>
-
-                    List of gene ids (gene name, uniprot ids or accession numbers): <br>
-    <textarea name="gene_list" rows="10" cols="30" maxlength="400">ADCY1
-  CREB1</textarea><br>
-                    Or upload file:
-                    <input type="file" name="genes">
-
-                </fieldset>
-            </div>
-            <br>
-            <div class='container'>
-                <fieldset>
-                    <legend>Properties:</legend>
-
-                    eValue: <br>
-                    <input type="number" name="evalue" value=1e-5 max="10" min="0" size="10" step="any"
-                           pattern="((\d|\.|e-)*)" required><br>
-                    eValue back: <br>
-                    <input type="number" name="back_evalue" value=1e-5 max="10" min="0" size="10" step="any"
-                           pattern="((\d|\.|e-)*)"><br>
-                    Identity: <br>
-                    <input type="number" name="identity" value=37 min="0" max="100" size="10" required><br>
-                    Coverage: <br>
-                    <input type="number" name="coverage" value=50 min="0" max="100" size="10" required><br>
-                    String similarity: <br>
-                    <input type="number" name="string_similarity" value=0.4 min="0" max="1" step="any" size="10"
-                           required><br>
-
-                </fieldset>
-            </div>
-            <br>
-
-            <div class='container'>
-                <input class="btn" type="submit" value="Submit">
-            </div>
-        </form>
+    <div class="jumbotron welcome-banner">
+        <h1>Queue a task</h1>
+        <p>Fill the form and hit submit</p>
     </div>
-    <iframe src="" frameborder="0" id="py"></iframe>
-    <footer class="main-footer">
-        <span>&copy;2016 RecBlast, Tel Aviv University</span>
-    </footer>
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+
+            {% if errors %}
+                <h2 style="color:#a10;"><strong>Please fix the following errors in your request:</strong></h2>
+
+                {% for error in errors %}
+                    <div class="alert alert-danger" role="alert">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+
+
+            <form action="/output" method="post" name="name" enctype="multipart/form-data">
+
+
+                <div class="page-header">
+                    <h1>Personal information
+                        <small>nice explanation</small>
+                    </h1>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input class="form-control" type="email" name="email" value="example@email.com" autocomplete="on"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="run_name">Run name</label>
+                    <input class="form-control" type="text" name="run_name" value="my_run" autocomplete="on">
+                </div>
+
+
+                <div class="page-header">
+                    <h1>Taxa definitions
+                        <small>Reference taxa (e.g 9606, Homo Sapiens)</small>
+                    </h1>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="reference_taxa">Reference taxa (e.g 9606, Homo Sapiens)</label>
+                    <input class="form-control" type="text" name="reference_taxa" value="Homo Sapiens" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reference_taxa">List of taxas to check against (one species/taxa id per list)</label>
+            <textarea class="form-control" name="taxa_list" rows="6" placeholder="9606
+5202"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="taxons">Or upload file</label>
+                    <input class="form-control" type="file" name="taxons">
+                </div>
+
+                <br/><br/>
+                <div class="form-group">
+                    <label for="gene_list">List of gene ids (gene name, uniprot ids or accession numbers)</label>
+            <textarea class="form-control" rows="6" name="gene_list" placeholder="ADCY1
+CREB1"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="genes">Or upload file</label>
+                    <input class="form-control" type="file" name="genes">
+                </div>
+
+
+                <div class="page-header">
+                    <h1>Properties
+                        <small>nice explanation</small>
+                    </h1>
+                </div>
+
+                <div class="form-group">
+                    <label for="evalue">eValue</label>
+                    <input type="number" class="form-control" name="evalue" value=1e-5 max="10" min="0" size="10"
+                           step="any"
+                           pattern="((\d|\.|e-)*)" required>
+                </div>
+                <div class="form-group">
+                    <label for="back_evalue">eValue back</label>
+                    <input type="number" class="form-control" name="back_evalue" value=1e-5 max="10" min="0" size="10"
+                           step="any"
+                           pattern="((\d|\.|e-)*)">
+                </div>
+                <div class="form-group">
+                    <label for="identity">Identity</label>
+                    <input type="number" class="form-control" name="identity" value=37 min="0" max="100" size="10"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="coverage">Coverage</label>
+                    <input type="number" class="form-control" name="coverage" value=50 min="0" max="100" size="10"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="string_similarity">String similarity</label>
+                    <input type="number" class="form-control" name="string_similarity" value=0.4 min="0" max="1"
+                           step="any"
+                           size="10"
+                           required>
+                </div>
+
+                <hr/>
+
+                <input class="btn btn-info btn-lg pull-right" type="submit" value="Submit the task">
+
+            </form>
+        </div>
+    </div>
+
+
+
 
 {% endblock %}
 

@@ -62,7 +62,6 @@ def server():
     return render_template("server.html")
 
 
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -291,6 +290,12 @@ def handle_data():
 @app.route('/results/<user_id>')
 def results(user_id):
     return render_template('results.html')
+
+
+@app.route('/flashio')
+def flashio():
+    flash('yo yo yo!')
+    return 'ok'
 
 
 if __name__ == "__main__":

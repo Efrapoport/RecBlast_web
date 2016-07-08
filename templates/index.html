@@ -1,21 +1,43 @@
 {% extends "base.html" %}
-{% block title %}Index{% endblock %}
+{% block title %}Welcome{% endblock %}
 {% block content %}
-    <h1>Index</h1>
-    <div class="container">
-        <h2 class="name">Welcome to RecBlast</h2><br>
-        <h1 class="subname">High throughput orthology discovery method</h1>
-        <h3 id=home><a href="/">Home</a></h3>
+
+    <div class="jumbotron welcome-banner">
+        <h1>Welcome to RecBlast</h1>
+        <p>High throughput orthology discovery method</p>
     </div>
 
-    <h3>High throughput Reciprocal Blast</h3>
-    <p>
-    <p>
-        Recblast is the fastest and most robust way to discover orthologs..blah blah,Recblast is the fastest and
-        most robust way to discover orthologs..blah blah,Recblast is the fastest and most robust way to discover
-        orthologs..blah blah,Recblast is the fastest and most robust way to discover orthologs..blah blah,Recblast
-        is the fastest and most robust way to discover orthologs.
-    </p>
+
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="page-header">
+                <h1>High throughput Reciprocal Blast</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-7 col-md-offset-1">
+            <p class="lead">
+                Recblast is the fastest and most robust way to discover orthologs..blah blah,Recblast is the fastest and
+                most robust way to discover orthologs..blah blah,Recblast is the fastest and most robust way to discover
+                orthologs..blah blah,Recblast is the fastest and most robust way to discover orthologs..blah
+                blah,Recblast
+                is the fastest and most robust way to discover orthologs.
+            </p>
+        </div>
+        <div class="col-md-3">
+            <p class="lead">
+                Start by queying a task in our system
+            </p>
+            <a class="btn btn-info btn-lg" href="/server" role="button">Queue task</a>
+        </div>
+    </div>
+
+
+
+
+
 {% endblock %}
 
 
