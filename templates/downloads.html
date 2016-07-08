@@ -1,52 +1,44 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>RecBlast</title>
-	<link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="/static/css/normalize.css">
-	<link rel="stylesheet" href="/static/css/style.css">
-</head>
+{% extends "base.html" %}
+{% block title %}Downloads{% endblock %}
+{% block content %}
 
-<header class="main-header">
-    <a href="https://github.com/you"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/567c3a48d796e2fc06ea80409cc9dd82bf714434/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png"></a>
-  <div class="container">
-    <h2 class="name">Welcome to RecBlast</h2><br>
-    <h1 class="subname">High throughput orthology discovery method</h1>
-    <h3 id=home><a href="index">Home</a></h3>
-  </div>
-</header><br>
- <body>
-   <div class='wrap'>
-     <div class="container">
+    <div class="jumbotron welcome-banner">
+        <h1>Downloads</h1>
+        <p>The people behind RecBlast</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+
+            <table id="t01" class="table table-bordered">
+                <tr>
+                    <th>Version</th>
+                    <th>Last Update</th>
+                    <th>Link</th>
+                </tr>
+                <tr>
+                    <td>Standalone 1.1</td>
+                    <td>22/06/16</td>
+                    <td>download.rar</td>
+                </tr>
+                <tr>
+                    <td>Source Code</td>
+                    <td>20/06/16</td>
+                    <td>code.zip</td>
+                </tr>
+                <tr>
+                    <td>Another version</td>
+                    <td>2/06/16</td>
+                    <td>click and download</td>
+                </tr>
+            </table>
+        </div>
 
 
-<br>
+    </div>
 
-<table id="t01">
-  <tr>
-    <th>Version</th>
-    <th>Last Update</th>
-    <th>Link</th>
-  </tr>
-  <tr>
-    <td>Standalone 1.1</td>
-    <td>22/06/16</td>
-    <td>download.rar</td>
-  </tr>
-  <tr>
-    <td>Source Code</td>
-    <td>20/06/16</td>
-    <td>code.zip</td>
-  </tr>
-  <tr>
-    <td>Another version</td>
-    <td>2/06/16</td>
-    <td>click and download</td>
-  </tr>
-</table>
-     </div></div>
-   		<footer class="main-footer">
-			<p>All rights reserved to Moran and Efrat</p>
-			<a href="#top">Back to top &raquo;</a>
-		</footer>
- </body></html>
+
+{% endblock %}
+
+
+

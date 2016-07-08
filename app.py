@@ -289,7 +289,7 @@ def handle_data():
 
 @app.route('/results/<user_id>')
 def results(user_id):
-    return render_template('results.html')
+    return render_template('results.html', user_id=user_id)
 
 
 @app.route('/flashio')
