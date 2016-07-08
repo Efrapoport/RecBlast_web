@@ -1,18 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
-          rel="stylesheet">
-  </head>
-  <body>
+{% extends "base.html" %}
+{% block title %}Success{% endblock %}
+{% block content %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+              rel="stylesheet">
+    </head>
+    <body>
     <div class="container">
-      <div class="header">
-        <h3 class="text-muted">RecBlast job status</h3>
-      </div>
-      <hr/>
-      <div class="alert">
-        {{ message }}
-      </div>
+        <div class="header">
+            <h3 class="text-muted">RecBlast job status</h3>
+        </div>
+        <hr/>
+        <div class="alert">
+            {{ message }}
+        </div>
     </div>
-  </body>
-</html>
+    </body>
+    </html>
+{% endblock %}

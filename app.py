@@ -271,9 +271,9 @@ def handle_data():
         # success = send_job_to_backend(value_list)
         success = send_job_to_backend(value_list)  # temp
         if success:
-            flash('You successfully sent out a job!')  # TODO: how to show flash?
+            # flash('You successfully sent out a job!')
             message = "Your job was sent to the server successfully! You will receive an email with a link" \
-                      "and you will be able to check the progress of your job"
+                      "and you will be able to check the progress of your job."
 
             users.set_has_job_for_email(email, True)
             return render_template("page.html", message=message)
