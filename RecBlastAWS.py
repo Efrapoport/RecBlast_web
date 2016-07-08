@@ -30,6 +30,7 @@ def debug_func(s):
 
 def get_s3_client():
     # Hard coded strings as credentials, not recommended.
+    print("Using access key: {0} and secret key: {1}".format(AWS_ACCESS_KEY, AWS_SECRET_KEY))
     return boto3.client('s3',
                         region_name='eu-central-1',
                         aws_access_key_id=AWS_ACCESS_KEY,
