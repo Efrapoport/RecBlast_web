@@ -207,21 +207,21 @@ def run_from_web(values_from_web, debug=debug_func):
             print("Files archived, compressed and cleaned.")
             # TODO: move to s3 for temporary storage
 
-    result_page = "http://www.reciprocalblast.com/results/{}".format(run_id)
+    result_page = "http://reciprocalblast.com/results/{}".format(run_id)
     print("Program done.")
 
     # Tell user about results
     if email_status(user_email, run_name, run_id,
                     "Your job {0} has just finished running on RecBlast online!<br>"
                     "The results can be found and downloaded from here:<br>{1}<br>"
-                    "Run name: {1}<br>Run ID: {2}<br>Species of origin: {3} (taxid: {4})<br>Finished at: {5}<br><br>"
+                    "Run name: {0}<br>Run ID: {2}<br>Species of origin: {3} (taxid: {4})<br>Finished at: {5}<br><br>"
                     "Thanks for using RecBlast!".format(
                         run_name, result_page, run_id, origin_species, org_tax_id, strftime('%H:%M:%S')),
                     email_template):
         debug("email sent to {}".format(user_email))
 
-    if email_status(user_email, run_name, run_id,
-                    "User {0} job {1} has just finished running on RecBlast online!<br>"
+    if email_status(app_contact_email, run_name, run_id,
+                    "User {0} job '{1}' has just finished running on RecBlast online!<br>"
                     "The results can be found and downloaded from here:<br>{2}<br>"
                     "Run name: {1}<br>Run ID: {3}<br>Species of origin: {4} (taxid: {5})<br>Finished at: {6}<br><br>"
                     "Thanks for using RecBlast!".format(
