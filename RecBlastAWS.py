@@ -20,11 +20,6 @@ import boto3
 DEBUG = True
 global DEBUG
 
-AWS_ACCESS_KEY = 'AKIAISOVBXCFDI3V4XKA'
-AWS_SECRET_KEY = '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'
-os.environ['AWS_ACCESS_KEY'] = AWS_ACCESS_KEY
-os.environ['AWS_SECRET_KEY'] = AWS_SECRET_KEY
-
 
 def debug_func(s):
     return debug_s(s, DEBUG)
@@ -32,6 +27,10 @@ def debug_func(s):
 
 def get_s3_client():
     # Hard coded strings as credentials, not recommended.
+    AWS_ACCESS_KEY = 'AKIAISOVBXCFDI3V4XKA'
+    AWS_SECRET_KEY = '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'
+    os.environ['AWS_ACCESS_KEY'] = AWS_ACCESS_KEY
+    os.environ['AWS_SECRET_KEY'] = AWS_SECRET_KEY
     print("Using access key: {0} and secret key: {1}".format(AWS_ACCESS_KEY, AWS_SECRET_KEY))
     return boto3.client('s3',
                         region_name='eu-central-1',
