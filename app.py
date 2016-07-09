@@ -272,8 +272,8 @@ def handle_data():
         success = send_job_to_backend(value_list)  # temp
         if success:
             # flash('You successfully sent out a job!')
-            message = "Your job was sent to the server successfully! You will receive an email with a link" \
-                      "and you will be able to check the progress of your job."
+            message = "Your job was sent to the server successfully! You will receive an email with a link " \
+                      "to check the progress of your job."
 
             users.set_has_job_for_email(email, True)
             return render_template("page.html", message=message)
@@ -283,7 +283,7 @@ def handle_data():
             return render_template("server.html", errors=error, user_id=user_id)
 
     else:
-        error = "unknown error. try again"
+        error = "Unknown error. Please try again"
         return render_template("server.html", errors=error, user_id=user_id)
 
 

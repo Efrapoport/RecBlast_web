@@ -204,7 +204,9 @@ def run_from_web(values_from_web, debug=debug_func):
 
     # S3 client
     s3 = get_s3_client()
+    debug("Connected to s3 client")
     s3.upload_file(zip_output_path, s3_bucket_name, '{}/output.zip'.format(run_id))
+    debug("Uploaded file.")
     download_url = generate_download_link(run_id)
     print("Generated the following link:\n{}".format(download_url))
     # set the download url for the user:
