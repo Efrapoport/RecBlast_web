@@ -25,18 +25,7 @@ def debug_func(s):
     return debug_s(s, DEBUG)
 
 
-def get_s3_client():
-    # Hard coded strings as credentials, not recommended.
-    AWS_ACCESS_KEY = 'AKIAISOVBXCFDI3V4XKA'
-    AWS_SECRET_KEY = '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'
-    os.environ['AWS_ACCESS_KEY'] = AWS_ACCESS_KEY
-    os.environ['AWS_SECRET_KEY'] = AWS_SECRET_KEY
-    print("Using access key: {0} and secret key: {1}".format(AWS_ACCESS_KEY, AWS_SECRET_KEY))
-    return boto3.client('s3',
-                        region_name='eu-central-1',
-                        aws_access_key_id=AWS_ACCESS_KEY,
-                        aws_secret_access_key=AWS_SECRET_KEY,
-                        config=botocore.client.Config(signature_version='s3v4'))
+
 
 
 def run_from_web(values_from_web, debug=debug_func):
@@ -203,11 +192,11 @@ def run_from_web(values_from_web, debug=debug_func):
     print("saved zip output to: {}".format(zip_output_path))
 
     # S3 client
-    s3 = get_s3_client()
+    s3 = get_s3_client(AWS_ACCESS_KEY, AWS_SECRET_KEY)
     debug("Connected to s3 client")
     s3.upload_file(zip_output_path, s3_bucket_name, '{}/output.zip'.format(run_id))
     debug("Uploaded file.")
-    download_url = generate_download_link(run_id)
+    download_url = generate_download_link(run_id, AWS_ACCESS_KEY, AWS_SECRET_KEY)
     print("Generated the following link:\n{}".format(download_url))
     # set the download url for the user:
     users.set_result_for_user_id(run_id, download_url)

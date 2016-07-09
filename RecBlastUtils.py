@@ -247,9 +247,26 @@ def subset_db(tax_id, gi_file_path, db_path, big_db, run_anyway, DEBUG, debug, a
         # exit(1)
 
 
-def generate_download_link(user_id, expires=604800):
+AWS_ACCESS_KEY = 'AKIAISOVBXCFDI3V4XKA'
+AWS_SECRET_KEY = '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'
+os.environ['AWS_ACCESS_KEY'] = AWS_ACCESS_KEY
+os.environ['AWS_SECRET_KEY'] = AWS_SECRET_KEY
+
+
+def get_s3_client(aws_access_key, aws_secret_key):
+    # Hard coded strings as credentials, not recommended.
+    print("Using access key: {0} and secret key: {1}".format(aws_access_key, aws_secret_key))
+    return boto3.client('s3',
+                        region_name='eu-central-1',
+                        aws_access_key_id=aws_access_key,
+                        aws_secret_access_key=aws_secret_key,
+                        config=botocore.client.Config(signature_version='s3v4'))
+
+
+def generate_download_link(user_id, aws_access_key, aws_secret_key, expires=604800):
     """Generates S3 download link that expires after 1 week."""
     session = botocore.session.get_session()
+    session.set_credentials(aws_access_key, aws_secret_key)
     client = session.create_client('s3')
     presigned_url = client.generate_presigned_url('get_object', Params={'Bucket': 'recblastdata',
                                                                         'Key': '{}/output.zip'.format(user_id)},
