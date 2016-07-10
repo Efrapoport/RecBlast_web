@@ -80,7 +80,6 @@ def main(file_path, contact, run_folder, fasta_path, first_blast_folder, fasta_o
                 except Exception, e:  # in case uniprot doesn't work, please notify!
                     print "There is a problem with retrieving the sequences from UniProt. " \
                           "Please try again later.\n{}".format(e)
-                    # TODO: there also might be a problem with the sequence they entered so check how to verify this
             csv_line_index += 1  # next row
 
     # creating a file with the information about the genes we are checking in this run.
@@ -109,7 +108,7 @@ def main(file_path, contact, run_folder, fasta_path, first_blast_folder, fasta_o
         fasta_output_filename = os.path.join(fasta_output_folder, os.path.basename(fasta_filename))
         shutil.copy(fasta_filename, fasta_output_filename)  # copy
 
-        # command line to run:  # TODO: change command line to AWS
+        # command line to run:
         command_line = "{0} -query {1} -db {2} -outfmt '{3}' -max_target_seqs {4} -evalue {5} -max_hsps 1 " \
                        "-qcov_hsp_perc {6} -num_threads {7} -out {8}\n" \
                        "grep -v ';' {8} | grep -w -f {9} > {10}\nrm {8}\n".format(blastp_path, fasta_filename, db,
@@ -122,8 +121,8 @@ def main(file_path, contact, run_folder, fasta_path, first_blast_folder, fasta_o
         debug("Running the following line:\n{}".format(command_line))
 
         # writing the command to file and running the file
-        script_path = write_blast_run_script(command_line)  # TODO: change script location
-        subprocess.check_call(script_path)  # TODO: test update_match_results
+        script_path = write_blast_run_script(command_line)
+        subprocess.check_call(script_path)
 
         # adding the filtered file name here:
         blast_one_output_files.append(filtered_blast_out_filename)
@@ -136,11 +135,3 @@ def main(file_path, contact, run_folder, fasta_path, first_blast_folder, fasta_o
     print "Part 1 done at {}".format(strftime('%H:%M:%S'))
     return id_dic, blast_one_output_files
 
-
-# if __name__ == "__main__":
-#     if main():
-#         exit(0)
-#     else:
-#         exit(1)  # if you fail, return 1
-
-# DONE with part 1
