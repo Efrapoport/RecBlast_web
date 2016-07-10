@@ -30,19 +30,6 @@ def file_to_string(file_name):
     return text
 
 
-# def move_file_to_s3(file_path):
-#     """Move files to s3"""
-#     # create file path in S3:
-#     s3_path = ""
-#
-#     # copy file to S3
-#
-#     # delete local file
-#     os.remove(file_path)
-#
-#     return s3_path
-
-
 def zip_results(fasta_output_path, csv_file_path, output_path):
     """
     Receives a folder containing fasta sequences and a csv file, adds them all to zip.
@@ -56,8 +43,8 @@ def zip_results(fasta_output_path, csv_file_path, output_path):
     with zipfile.ZipFile(zip_file, mode='w') as zf:
         # adding all fasta files
         for fasta in fastas:
-            zf.write(fasta)
-        zf.write(csv_file_path)  # add csv file
+            zf.write(fasta, os.path.basename(fasta))
+        zf.write(csv_file_path, os.path.basename(csv_file_path))  # add csv file
     return zip_file
 
 
