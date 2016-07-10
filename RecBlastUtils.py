@@ -267,7 +267,12 @@ def generate_download_link(user_id, aws_access_key, aws_secret_key, expires=6048
     """Generates S3 download link that expires after 1 week."""
     session = botocore.session.get_session()
     session.set_credentials(aws_access_key, aws_secret_key)
-    client = session.create_client('s3')
+    client = session.create_client('s3',
+                                   region_name='eu-central-1',
+                                   aws_access_key_id=aws_access_key,
+                                   aws_secret_access_key=aws_secret_key,
+                                   config=botocore.client.Config(signature_version='s3v4')
+                                   )
     presigned_url = client.generate_presigned_url('get_object', Params={'Bucket': 'recblastdata',
                                                                         'Key': '{}/output.zip'.format(user_id)},
                                                   ExpiresIn=expires)
