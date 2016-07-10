@@ -13,23 +13,19 @@
             <h3>Documentation</h3><br><br>
             <p>
                 RecBlast web takes several parameters as input: <br><br>
-                1.	<strong>Reference taxon</strong> The reference taxon can be inserted as text (e.g. Homo sapiens) or as taxon number (e.g. 9606).<br><br>
+                1.	<strong>Reference taxon:</strong> The reference taxon can be inserted as text (e.g. Homo sapiens) or as taxon number (e.g. 9606).<br><br>
             <code>Homo Sapiens</code><br><br>
-                2.	<strong>List of target taxa</strong> the web server limits the amount of taxa to 10.
-                The taxa list can be inserted as a list of names, taxa ids, or as a mix. The data can be inserted
-                manually, or uploaded as a file. The structure of the file/text is:<br><br>
+                2.	<strong>List of target taxa:</strong> the web server limits the amount of taxa to 10.
+                The taxa list can be inserted as a list of names, taxa ids, or a mix of both separated by a new line. The data can be inserted
+                manually, or uploaded as a file. An example for a correct structure:<br><br>
                 <code>9606<br>Hydra Vulgaris<br>5202</code><br><br>
-                3.	<strong>List of biological units of interests</strong> the user can upload a file/type names of genes, Uniprot ids,
-                accession numbers, gis or a mix of them:<br><br>
+                3.	<strong>List of biological units of interests:</strong> the user can upload a file/type names of genes, Uniprot ids,
+                accession numbers, gis or a a mix of both separated by a new line. An example for a correct structure:<br><br>
                 <code>ADCY1<br>Q08828<br>XP_011291944.1</code><br><br>
-                It is possible to upload a file with a list of genes, and it's also possible to upload a csv file
-                which contains the description of the genes and the desired uniprot IDs. This is the structure of the
-                csv file:<br><br>
-                 <code>gene name | gene description | uniprot id </code><br><br>
-                4.	<strong>Run Name</strong> a name given to the specific run.<br><br>
-                5.	<strong>BLAST parameters</strong> E-Value (0-10), Coverage percentage  (0-100) and Identity percentage (0-100).
+                4.	<strong>Run Name:</strong> a name given to the specific run.<br><br>
+                5.	<strong>BLAST parameters:</strong> E-Value (0-10), Coverage percentage  (0-100) and Identity percentage (0-100).
                     <br>An optional backwards e-value can be supplied and used for the second BLAST back against the reference taxon.<br><br>
-                6.	<strong>String Similarity</strong> A number between 0 to 1 representing the similarity between two given genes. <br>
+                6.	<strong>String Similarity:</strong> A number between 0 to 1 representing the similarity between two given genes. <br>
                     A result is determined identical if its protein sequence is similar in more than 99% to the canonical
                     protein sequence of the inspected gene, or if the similarity of the annotation of both proteins is
                     than the 'string similarity' parameter defined by the user.
