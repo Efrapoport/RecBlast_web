@@ -311,5 +311,10 @@ def flashio():
     return 'ok'
 
 
+@app.route('/BingSiteAuth.xml')
+def BingSiteAuth():
+    return render_template('BingSiteAuth.xml')
+
+
 if __name__ == "__main__":
     app.run(debug=True)
