@@ -2,6 +2,8 @@
 
 import mygene
 import os
+import urllib2
+from RecBlastUtils import split
 
 
 def gene_list_from_file(in_file):
@@ -32,6 +34,7 @@ def gene_list_to_csv(gene_list, taxid, out_file):
         mg = mygene.MyGeneInfo()
         genes_data = mg.querymany(gene_list, scopes='symbol,namereporter,accession', fields='uniprot,name,symbol',
                                   species=taxid)  # TODO: check this on other species
+
         for geneDic in genes_data:  # iterating over dicts
             try:
                 original_gene_id = geneDic['symbol']
@@ -40,7 +43,22 @@ def gene_list_to_csv(gene_list, taxid, out_file):
                 output.write("{}\n".format(",".join([original_gene_id, full_gene_name, uniprot_id])))
             except KeyError:
                 print "didn't find value for %s" % geneDic['query']  # didn't happen so far but still
-    if os.stat(out_file).st_size > 0:
+                print "Trying to get the value manually from uniprot in a HORANIC way:"
+                try:  # if it's a uniprot ID
+                    url2 = "http://www.uniprot.org/uniprot/"  # uniprot to fasta
+                    url_uniprot = url2 + geneDic['query'] + ".tab"  # the UNIPROT url
+                    request = urllib2.Request(url_uniprot)
+                    # request.add_header('User-Agent', 'Python %s' % contact)  #
+                    response = urllib2.urlopen(request)  # get request
+                    page = response.read(20000)  # read (up to 200000 lines)
+                    this_gene_data = split(split(page, '\n')[1], '\t')
+                    original_gene_id = this_gene_data[1]
+                    full_gene_name = this_gene_data[3]
+                    uniprot_id = this_gene_data[0]
+                    output.write("{}\n".format(",".join([original_gene_id, full_gene_name, uniprot_id])))
+                except IndexError:
+                    print "didn't find value for %s in uniprot too." % geneDic['query']
+    if os.stat(out_file).st_size > 30:  # minimum file size because of the header
         return True
     else:
         print("Could not convert gene names to csv file. Couldn't locate the genes. Exiting.")
