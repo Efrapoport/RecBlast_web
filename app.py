@@ -231,8 +231,7 @@ def handle_data():
     run_name = request.form['run_name']
     reference_taxa = request.form['reference_taxa']
 
-    #taxa_list = form_input_to_list(request.files.get('taxons') or request.form.get('taxa_list'))
-    taxa_list = form_input_to_list((request.files.get('taxons') if allowed_file(request.files.get('taxons'))) or request.form.get('taxa_list'))
+    taxa_list = form_input_to_list(request.files.get('taxons') or request.form.get('taxa_list'))
     path_to_taxa = prepare_files(taxa_list, "taxons", user_id)
 
     gene_list = form_input_to_list(request.files.get('genes') or request.form.get('gene_list'))
