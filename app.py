@@ -61,7 +61,7 @@ def serve_css(filename):
 @app.route('/server')
 def server():
     value_dict = {"evalue": 1e-5, "back_evalue": 1e-5, "identity": 37,
-                  "coverage": 50, "reference_taxa": "Homo Sapiens", "run_name": "my_run", "string_similarity": 0.4,
+                  "coverage": 50, "reference_taxa": "Homo%20Sapiens", "run_name": "my_run", "string_similarity": 0.4,
                   "email": "example@email.com", "taxa_list": "", "gene_list": ""}
     return render_template("server.html", value_dict=value_dict)
 
@@ -281,7 +281,7 @@ def handle_data():
                       "identity": identity,
                       "string_similarity": string_similarity,
                       "coverage": coverage,
-                      "reference_taxa": reference_taxa,
+                      "reference_taxa": reference_taxa.replace(" ", "%20"),
                       "run_name": run_name,
                       "email": email,
                       "taxa_list": "\n".join(taxa_list),
