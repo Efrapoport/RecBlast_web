@@ -11,6 +11,7 @@ import users
 from taxa import get_name_by_value, get_value_by_name
 from RecBlastUtils import *
 import queue
+from email_module import *
 # import RecBlastAWS
 
 os.environ['BLASTDB'] = "/blast/db"  # setting the $blastdb # check if it workswq
@@ -69,6 +70,15 @@ def allowed_file(filename):
 
 def send_job_to_backend(value_list):
     """Send the job to queue."""
+    user_email = value_list[10]
+    run_name = value_list[9]
+    run_id = value_list[11]
+    email_template = 'templates/email_templates/email_template.html'  # just in case it didn't find it from RecBlastUtils
+    if email_status(user_email, run_name, run_id,
+                    "Your job {0} is now on queue for running on RecBlast online!<br>"
+                    "We will update you when your run starts.<br>"
+                    "Thanks for using RecBlast!".format(run_name), email_template):
+        print("email sent to {}".format(user_email))
     try:
         run_result = queue.run_recblast_on_worker(value_list)
         return run_result
@@ -139,30 +149,32 @@ def validate_data(value_list):
 
         #   validate gene list
         # parsing the genes_csv if it's a csv, and transforming it if it's a gene list file
-        is_csv = False  # by default
-        with open(gene_file_path, 'r') as gene_file:
-            for line in gene_file:
-                if line.find(',') != -1:
-                    is_csv = True
-                    break
-        if is_csv:
-            csv_path = gene_file_path  # hope it's a good and valid file...
-            # TODO: don't do this now
-            error_list.append("It's csv, we don't support it now!")
-        else:  # if the csv is not provided, create it from a gene file
-            if org_tax_id == "":
+        # is_csv = False  # by default
+        # with open(gene_file_path, 'r') as gene_file:
+        #     for line in gene_file:
+        #         if line.find(',') != -1:
+        #             is_csv = True
+        #             break
+        # if is_csv:
+        #     csv_path = gene_file_path  # hope it's a good and valid file...
+        #     error_list.append("It's csv, we don't support it now!")
+        gene_file_path = remove_commas(gene_file_path)
+
+        # else:  # if the csv is not provided, create it from a gene file
+        if org_tax_id == "":
+            error_list.append("The gene_list could not be converted. Please check and upload a valid file.")
+            csv_path = ""
+        else:
+            conversion_result = csv_transformer.gene_file_to_csv(gene_file_path, org_tax_id)
+            if conversion_result[0]:
+                csv_path = conversion_result[1]  # quits if no input could be converted
+            else:
                 error_list.append("The gene_list could not be converted. Please check and upload a valid file.")
                 csv_path = ""
-            else:
-                conversion_result = csv_transformer.gene_file_to_csv(gene_file_path, org_tax_id)
-                if conversion_result[0]:
-                    csv_path = conversion_result[1]  # quits if no input could be converted
-                else:
-                    error_list.append("The gene_list could not be converted. Please check and upload a valid file.")
-                    csv_path = ""
 
         # validate taxa list
         # converting taxa names list
+        taxa_file = remove_commas(taxa_file)
         (taxa_list_file, bad_tax_list, conversion_succeeded) = taxa_to_taxid.convert_tax_to_taxid(taxa_file)
         if conversion_succeeded:
             if bad_tax_list:
@@ -239,10 +251,10 @@ def handle_data():
     run_name = request.form['run_name']
     reference_taxa = request.form['reference_taxa']
 
-    taxa_list = form_input_to_list(request.files.get('taxons') or request.form.get('taxa_list'))
+    taxa_list = list(set(form_input_to_list(request.files.get('taxons') or request.form.get('taxa_list'))))
     path_to_taxa = prepare_files(taxa_list, "taxons", user_id)
 
-    gene_list = form_input_to_list(request.files.get('genes') or request.form.get('gene_list'))
+    gene_list = list(set(form_input_to_list(request.files.get('genes') or request.form.get('gene_list'))))
     path_to_genes = prepare_files(gene_list, "genes", user_id)
 
     evalue = request.form['evalue']
