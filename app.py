@@ -281,7 +281,7 @@ def handle_data():
                       "identity": identity,
                       "string_similarity": string_similarity,
                       "coverage": coverage,
-                      "reference_taxa": reference_taxa.replace(" ", "%20"),
+                      "reference_taxa": reference_taxa,
                       "run_name": run_name,
                       "email": email,
                       "taxa_list": "\n".join(taxa_list),
