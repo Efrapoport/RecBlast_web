@@ -17,6 +17,7 @@ os.environ['BLASTDB'] = "/blast/db"  # setting the $blastdb # check if it worksw
 
 # UPLOAD_FOLDER = r'C:\Users\Efrat\PycharmProjects\recblast\uploaded_files\'  # TODO: change later
 UPLOAD_FOLDER = ""
+ALLOWED_EXTENSIONS = {'txt', 'csv'}
 
 app = Flask(__name__, static_folder='public', static_url_path='')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -59,6 +60,11 @@ def serve_css(filename):
 @app.route('/server')
 def server():
     return render_template("server.html")
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 def send_job_to_backend(value_list):
@@ -193,6 +199,19 @@ def validate_data(value_list):
         return ["Unknown error. Please report to recblast@gmail.com."], []
 
 
+def upload(request):
+    if request.method == 'POST':
+        uploaded_files = request.files.getlist("taxons")
+        print uploaded_files
+        uploaded_file = request.files['file']
+        if uploaded_file and allowed_file(uploaded_file.filename):
+            filename = secure_filename(uploaded_file.filename)
+            print filename
+            uploaded_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('uploaded_file',
+                                    filename=filename))
+    return
+
 
 def form_input_to_list(string_input):
     if not string_input:
@@ -270,8 +289,7 @@ def handle_data():
 
 @app.route('/results/<user_id>')
 def results(user_id):
-    download_path = users.get_result_by_user_id(user_id)
-    return render_template('results.html', user_id=user_id, download_path=download_path)
+    return render_template('results.html', user_id=user_id)
 
 
 @app.route('/flashio')
