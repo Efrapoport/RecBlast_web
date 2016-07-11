@@ -16,6 +16,7 @@ TEMP_FILES_PATH = os.getcwd()  # TODO: change path for server
 def prepare_files(items, file_name, user_id, files_path=TEMP_FILES_PATH):
     """Receives a list of items and a file to write them to, then writes them to file and returns the file path."""
     full_path = os.path.join(files_path, "_".join([user_id, file_name]))
+    items = list(set(items))  # make the list unique
     with open(full_path, 'w') as f:
         for item in items:
             f.write(item + "\n")
@@ -28,6 +29,16 @@ def file_to_string(file_name):
     # delete original file
     os.remove(file_name)
     return text
+
+
+def remove_commas(file_name):
+    """Replaces commas with newlines in a file."""
+    with open(file_name, 'r') as f:
+        text = f.read()
+        text = replace(text, ',', '\n')
+    with open(file_name, 'w') as f:  # now writing
+        f.write(text)
+    return file_name
 
 
 def zip_results(fasta_output_path, csv_file_path, output_path):
@@ -274,3 +285,5 @@ re_search = re.search
 re_sub = re.sub
 upper = str.upper
 lower = str.lower
+
+email_template = 'templates/email_templates/email_template.html'

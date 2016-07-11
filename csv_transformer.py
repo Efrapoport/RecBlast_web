@@ -24,7 +24,7 @@ def gene_list_to_csv(gene_list, taxid, out_file):
     :param out_file:
     :return:
     """
-
+    # gene_list = list(set(gene_list))  # making the list unique
     # update_match_results file
     with open(out_file, "w") as output:
         # generating the csv we need for the analysis

@@ -25,9 +25,6 @@ def debug_func(s):
     return debug_s(s, DEBUG)
 
 
-
-
-
 def run_from_web(values_from_web, debug=debug_func):
     """
 

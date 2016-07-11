@@ -26,18 +26,21 @@ def convert_tax_to_taxid(tax_list_file, output_path=None):  # TODO: maybe save t
     """
     bad_tax_list = []
     line_counter = 0
-    if not output_path:  # if the update_match_results path is not provided, let's create our own
+    if not output_path:  # if the output path is not provided, let's create our own
         output_path = tax_list_file + ".taxid.txt"
     with open(tax_list_file) as f:
-        with open(output_path, "wb") as output:  # writing update_match_results file
+        with open(output_path, "w") as output:  # writing output file
             for line in f:
                 line = strip(line)
                 if not line:
                     continue
-
                 try:
                     tax_id = get_value_by_name(line)
-                    output.write("{}\n".format(tax_id))
+                    if line.find(" ") == -1:
+                        print "Taxon {} is not a valid taxon. Too big of a clade!".format(line)
+                        bad_tax_list.append(line)
+                    else:
+                        output.write("{}\n".format(tax_id))
                 except KeyError:
                     if is_number(line):  # guess it's already a tax id
                         tax_id = line
