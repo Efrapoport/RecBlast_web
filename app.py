@@ -317,5 +317,9 @@ def BingSiteAuth():
     return render_template('BingSiteAuth.xml')
 
 
+@app.route('/sitemap.xml')
+def sitemap():
+    return render_template('sitemap.xml')
+
 if __name__ == "__main__":
     app.run(debug=True)
