@@ -17,8 +17,6 @@ os.environ['BLASTDB'] = "/blast/db"  # setting the $blastdb # check if it worksw
 
 # UPLOAD_FOLDER = r'C:\Users\Efrat\PycharmProjects\recblast\uploaded_files\'  # TODO: change later
 UPLOAD_FOLDER = ""
-ALLOWED_EXTENSIONS = {'txt', 'csv'}
-ALLOWED_EXTENSIONS = set(['txt', 'csv'])
 
 app = Flask(__name__, static_folder='public', static_url_path='')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -61,11 +59,6 @@ def serve_css(filename):
 @app.route('/server')
 def server():
     return render_template("server.html")
-
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 def send_job_to_backend(value_list):
@@ -198,10 +191,6 @@ def validate_data(value_list):
         users.delete_user_id_for_email(email)  # remove the emails
         print("error: {}\nDeleting email.".format(e))
         return ["Unknown error. Please report to recblast@gmail.com."], []
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 
