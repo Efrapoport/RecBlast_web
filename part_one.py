@@ -42,7 +42,7 @@ def main(file_path, contact, run_folder, fasta_path, first_blast_folder, fasta_o
 
     # defined in advance for efficiency:
     regex = re.compile(r'>.*=\d?\|')
-    gene_line_regex = re.compile(r'([A-Za-z0-9]+),(.+),([A-Za-z0-9]+)')
+    gene_line_regex = re.compile(r'([A-Za-z0-9_]+),(.+),([A-Za-z0-9_]+)')
 
     # initialize a list for the blast update_match_results file paths
     blast_one_output_files = []
