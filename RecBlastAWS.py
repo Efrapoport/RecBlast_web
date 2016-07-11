@@ -35,7 +35,9 @@ def run_from_web(values_from_web, debug=debug_func):
     # (e_value_thresh, back_e_value_thresh, identity_threshold, coverage_threshold, textual_match, gene_list_file,
     #  taxa_list_file, reference_taxa, run_name, user_email, run_id, user_ip) = values_from_web  # old list
     (e_value_thresh, back_e_value_thresh, identity_threshold, coverage_threshold, textual_match, csv_file_content,
-     taxa_file_content, origin_species, org_tax_id, run_name, user_email, run_id, user_ip) = values_from_web
+     taxa_file_content, origin_species, org_tax_id, run_name, user_email, run_id, user_ip,
+     tax_list_original_input, gene_list_original_input) = values_from_web
+
     if back_e_value_thresh == "":
         back_e_value_thresh = e_value_thresh
 
@@ -136,17 +138,22 @@ def run_from_web(values_from_web, debug=debug_func):
     if email_status(app_contact_email, run_name, run_id,
                     "Someone sent a new job on RecBlast online!<br>"
                     "email: {0}, run name: {1}, run_id: {2}, species of origin: {3} (taxid: {4}), ip: {5}<br>"
-                    "Started at: {6}".format(user_email, run_name, run_id, origin_species, org_tax_id, user_ip,
-                                             strftime('%H:%M:%S')), email_template):
+                    "Started at: {6}<br>"
+                    "Number of input taxa (before validation!): {7}<br>"
+                    "Number of input genes (before validation!): {8}<br>"
+                    "With the following taxa: {9}<br>".format(user_email, run_name, run_id, origin_species, org_tax_id,
+                                                              user_ip, strftime('%H:%M:%S'),
+                                                              len(tax_list_original_input),
+                                                              len(gene_list_original_input),
+                                                              ",".join(tax_list_original_input)), email_template):
         debug("email sent to {}".format(app_contact_email))
-    # TODO: add details about the len of the taxa list and the gene_list_file
 
     if email_status(user_email, run_name, run_id,
                     "You have just sent a new job on RecBlast online!<br>"
                     "Your job is now running on RecBlast online. The following are your run details:<br>"
-                    "Run name: {0}<br>Run ID: {1}<br>Species of origin: {2} (taxid: {3})<br>Started at: {4}".format(
-                        run_name, run_id, origin_species, org_tax_id, strftime('%H:%M:%S')),
-                    email_template):
+                    "Run name: {0}<br>Run ID: {1}<br>Species of origin: {2} (taxid: {3})<br>"
+                    "Started at: {4}".format(
+                        run_name, run_id, origin_species, org_tax_id, strftime('%H:%M:%S')), email_template):
         debug("email sent to {}".format(user_email))
 
     # print "Welcome to RecBlast."

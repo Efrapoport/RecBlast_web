@@ -16,7 +16,7 @@ TEMP_FILES_PATH = os.getcwd()  # TODO: change path for server
 def prepare_files(items, file_name, user_id, files_path=TEMP_FILES_PATH):
     """Receives a list of items and a file to write them to, then writes them to file and returns the file path."""
     full_path = os.path.join(files_path, "_".join([user_id, file_name]))
-    items = list(set(items))  # make the list unique
+    # items = list(set(items))  # make the list unique  # unnecessary
     with open(full_path, 'w') as f:
         for item in items:
             f.write(item + "\n")

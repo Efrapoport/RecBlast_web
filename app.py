@@ -73,7 +73,8 @@ def send_job_to_backend(value_list):
     user_email = value_list[10]
     run_name = value_list[9]
     run_id = value_list[11]
-    email_template = 'templates/email_templates/email_template.html'  # just in case it didn't find it from RecBlastUtils
+    # email_template = 'templates/email_templates/email_template.html'
+    #  just in case it didn't find it from RecBlastUtils
     if email_status(user_email, run_name, run_id,
                     "Your job {0} is now on queue for running on RecBlast online!<br>"
                     "We will update you when your run starts.<br>"
@@ -201,7 +202,7 @@ def validate_data(value_list):
 
         new_value_list = [value_list[0], value_list[1], value_list[2], value_list[3], value_list[4], gene_file_content,
                           taxa_file_content, origin_species, org_tax_id, value_list[8], value_list[9], value_list[10],
-                          value_list[11]]
+                          value_list[11], value_list[12], value_list[13]]
         return error_list, new_value_list
 
     except Exception, e:  # if any error occurs:
@@ -264,7 +265,7 @@ def handle_data():
     string_similarity = request.form['string_similarity']
 
     value_list = [float(evalue), float(back_evalue), int(identity), int(coverage), float(string_similarity),
-                  path_to_genes, path_to_taxa, reference_taxa, run_name, email, user_id, user_ip]
+                  path_to_genes, path_to_taxa, reference_taxa, run_name, email, user_id, user_ip, taxa_list, gene_list]
     # message_list is a list of errors we need to pass back to the user
     # if the list is empty, we move on to the run. else, we redirect use back to the form.
     message_list, value_list = validate_data(value_list)
