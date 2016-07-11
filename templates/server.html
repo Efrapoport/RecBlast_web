@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Queue task{% endblock %}
+{% block title %}RecBlast: Queue task{% endblock %}
 {% block content %}
     <div class="jumbotron welcome-banner">
         <h1>Queue a task</h1>
@@ -47,30 +47,30 @@
 
 
                 <div class="form-group">
-                    <label for="reference_taxa">Reference taxa (e.g 9606, Homo Sapiens)</label>
+                    <label for="reference_taxa">Reference taxon (Specific taxons, e.g 9606; Homo Sapiens)</label>
                     <input class="form-control" type="text" name="reference_taxa" value="Homo Sapiens" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="reference_taxa">List of taxas to check against (one species/taxa id per list)</label>
+                    <label for="reference_taxa">List of taxas to check against (one species/tax_id per list, up to 10 taxa)</label>
             <textarea class="form-control" name="taxa_list" rows="6" placeholder="9606
 5202"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="taxons">Or upload file</label>
+                    <label for="taxons">Or upload file (.csv or .txt)</label>
                     <input class="form-control" type="file" name="taxons">
                 </div>
 
                 <br/><br/>
                 <div class="form-group">
-                    <label for="gene_list">List of gene ids (gene name, uniprot ids or accession numbers)</label>
+                    <label for="gene_list">List of gene ids (gene name, uniprot ids or accession numbers, up to 10 genes)</label>
             <textarea class="form-control" rows="6" name="gene_list" placeholder="ADCY1
 CREB1"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="genes">Or upload file</label>
+                    <label for="genes">Or upload file (.csv or .txt)</label>
                     <input class="form-control" type="file" name="genes">
                 </div>
 

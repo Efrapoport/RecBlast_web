@@ -301,8 +301,7 @@ def handle_data():
 
 @app.route('/results/<user_id>')
 def results(user_id):
-    download_path = users.get_result_by_user_id(user_id)
-    return render_template('results.html', user_id=user_id, download_path=download_path)
+    return render_template('results.html', user_id=user_id)
 
 
 @app.route('/flashio')
