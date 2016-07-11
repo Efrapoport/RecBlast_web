@@ -60,7 +60,10 @@ def serve_css(filename):
 
 @app.route('/server')
 def server():
-    return render_template("server.html")
+    value_dict = {"evalue": 1e-5, "back_evalue": 1e-5, "identity": 37,
+                  "coverage": 50, "reference_taxa": "Homo Sapiens", "run_name": "my_run", "string_similarity": 0.4,
+                  "email": "example@email.com", "taxa_list": "", "gene_list": ""}
+    return render_template("server.html", value_dict=value_dict)
 
 
 def allowed_file(filename):
@@ -258,13 +261,13 @@ def handle_data():
     gene_list = list(set(form_input_to_list(request.files.get('genes') or request.form.get('gene_list'))))
     path_to_genes = prepare_files(gene_list, "genes", user_id)
 
-    evalue = request.form['evalue']
-    back_evalue = request.form['back_evalue']
-    identity = request.form['identity']
-    coverage = request.form['coverage']
-    string_similarity = request.form['string_similarity']
+    evalue = float(request.form['evalue'])
+    back_evalue = float(request.form['back_evalue'])
+    identity = int(request.form['identity'])
+    coverage = int(request.form['coverage'])
+    string_similarity = float(request.form['string_similarity'])
 
-    value_list = [float(evalue), float(back_evalue), int(identity), int(coverage), float(string_similarity),
+    value_list = [evalue, back_evalue, identity, coverage, string_similarity,
                   path_to_genes, path_to_taxa, reference_taxa, run_name, email, user_id, user_ip, taxa_list, gene_list]
     # message_list is a list of errors we need to pass back to the user
     # if the list is empty, we move on to the run. else, we redirect use back to the form.
@@ -273,7 +276,18 @@ def handle_data():
     # message_list.append("Your file is not in the right format")
 
     if message_list:  # means there are errors. later we might redirect the user to the form and
-        return render_template("server.html", errors=message_list, user_id=user_id)
+        value_dict = {"evalue": evalue,
+                      "back_evalue": back_evalue,
+                      "identity": identity,
+                      "string_similarity": string_similarity,
+                      "coverage": coverage,
+                      "reference_taxa": reference_taxa,
+                      "run_name": run_name,
+                      "email": email,
+                      "taxa_list": "\n".join(taxa_list),
+                      "gene_list": "\n".join(gene_list)
+                      }
+        return render_template("server.html", errors=message_list, user_id=user_id, value_dict=value_dict)
 
     elif not message_list:
         # temp_email_string = "Someone sent a new job on RecBlast online!\n" \

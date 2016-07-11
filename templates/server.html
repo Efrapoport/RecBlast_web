@@ -2,7 +2,7 @@
 {% block title %}RecBlast - Multi-Gene-Multi-Taxa Reciprocal Blast: Send Job{% endblock %}
 {% block content %}
     <div class="jumbotron welcome-banner">
-        <h1>Send job to RecBlast web server</h1>
+        <h1>Send job to RecBlast Web Server</h1>
         <h2>Fill the form and hit submit</h2>
     </div>
 
@@ -29,13 +29,13 @@
 
                 <div class="form-group">
                     <label for="email">Email address</label>
-                    <input class="form-control" type="email" name="email" value="example@email.com" autocomplete="on"
+                    <input class="form-control" type="email" name="email" value={{ value_dict.email }} autocomplete="on"
                            required>
                 </div>
 
                 <div class="form-group">
                     <label for="run_name">Run name</label>
-                    <input class="form-control" type="text" name="run_name" value="my_run" autocomplete="on">
+                    <input class="form-control" type="text" name="run_name" value={{ value_dict.run_name }} autocomplete="on">
                 </div>
 
 
@@ -48,12 +48,12 @@
 
                 <div class="form-group">
                     <label for="reference_taxa">Reference taxon (Specific taxons, e.g 9606; Homo Sapiens)</label>
-                    <input class="form-control" type="text" name="reference_taxa" value="Homo Sapiens" required>
+                    <input class="form-control" type="text" name="reference_taxa" value={{ value_dict.reference_taxa }} required>
                 </div>
 
                 <div class="form-group">
                     <label for="reference_taxa">List of taxa to check against (one species/tax_id per list, up to 10 taxa)</label>
-            <textarea class="form-control" name="taxa_list" rows="6" placeholder="9606
+            <textarea class="form-control" name="taxa_list" {{ value_dict.taxa_list }} rows="6" placeholder="9606
 5202"></textarea>
                 </div>
 
@@ -65,7 +65,7 @@
                 <br/><br/>
                 <div class="form-group">
                     <label for="gene_list">List of gene ids (UniProt full gene names, UniProt IDs or accession numbers, up to 10 genes)</label>
-            <textarea class="form-control" rows="6" name="gene_list" placeholder="ADCY1
+            <textarea class="form-control" rows="6" name="gene_list" value={{ value_dict.gene_list }} placeholder="ADCY1
 CREB1"></textarea>
                 </div>
 
@@ -83,29 +83,29 @@ CREB1"></textarea>
 
                 <div class="form-group">
                     <label for="evalue">eValue</label>
-                    <input type="number" class="form-control" name="evalue" value=1e-5 max="10" min="0" size="10"
+                    <input type="number" class="form-control" name="evalue" value={{ value_dict.evalue }} max="10" min="0" size="10"
                            step="any"
                            pattern="((\d|\.|e-)*)" required>
                 </div>
                 <div class="form-group">
                     <label for="back_evalue">eValue back</label>
-                    <input type="number" class="form-control" name="back_evalue" value=1e-5 max="10" min="0" size="10"
+                    <input type="number" class="form-control" name="back_evalue" value={{ value_dict.evalue }} max="10" min="0" size="10"
                            step="any"
                            pattern="((\d|\.|e-)*)">
                 </div>
                 <div class="form-group">
                     <label for="identity">Identity</label>
-                    <input type="number" class="form-control" name="identity" value=37 min="0" max="100" size="10"
+                    <input type="number" class="form-control" name="identity" value={{ value_dict.identity }} min="0" max="100" size="10"
                            required>
                 </div>
                 <div class="form-group">
                     <label for="coverage">Coverage</label>
-                    <input type="number" class="form-control" name="coverage" value=50 min="0" max="100" size="10"
+                    <input type="number" class="form-control" name="coverage" value={{ value_dict.coverage }} min="0" max="100" size="10"
                            required>
                 </div>
                 <div class="form-group">
                     <label for="string_similarity">String similarity</label>
-                    <input type="number" class="form-control" name="string_similarity" value=0.4 min="0" max="1"
+                    <input type="number" class="form-control" name="string_similarity" value={{ value_dict.string_similarity }} min="0" max="1"
                            step="any"
                            size="10"
                            required>
