@@ -73,7 +73,7 @@ def update_match_results(enumerator, animal_org, target_name1, this_gene_dic, is
     return True
 
 
-def write_all_output_csv(out_dict, org_list, csv_out_filename, DEBUG, debug):
+def write_all_output_csv(out_dict, org_list, csv_out_filename, DEBUG, debug, good_tax_list):  # TODO add the good_tax_list
     """
     Writes formatted final output to CSV.
     :param out_dict: a dictionary of dictionaries
@@ -84,7 +84,7 @@ def write_all_output_csv(out_dict, org_list, csv_out_filename, DEBUG, debug):
     :return:
     """
     # get all organisms
-    all_org_list = list(set(org_list))
+    all_org_list = list(set(org_list + good_tax_list))
     # TODO: decide how to sort them (alphabetically?)
     with open(csv_out_filename, 'w') as csv_file:
         csv_file.write(",".join(["gene_name"] + all_org_list))  # write header
@@ -127,7 +127,7 @@ def get_definition(accession_list, DEBUG, debug, attempt_no=0):
     except Exception, e:
         print "Error connecting to server, trying again..."
         print "Error: {}".format(e)
-        print "Debug this!"  # todo: connection problem - can we solve it?
+        print "Debug this!"
         debug("Error connecting to server, trying again...\n")
 
         # sleeping in case it's a temporary database problem
@@ -198,8 +198,8 @@ def prepare_candidates(file_lines_dict, index_set, enumerator, e_val_thresh, id_
 
 def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_threshold, textual_match,
          textual_sequence_match, species, accession_regex, description_regex, run_folder,
-         max_attempts_to_complete_rec_blast, csv_output_filename, fasta_output_folder, DEBUG, debug, id_dic=None,
-         second_blast_for_ids_dict=None, gene_paths_list=None):
+         max_attempts_to_complete_rec_blast, csv_output_filename, fasta_output_folder, DEBUG, debug, good_tax_list,
+         id_dic=None, second_blast_for_ids_dict=None, gene_paths_list=None):
     """
 
     :param second_blast_folder:
@@ -361,7 +361,7 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
         all_organisms += [x for x in this_gene_dic.keys()]  # a list of the organisms with results
 
     # writing final csv output:
-    if write_all_output_csv(all_genes_dict, all_organisms, csv_output_filename, DEBUG, debug):
+    if write_all_output_csv(all_genes_dict, all_organisms, csv_output_filename, DEBUG, debug, good_tax_list):
         print "Wrote csv output to file: {}".format(csv_output_filename)
     print("Printed all the output fasta sequences to folder {}".format(fasta_output_folder))
 

@@ -179,7 +179,7 @@ def validate_data(value_list):
         # validate taxa list
         # converting taxa names list
         taxa_file = remove_commas(taxa_file)
-        (taxa_list_file, bad_tax_list, conversion_succeeded) = taxa_to_taxid.convert_tax_to_taxid(taxa_file)
+        (taxa_list_file, bad_tax_list, good_tax_list, conversion_succeeded) = taxa_to_taxid.convert_tax_to_taxid(taxa_file)
         if conversion_succeeded:
             if bad_tax_list:
                 taxa_warning = "Bad taxa names found in the file provided: {}.Ignoring them.".format(
@@ -205,7 +205,7 @@ def validate_data(value_list):
 
         new_value_list = [value_list[0], value_list[1], value_list[2], value_list[3], value_list[4], gene_file_content,
                           taxa_file_content, origin_species, org_tax_id, value_list[8], value_list[9], value_list[10],
-                          value_list[11], value_list[12], value_list[13]]
+                          value_list[11], value_list[12], value_list[13], good_tax_list]
         return error_list, new_value_list
 
     except Exception, e:  # if any error occurs:

@@ -36,7 +36,7 @@ def run_from_web(values_from_web, debug=debug_func):
     #  taxa_list_file, reference_taxa, run_name, user_email, run_id, user_ip) = values_from_web  # old list
     (e_value_thresh, back_e_value_thresh, identity_threshold, coverage_threshold, textual_match, csv_file_content,
      taxa_file_content, origin_species, org_tax_id, run_name, user_email, run_id, user_ip,
-     tax_list_original_input, gene_list_original_input) = values_from_web
+     tax_list_original_input, gene_list_original_input, good_tax_list) = values_from_web
 
     if back_e_value_thresh == "":
         back_e_value_thresh = e_value_thresh
@@ -155,9 +155,6 @@ def run_from_web(values_from_web, debug=debug_func):
                         run_name, run_id, origin_species, org_tax_id, strftime('%H:%M:%S')), email_template):
         debug("email sent to {}".format(user_email))
 
-    # print "Welcome to RecBlast."
-    # print "Run {0} started at: {1}".format(run_name, strftime('%H:%M:%S'))
-
     # part 1:
     print("starting to perform part_one.py")
     id_dic, blast1_output_files = part_one.main(csv_path, app_contact_email, run_folder, fasta_path, first_blast_folder,
@@ -186,7 +183,7 @@ def run_from_web(values_from_web, debug=debug_func):
     if part_three.main(second_blast_folder, back_e_value_thresh, identity_threshold, coverage_threshold, textual_match,
                        textual_seq_match, origin_species, accession_regex, description_regex, run_folder,
                        max_attempts_to_complete_rec_blast, csv_output_filename, fasta_output_folder, DEBUG, debug,
-                       id_dic, second_blast_for_ids_dict, blast2_gene_id_paths):
+                       good_tax_list, id_dic, second_blast_for_ids_dict, blast2_gene_id_paths):
         print("part 3 done!")
         print("*******************")
 
