@@ -62,7 +62,7 @@ def serve_css(filename):
 def server():
     value_dict = {"evalue": 1e-5, "back_evalue": 1e-5, "identity": 37,
                   "coverage": 50, "reference_taxa": "Homo sapiens", "run_name": "my_run", "string_similarity": 0.4,
-                  "email": "example@email.com", "taxa_list": "", "gene_list": ""}
+                  "email": "example@email.com", "taxa_list": "9606\n\r5202", "gene_list": "ADCY1_HUMAN\r\nP16220"}
     return render_template("server.html", value_dict=value_dict)
 
 
