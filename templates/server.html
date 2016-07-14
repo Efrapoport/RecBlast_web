@@ -20,7 +20,14 @@
 
             <form action="/output" method="post" name="name" enctype="multipart/form-data">
 
-
+                  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+                  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+                  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+                  <script>
+                  $( function() {
+                    $( document ).tooltip();
+                  } );
+                  </script>
                 <div class="page-header">
                     <h2>Contact Details
                         <small></small>
@@ -30,7 +37,7 @@
                 <div class="form-group">
                     <label for="email">Email address</label>
                     <input class="form-control" type="email" name="email" value="{{ value_dict.email }}" autocomplete="on"
-                           required>
+                           required title="let's check hover">
                 </div>
 
                 <div class="form-group">
