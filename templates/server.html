@@ -6,16 +6,6 @@
         <h2>Fill the form and hit submit</h2>
     </div>
 
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="/resources/demos/style.css">
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-  <script>
-  $( function() {
-    $( document ).tooltip();
-  } );
-  </script>
-
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
 
@@ -38,8 +28,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="email" title="label test">Email address</label>
-                    <input class="form-control" type="email" name="email" value="{{ value_dict.email }}" title="test" autocomplete="on"
+                    <label for="email">Email address</label>
+                    <input class="form-control" type="email" name="email" value="{{ value_dict.email }}" autocomplete="on"
                            required>
                 </div>
 
@@ -63,7 +53,8 @@
 
                 <div class="form-group">
                     <label for="reference_taxa">List of taxa to check against (one species/tax_id per list, up to 10 taxa)</label>
-            <textarea class="form-control" name="taxa_list" value="{{ value_dict.taxa_list }}" rows="6"></textarea>
+            <textarea class="form-control" name="taxa_list" value="{{ value_dict.taxa_list }}" rows="6" placeholder="9606
+5202"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -74,7 +65,8 @@
                 <br/><br/>
                 <div class="form-group">
                     <label for="gene_list">List of gene ids (UniProt full gene names, UniProt IDs or accession numbers, up to 10 genes)</label>
-            <textarea class="form-control" rows="6" name="gene_list" value="{{ value_dict.gene_list }}"></textarea>
+            <textarea class="form-control" rows="6" name="gene_list" value="{{ value_dict.gene_list }}" placeholder="ADCY1
+CREB1"></textarea>
                 </div>
 
                 <div class="form-group">
