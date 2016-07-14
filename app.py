@@ -35,9 +35,11 @@ def index():
 def documentation():
     return render_template('documentation.html')
 
+
 @app.route('/explain')
 def explain():
     return render_template('explain.html')
+
 
 @app.route('/about')
 def about():
