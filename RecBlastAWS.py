@@ -149,7 +149,6 @@ def run_from_web(values_from_web, debug=debug_func):
         debug("email sent to {}".format(app_contact_email))
 
     if email_status(user_email, run_name, run_id,
-                    "You have just sent a new job on RecBlast online!<br>"
                     "Your job is now running on RecBlast online. The following are your run details:<br>"
                     "Run name: {0}<br>Run ID: {1}<br>Species of origin: {2} (taxid: {3})<br>"
                     "Started at: {4}".format(
