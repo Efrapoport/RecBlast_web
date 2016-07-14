@@ -30,12 +30,15 @@
                 5.	<strong>Email:</strong> User's email. Please notice that each user is permitted to send only one job at a time.<br><br>
                 6.	<strong>BLAST parameters:</strong> E-Value (0-10), Coverage percentage (0-100) and Identity percentage (0-100).
                     <br>An optional backwards e-value can be supplied and used for the second BLAST back against the reference taxon.<br><br>
-                7.	<strong>String Similarity:</strong> A number between 0 to 1 representing the similarity between two given proteins. <br>
-                    A result is determined identical if its protein sequence is similar in more than 99% to the canonical
-                    protein sequence of the inspected gene, or if the similarity of the annotation of both proteins is
-                    than the 'string similarity' parameter defined by the user. We found 0.4 to give the best results.
+                7.	<strong>String Similarity:</strong> The String Similarity parameter enables the user to compare proteins not only based on their sequence,
+                but also based on the similarity of their annotations.<br>
+                Protein annotations are often long and contain several definitions/names, and two orthologous protein
+                sequences will unnecessarily share an annotation that is 100% identical. The String Similarity parameter
+                is a number between 0-1 that determines how similar two annotations should be in order to be considered
+                synonymous. We found 0.4 to give the best results (=40% annotation similarity), but the parameter is
+                configurable.<br><br>
 
-            </p>
+            </p><p><a href="/explain">Click here</a> for more information about the structure of the results file</p><br><br>
             <p>If you encounter any problem, please contact us:<br>
             <a href="mailto:recblast@gmail.com">recblast@gmail.com</a></p>
 

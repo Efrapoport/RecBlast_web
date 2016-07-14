@@ -204,6 +204,9 @@ ul {
 
 img {
     float:inherit;
+    display: block;
+    margin: auto;
+    width: 40%;
 }
 
 
