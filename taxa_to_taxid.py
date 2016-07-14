@@ -1,6 +1,6 @@
 #! /usr/bin/env python2
 from RecBlastUtils import is_number, strip
-from taxa import get_value_by_name
+from taxa import *
 
 
 def create_tax_dict(tax_db):
@@ -43,8 +43,13 @@ def convert_tax_to_taxid(tax_list_file, output_path=None):  # TODO: maybe save t
                         output.write("{}\n".format(tax_id))
                 except KeyError:
                     if is_number(line):  # guess it's already a tax id
-                        tax_id = line
-                        output.write("{}\n".format(tax_id))
+                        try:
+                            if get_name_by_value(line):  # if it's a valid tax ID
+                                tax_id = line
+                                output.write("{}\n".format(tax_id))
+                        except KeyError:  # If it's not a valid tax ID
+                            print "Tax ID {} does not exist in NCBI tax database!".format(line)
+                            bad_tax_list.append(line)
                     else:
                         print "Taxon {} does not exist in NCBI tax database!".format(line)
                         bad_tax_list.append(line)
