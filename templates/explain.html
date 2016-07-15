@@ -14,16 +14,25 @@
             <p>Once your results are ready, you will be notified via email and a link valid for 7 days will be generated for you.
                Using this link, you will be able to download a file (output.zip) with two types of files:
             <ul>
-            <li> Three different CSV files - RBH, STRICT and NON-STRICT, each containing a matrix of the inspected gene and taxa.
-                Per every gene-taxa combination, you will see the amount of matches that RecBlast found.
+            <li> CSV files:  RecBlast generates three CSV files, one containing the RBH results, one containing STRICT results
+                and one containing NON STRICT results.  Each cell in the csv file contains the number of putative orthologues
+                discovered for the inspected gene and taxa combination. For example, 5 putative orthologues were discovered for
+                the human gene PSMC2 in Daphnia magna:
+                <img src="/imgs/strictcsv.png" alt="" class="img-responsive img-thumbnail"/>
+
+                In the RBH output files, the results are binary. 1 means that a putative orthologue has been found, 0 means that
+                no putative orthologue has been found:
+                <img src="/imgs/rbhcsv.png" alt="" class="img-responsive img-thumbnail"/>
             </li><br>
             <li>
-                FASTA sequences of all successful potential orthologues.
+                2.	FASTA files – for each gene, a FASTA file containing the sequences of all matches is provided
+                    (RBH, STRICT and NON-STRICT).
+
             </li>
             </ul>
             </p>
-
-            <h3>What do the different strictness levels (RBH, STRICT and NON-STRICT) mean?</h3>
+            <br><br>
+            <h3>What do the different strictness levels mean?</h3>
             <p>
                 RecBlast works in three degrees of flexibility: RBH, STRICT and NON-STRICT mode.  RBHs are selected
                 only when the first match (per species) from the first BLAST is successfully blasted back against the
