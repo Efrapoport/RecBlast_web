@@ -55,56 +55,80 @@ def update_match_results(enumerator, animal_org, target_name1, this_gene_dic, is
     :param debug:  The debug function
     :return:
     """
+
+    status = "non-strict"  # default value
     try:  # update current animal
         this_gene_dic[animal_org][1] += 1  # non strict increments anyway
         if enumerator == 1:  # strict increment
             this_gene_dic[animal_org][0] += 1
+            status = "strict"
 
     except KeyError:  # if we don't have animal_org in our db
         if enumerator == 1:  # if it is the first match
             if is_rbh:
                 this_gene_dic[animal_org] = [1, 1, 1]
+                status = "RBH"
             else:
                 this_gene_dic[animal_org] = [1, 1, 0]
+                status = "strict"
         elif enumerator > 1:  # found match, not first
             this_gene_dic[animal_org] = [0, 1, 0]
 
     debug("current status for gene %s, animal %s: %s" % (target_name1, animal_org, this_gene_dic[animal_org]))
-    return True
+    return status
 
 
-def write_all_output_csv(out_dict, org_list, csv_out_filename, DEBUG, debug, good_tax_list):  # TODO add the good_tax_list
+def write_all_output_csv(out_dict, org_list, csv_rbh_output_filename, csv_strict_output_filename,
+                         csv_ns_output_filename, DEBUG, debug, good_tax_list):
     """
     Writes formatted final output to CSV.
     :param out_dict: a dictionary of dictionaries
     :param org_list: a list of organisms
-    :param csv_out_filename:
+    :param csv_rbh_output_filename:
+    :param csv_strict_output_filename:
+    :param csv_ns_output_filename:
+    :param good_tax_list:
     :param DEBUG:
     :param debug:
     :return:
     """
     # get all organisms
-    all_org_list = list(set(org_list + good_tax_list))
+    all_org_list = sorted(list(set(org_list + good_tax_list)))
     # TODO: decide how to sort them (alphabetically?)
-    with open(csv_out_filename, 'w') as csv_file:
-        csv_file.write(",".join(["gene_name"] + all_org_list))  # write header
-        csv_file.write("\n")
+    # with open(csv_out_filename, 'w') as csv_file:  # 3 files!
+    with open(csv_rbh_output_filename, 'w') as csv_rbh_file, open(csv_strict_output_filename, 'w') as csv_strict_file,  open(csv_ns_output_filename, 'w') as csv_nonstrict_file:
+        csv_rbh_file.write(",".join(["gene_name"] + all_org_list))  # write header
+        csv_strict_file.write(",".join(["gene_name"] + all_org_list))  # write header
+        csv_nonstrict_file.write(",".join(["gene_name"] + all_org_list))  # write header
+        csv_rbh_file.write("\n")
+        csv_strict_file.write("\n")
+        csv_nonstrict_file.write("\n")
         for gene_name in out_dict:  # write every line
             assert type(gene_name) == str, "Gene name is not a string!"
-            out_line = [gene_name]  # initialize output line: each line starts with the gene name
+            # initialize output line: each line starts with the gene name
+            out_line_rbh = out_line_strict = out_line_non_strict = [gene_name]
             for org in all_org_list:
-                try:
+                try:  # add results to all 3 output csv files
                     debug(out_dict[gene_name][org])
-                    out_line.append(out_dict[gene_name][org])
+                    # out_line.append(out_dict[gene_name][org])
+                    results = out_dict[gene_name][org]
+                    out_line_rbh.append(str(results[2]))
+                    out_line_strict.append(str(results[0]))
+                    out_line_non_strict.append(str(results[1]))
                 # if the value doesn't exist for the animal - leave it empty
                 except KeyError:
-                    out_line.append("")
+                    # out_line.append("")
+                    out_line_rbh.append("0")
+                    out_line_strict.append("0")
+                    out_line_non_strict.append("0")
                     # out_line.append("[0-0-0]")  # if we want the output that way...
             # formatting and printing the line
-            out_line = [replace(str(x), ', ', '-') for x in out_line]
-            csv_file.write(",".join(out_line))
-            csv_file.write("\n")
-            debug("Printed gene_name {0} to output file".format(gene_name))
+            # out_line = [replace(str(x), ', ', '-') for x in out_line]
+            # writing to each line:
+            csv_rbh_file.write("{}\n".format(",".join(out_line_rbh)))
+            csv_strict_file.write("{}\n".format(",".join(out_line_strict)))
+            csv_nonstrict_file.write("{}\n".format(",".join(out_line_non_strict)))
+            debug("Printed gene_name {0} to output files.".format(gene_name))
     return True
 
 
@@ -198,7 +222,8 @@ def prepare_candidates(file_lines_dict, index_set, enumerator, e_val_thresh, id_
 
 def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_threshold, textual_match,
          textual_sequence_match, species, accession_regex, description_regex, run_folder,
-         max_attempts_to_complete_rec_blast, csv_output_filename, fasta_output_folder, DEBUG, debug, good_tax_list,
+         max_attempts_to_complete_rec_blast, csv_rbh_output_filename, csv_strict_output_filename,
+         csv_ns_output_filename, fasta_output_folder, DEBUG, debug, good_tax_list,
          id_dic=None, second_blast_for_ids_dict=None, gene_paths_list=None):
     """
 
@@ -213,7 +238,10 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
     :param description_regex:
     :param run_folder:
     :param max_attempts_to_complete_rec_blast:
-    :param csv_output_filename:
+    :param csv_rbh_output_filename:
+    :param csv_strict_output_filename:
+    :param csv_ns_output_filename:
+    :param good_tax_list:
     :param fasta_output_folder:
     :param DEBUG:
     :param debug:
@@ -329,15 +357,31 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
                             or similar(upper(target_sequence), upper(candidate_seq)) > textual_sequence_match:
 
                         indexes_to_remove.add(loc)  # in each round, we remove indexes_per_id to which we found a match
-                        if update_match_results(enumerator, animal_org, target_name1, this_gene_dic, is_rbh, DEBUG,
-                                                debug):
-                            debug("Calculated matches for gene_id {0} enumerator {1}".format(gene_id, enumerator))
+                        match_status = update_match_results(enumerator, animal_org, target_name1, this_gene_dic, is_rbh,
+                                                            DEBUG, debug)
+                        debug("Calculated matches for gene_id {0} enumerator {1}".format(gene_id, enumerator))
                         # add the fasta sequence to this fasta output (declared in part 1)
+                        # getting all file names:
+                        # fasta_output_file_name = os.path.join(fasta_output_folder,
+                        #                                       "fasta-{0}-{1}.fasta".format(gene_id, target_name1))
+                        # basic name for all output files
                         fasta_output_file_name = os.path.join(fasta_output_folder,
-                                                              "fasta-{0}-{1}.fasta".format(gene_id, target_name1))
-                        with open(fasta_output_file_name, 'a') as fasta_output_file:
+                                                              "fasta-{0}-{1}".format(gene_id, target_name1))  # basename
+                        fasta_output_filename_rbh = fasta_output_file_name + '_RBH.fasta'
+                        fasta_output_filename_ns = fasta_output_file_name + '_non-strict.fasta'
+                        fasta_output_filename_strict = fasta_output_file_name + '_strict.fasta'
+
+                        # start updating non-strict anyway:
+                        with open(fasta_output_filename_ns, 'a') as fasta_output_file:
                             fasta_output_file.write("{}\n\n".format(fasta_record))
-                        debug("Added fasta seq to fasta file {}".format(fasta_output_file_name))
+                        debug("Added fasta seq to non-strict fasta file {}".format(fasta_output_filename_ns))
+                        # if strict or RBH
+                        if match_status == 'strict':
+                            with open(fasta_output_filename_strict, 'a') as fasta_output_file:
+                                fasta_output_file.write("{}\n\n".format(fasta_record))
+                        elif match_status == 'RBH':
+                            with open(fasta_output_filename_rbh, 'a') as fasta_output_file:
+                                fasta_output_file.write("{}\n\n".format(fasta_record))
 
                     else:  # couldn't find similarity
                         debug("not similar: %s == %s, %s" % (candidate, target_name2, animal_org))
@@ -361,8 +405,10 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
         all_organisms += [x for x in this_gene_dic.keys()]  # a list of the organisms with results
 
     # writing final csv output:
-    if write_all_output_csv(all_genes_dict, all_organisms, csv_output_filename, DEBUG, debug, good_tax_list):
-        print "Wrote csv output to file: {}".format(csv_output_filename)
+    if write_all_output_csv(all_genes_dict, all_organisms, csv_rbh_output_filename, csv_strict_output_filename,
+                            csv_ns_output_filename, DEBUG, debug, good_tax_list):
+        print "Wrote csv output to files: {},{},{}".format(csv_rbh_output_filename, csv_strict_output_filename,
+                                                           csv_ns_output_filename)
     print("Printed all the output fasta sequences to folder {}".format(fasta_output_folder))
 
     print "done!"

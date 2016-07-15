@@ -105,8 +105,17 @@ def main(file_path, contact, run_folder, fasta_path, first_blast_folder, fasta_o
         filtered_blast_out_filename = os.path.join(first_blast_folder, filtered_blast_out_filename)
 
         # copy the fasta file to the fasta_output folder
-        fasta_output_filename = os.path.join(fasta_output_folder, os.path.basename(fasta_filename))
-        shutil.copy(fasta_filename, fasta_output_filename)  # copy
+        fasta_output_name = replace(fasta_filename, '.fasta', '')
+        fasta_output_filename_rbh = os.path.join(fasta_output_folder,
+                                                 os.path.basename(fasta_output_name) + '_RBH.fasta')
+        fasta_output_filename_ns = os.path.join(fasta_output_folder,
+                                                os.path.basename(fasta_output_name) + '_non-strict.fasta')
+        fasta_output_filename_strict = os.path.join(fasta_output_folder,
+                                                    os.path.basename(fasta_output_name) + '_strict.fasta')
+        # 3 fasta output files:
+        shutil.copy(fasta_filename, fasta_output_filename_rbh)  # copy
+        shutil.copy(fasta_filename, fasta_output_filename_ns)  # copy
+        shutil.copy(fasta_filename, fasta_output_filename_strict)  # copy
 
         # command line to run:
         command_line = "{0} -query {1} -db {2} -outfmt '{3}' -max_target_seqs {4} -evalue {5} -max_hsps 1 " \
