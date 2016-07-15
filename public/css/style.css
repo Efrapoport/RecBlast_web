@@ -202,7 +202,7 @@ ul {
     margin: 0 auto;
 }
 
-img {
+.img {
     float:inherit;
     display: block;
     margin: auto;
