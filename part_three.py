@@ -94,41 +94,45 @@ def write_all_output_csv(out_dict, org_list, csv_rbh_output_filename, csv_strict
     """
     # get all organisms
     all_org_list = sorted(list(set(org_list + good_tax_list)))
-    # TODO: decide how to sort them (alphabetically?)
     # with open(csv_out_filename, 'w') as csv_file:  # 3 files!
-    with open(csv_rbh_output_filename, 'w') as csv_rbh_file, open(csv_strict_output_filename, 'w') as csv_strict_file,  open(csv_ns_output_filename, 'w') as csv_nonstrict_file:
+    with open(csv_rbh_output_filename, 'w') as csv_rbh_file:
         csv_rbh_file.write(",".join(["gene_name"] + all_org_list))  # write header
-        csv_strict_file.write(",".join(["gene_name"] + all_org_list))  # write header
-        csv_nonstrict_file.write(",".join(["gene_name"] + all_org_list))  # write header
         csv_rbh_file.write("\n")
-        csv_strict_file.write("\n")
-        csv_nonstrict_file.write("\n")
-        for gene_name in out_dict:  # write every line
-            assert type(gene_name) == str, "Gene name is not a string!"
-            # initialize output line: each line starts with the gene name
-            out_line_rbh = out_line_strict = out_line_non_strict = [gene_name]
-            for org in all_org_list:
-                try:  # add results to all 3 output csv files
-                    debug(out_dict[gene_name][org])
-                    # out_line.append(out_dict[gene_name][org])
-                    results = out_dict[gene_name][org]
-                    out_line_rbh.append(str(results[2]))
-                    out_line_strict.append(str(results[0]))
-                    out_line_non_strict.append(str(results[1]))
-                # if the value doesn't exist for the animal - leave it empty
-                except KeyError:
-                    # out_line.append("")
-                    out_line_rbh.append("0")
-                    out_line_strict.append("0")
-                    out_line_non_strict.append("0")
-                    # out_line.append("[0-0-0]")  # if we want the output that way...
-            # formatting and printing the line
-            # out_line = [replace(str(x), ', ', '-') for x in out_line]
-            # writing to each line:
-            csv_rbh_file.write("{}\n".format(",".join(out_line_rbh)))
-            csv_strict_file.write("{}\n".format(",".join(out_line_strict)))
-            csv_nonstrict_file.write("{}\n".format(",".join(out_line_non_strict)))
-            debug("Printed gene_name {0} to output files.".format(gene_name))
+        with open(csv_strict_output_filename, 'w') as csv_strict_file:
+            csv_strict_file.write(",".join(["gene_name"] + all_org_list))  # write header
+            csv_strict_file.write("\n")
+            with open(csv_ns_output_filename, 'w') as csv_nonstrict_file:
+                csv_nonstrict_file.write(",".join(["gene_name"] + all_org_list))  # write header
+                csv_nonstrict_file.write("\n")
+
+                for gene_name in out_dict:  # write every line
+                    assert type(gene_name) == str, "Gene name is not a string!"
+                    # initialize output line: each line starts with the gene name
+                    out_line_rbh = [gene_name]
+                    out_line_strict = [gene_name]
+                    out_line_non_strict = [gene_name]
+                    for org in all_org_list:
+                        try:  # add results to all 3 output csv files
+                            debug(out_dict[gene_name][org])
+                            # out_line.append(out_dict[gene_name][org])
+                            results = out_dict[gene_name][org]  # list
+                            out_line_rbh.append(str(results[2]))
+                            out_line_strict.append(str(results[0]))
+                            out_line_non_strict.append(str(results[1]))
+                        # if the value doesn't exist for the animal - leave it empty
+                        except KeyError:
+                            # out_line.append("")
+                            out_line_rbh.append("0")
+                            out_line_strict.append("0")
+                            out_line_non_strict.append("0")
+                            # out_line.append("[0-0-0]")  # if we want the output that way...
+                    # formatting and printing the line
+                    # out_line = [replace(str(x), ', ', '-') for x in out_line]
+                    # writing to each line:
+                    csv_rbh_file.write("{}\n".format(",".join(out_line_rbh)))
+                    csv_strict_file.write("{}\n".format(",".join(out_line_strict)))
+                    csv_nonstrict_file.write("{}\n".format(",".join(out_line_non_strict)))
+                    debug("Printed gene_name {0} to output files.".format(gene_name))
     return True
 
 
