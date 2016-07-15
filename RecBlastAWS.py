@@ -92,7 +92,9 @@ def run_from_web(values_from_web, debug=debug_func):
     create_folder_if_needed(fasta_path)
     fasta_output_folder = os.path.join(run_folder, "fasta_output")
     create_folder_if_needed(fasta_output_folder)
-    csv_output_filename = os.path.join(run_folder, "output_table.csv")
+    csv_rbh_output_filename = os.path.join(run_folder, "output_table_RBH.csv")
+    csv_strict_output_filename = os.path.join(run_folder, "output_table_strict.csv")
+    csv_ns_output_filename = os.path.join(run_folder, "output_table_non-strict.csv")
     # s3_output_path = os.path.join(storage_path, 'output.zip')
     # Decide on taxa input:
     # tax_db = os.path.join(script_folder, "db/taxdump/tax_names.txt")  # moved to web server
@@ -182,13 +184,15 @@ def run_from_web(values_from_web, debug=debug_func):
     # part 3:
     if part_three.main(second_blast_folder, back_e_value_thresh, identity_threshold, coverage_threshold, textual_match,
                        textual_seq_match, origin_species, accession_regex, description_regex, run_folder,
-                       max_attempts_to_complete_rec_blast, csv_output_filename, fasta_output_folder, DEBUG, debug,
+                       max_attempts_to_complete_rec_blast, csv_rbh_output_filename, csv_strict_output_filename,
+                       csv_ns_output_filename, fasta_output_folder, DEBUG, debug,
                        good_tax_list, id_dic, second_blast_for_ids_dict, blast2_gene_id_paths):
         print("part 3 done!")
         print("*******************")
 
     # Zip results:
-    zip_output_path = zip_results(fasta_output_folder, csv_output_filename, run_folder)
+    zip_output_path = zip_results(fasta_output_folder, csv_rbh_output_filename, csv_strict_output_filename,
+                                  csv_ns_output_filename, run_folder)
     print("saved zip output to: {}".format(zip_output_path))
 
     # S3 client

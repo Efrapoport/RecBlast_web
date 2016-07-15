@@ -41,11 +41,14 @@ def remove_commas(file_name):
     return file_name
 
 
-def zip_results(fasta_output_path, csv_file_path, output_path):
+def zip_results(fasta_output_path, csv_rbh_output_filename, csv_strict_output_filename, csv_ns_output_filename,
+                output_path):
     """
     Receives a folder containing fasta sequences and a csv file, adds them all to zip.
     :param fasta_output_path:
-    :param csv_file_path:
+    :param csv_rbh_output_filename:
+    :param csv_strict_output_filename:
+    :param csv_ns_output_filename:
     :param output_path:
     :return:
     """
@@ -55,7 +58,11 @@ def zip_results(fasta_output_path, csv_file_path, output_path):
         # adding all fasta files
         for fasta in fastas:
             zf.write(fasta, os.path.basename(fasta))
-        zf.write(csv_file_path, os.path.basename(csv_file_path))  # add csv file
+        # zf.write(csv_file_path, os.path.basename(csv_file_path))  # add csv file
+        # add csv files
+        zf.write(csv_rbh_output_filename, os.path.basename(csv_rbh_output_filename))  # add csv file
+        zf.write(csv_strict_output_filename, os.path.basename(csv_strict_output_filename))  # add csv file
+        zf.write(csv_ns_output_filename, os.path.basename(csv_ns_output_filename))  # add csv file
     return zip_file
 
 
