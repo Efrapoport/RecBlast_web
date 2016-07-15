@@ -406,8 +406,9 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
 
     # writing final csv output:
     if write_all_output_csv(all_genes_dict, all_organisms, csv_rbh_output_filename, csv_strict_output_filename,
-         csv_ns_output_filename, DEBUG, debug, good_tax_list):
-        print "Wrote csv output to file: {}".format(csv_output_filename)
+                            csv_ns_output_filename, DEBUG, debug, good_tax_list):
+        print "Wrote csv output to files: {},{},{}".format(csv_rbh_output_filename, csv_strict_output_filename,
+                                                           csv_ns_output_filename)
     print("Printed all the output fasta sequences to folder {}".format(fasta_output_folder))
 
     print "done!"
