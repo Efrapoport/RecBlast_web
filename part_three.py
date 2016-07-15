@@ -380,12 +380,12 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
                             fasta_output_file.write("{}\n\n".format(fasta_record))
                         debug("Added fasta seq to non-strict fasta file {}".format(fasta_output_filename_ns))
                         # if strict or RBH
-                        if match_status == 'strict':
+                        if match_status in ['strict', 'RBH']:
                             with open(fasta_output_filename_strict, 'a') as fasta_output_file:
                                 fasta_output_file.write("{}\n\n".format(fasta_record))
-                        elif match_status == 'RBH':
-                            with open(fasta_output_filename_rbh, 'a') as fasta_output_file:
-                                fasta_output_file.write("{}\n\n".format(fasta_record))
+                            if match_status == 'RBH':
+                                with open(fasta_output_filename_rbh, 'a') as fasta_output_file:
+                                    fasta_output_file.write("{}\n\n".format(fasta_record))
 
                     else:  # couldn't find similarity
                         debug("not similar: %s == %s, %s" % (candidate, target_name2, animal_org))
