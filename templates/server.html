@@ -30,12 +30,13 @@
                 <div class="form-group">
                     <label for="email">Email address</label>
                     <input class="form-control" type="email" name="email" value="{{ value_dict.email }}" autocomplete="on"
-                           required>
+                           placeholder="example@email.com" required>
                 </div>
 
                 <div class="form-group">
                     <label for="run_name">Run name</label>
-                    <input class="form-control" type="text" name="run_name" value="{{ value_dict.run_name }}" autocomplete="on">
+                    <input class="form-control" type="text" name="run_name" value="{{ value_dict.run_name }}"
+                           placeholder="my_run" autocomplete="on">
                 </div>
 
 
@@ -48,11 +49,12 @@
 
                 <div class="form-group">
                     <label for="reference_taxa">Reference taxon (Specific taxons, e.g 9606; Homo Sapiens)</label>
-                    <input class="form-control" type="text" name="reference_taxa" value="{{ value_dict.reference_taxa }}" required>
+                    <input class="form-control" type="text" name="reference_taxa" value="{{ value_dict.reference_taxa }}"
+                           placeholder="Homo sapiens" autocomplete="on" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="reference_taxa">List of taxa to check against (one species/tax_id per list, up to 10 taxa)</label>
+                    <label for="taxa_list">List of taxa to check against (one species/tax_id per list, up to 10 taxa)</label>
             <textarea class="form-control" name="taxa_list" value="{{ value_dict.taxa_list }}" rows="6" placeholder="9606
 6221">9606
 6221</textarea>
