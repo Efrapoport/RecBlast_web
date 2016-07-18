@@ -90,24 +90,11 @@ def create_folder_if_needed(path):
 
 
 def file_len(fname):
+    """Return the file length in lines."""
     with open(fname) as f:
         for i, l in enumerate(f):
             pass
     return i + 1
-
-
-# def targz_list(archive_name, file_list):
-#     """
-#     Returns True after
-#     :param archive_name:
-#     :param file_list:
-#     :return:
-#     """
-#     with tarfile.open(archive_name, "w:gz") as tar:
-#         for file_name in file_list:
-#             tar.add(file_name, arcname=os.path.basename(file_name))
-#             os.remove(file_name)  # removing the sge file
-#     return True
 
 
 def targz_folder(archive_name, folder):
@@ -122,7 +109,7 @@ def targz_folder(archive_name, folder):
     return True
 
 
-def cleanup(path, storage_folder, run_id):  # TODO: problem with TAR, debug!
+def cleanup(path, storage_folder, run_id):
     """
     Performs tar and gzip on sets of files produced by the program.
     Then deletes the files and folders.

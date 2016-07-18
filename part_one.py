@@ -6,11 +6,9 @@ import pickle
 from time import strftime
 import subprocess
 
-# TODO: edit description
-# THIS SCRIPT GENERATES FASTA AND SGE FILES FOR THE GENES WE WANT TO USE FOR THE RECIPROCAL BLAST.
-# INPUT: CSV FILE CONTAINING A LIST OF GENES WE WANT TO INSPECT
-# OUTPUT: FASTA FILES + SGE FILES, ALL READY TO START RUNNING BLAST
-
+# Description:
+# The script performs part 1 of the RecBlast program. Starting from a list of genes and taxa and then moving on to
+# saving the sequences and running Blast on them.
 
 # this dictionary holds information about the genes we set out to check. structure:
 # {protein_inner_id (index: 0,1,2..) = [common_id, full_id, uniprot_id]}
@@ -26,25 +24,44 @@ def get_uni(uni_id, contact):
     :param uni_id: uniprot id
     :return:
     """
-    url2 = "http://www.uniprot.org/uniprot/"  # uniprot to fasta
-    url_uniprot = url2 + uni_id + ".fasta"  # the UNIPROT url
+    url = "http://www.uniprot.org/uniprot/"  # uniprot to fasta
+    url_uniprot = url + uni_id + ".fasta"  # the UNIPROT url
     request = urllib2.Request(url_uniprot)
-    request.add_header('User-Agent', 'Python %s' % contact)  #
+    request.add_header('User-Agent', 'Python %s' % contact)  # email
     response = urllib2.urlopen(request)  # get request
     page = response.read(200000)  # read (up to 200000 lines)
-    page2 = page.replace("\n", "|")  # edit response
-    return page2
+    page = replace(page, "\n", "|")
+    return page
 
 
-# gene_list_to_csv function
 def main(file_path, contact, run_folder, fasta_path, first_blast_folder, fasta_output_folder, blastp_path, db,
          taxa_list_file, outfmt, max_target_seqs, e_value_thresh, coverage_threshold, cpu, DEBUG, debug):
+    """
+    Main function of part_one. Performs most
+    :param file_path: The gene list file
+    :param contact: email address (RecBlast)
+    :param run_folder: path to run in
+    :param fasta_path: path of fasta files
+    :param first_blast_folder: path of first blast files
+    :param fasta_output_folder: path to the output fasta files
+    :param blastp_path: path to blastp
+    :param db: DB location
+    :param taxa_list_file: path to the taxa list file
+    :param outfmt: blast out format. constant.
+    :param max_target_seqs: Blast parameter
+    :param e_value_thresh: Blast parameter
+    :param coverage_threshold: Blast parameter
+    :param cpu: number of CPU to use in BLAST
+    :param DEBUG: DEBUG parameter
+    :param debug: debug function
+    :return:
+    """
 
     # defined in advance for efficiency:
     regex = re.compile(r'>.*=\d?\|')
     gene_line_regex = re.compile(r'([A-Za-z0-9_]+),(.+),([A-Za-z0-9_]+)')
 
-    # initialize a list for the blast update_match_results file paths
+    # initialize a list for the blast output file paths
     blast_one_output_files = []
 
     debug("Starting to work on the input csv file:")
@@ -100,7 +117,6 @@ def main(file_path, contact, run_folder, fasta_path, first_blast_folder, fasta_o
         with open(fasta_filename, 'w') as output:
             output.write("{}\n\n".format(valueList[0]))  # write fasta to update_match_results file
 
-        # currently using my path on jekyl for running blast
         blast_output_file = os.path.join(first_blast_folder, blast_out_filename)
         filtered_blast_out_filename = os.path.join(first_blast_folder, filtered_blast_out_filename)
 
@@ -144,3 +160,4 @@ def main(file_path, contact, run_folder, fasta_path, first_blast_folder, fasta_o
     print "Part 1 done at {}".format(strftime('%H:%M:%S'))
     return id_dic, blast_one_output_files
 
+# DONE with part 1

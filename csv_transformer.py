@@ -21,12 +21,11 @@ def gene_list_from_file(in_file):
 def gene_list_to_csv(gene_list, taxid, out_file):
     """
     Receives a list of gene names/accession numbers and an update_match_results file path.
-    :param gene_list:
-    :param taxid:
-    :param out_file:
+    :param gene_list: A list of gene names, uniprot IDs or accession numbers.
+    :param taxid: The reference taxon ID
+    :param out_file: Output file path.
     :return:
     """
-    # gene_list = list(set(gene_list))  # making the list unique
     # update_match_results file
     with open(out_file, "w") as output:
         # generating the csv we need for the analysis
@@ -67,13 +66,14 @@ def gene_list_to_csv(gene_list, taxid, out_file):
 
 def gene_file_to_csv(infile, tax_id, outfile=None):
     """
-    Receive a file with a list of genes, as well as an optional update_match_results file name.
+    Receive a file with a list of genes, as well as an optional output file name.
     Returns the filename of the update_match_results csv file.
-    :param infile:
-    :param tax_id:
-    :param outfile:
+    :param infile: A file containing a list of genes.
+    :param tax_id: Tax ID of the reference genome
+    :param outfile: Output file path
     :return:
     """
+    # if the outfile is not provided we will generate our own
     if not outfile:
         outfile = "{}.genes.csv".format(infile)
     input_accession_list = gene_list_from_file(infile)
@@ -81,24 +81,3 @@ def gene_file_to_csv(infile, tax_id, outfile=None):
         return True, outfile
     else:
         return False, ""
-
-
-if __name__ == "__main__":
-    from sys import argv
-    # list of gene names or accession, input by user
-    try:
-        input_file = argv[1]
-        tax_id = argv[2]
-        # we used 'control_genes_accesion.txt'  as input
-    except IndexError:
-        print "Please provide a file containing a list of gene names or accession numbers, and a tax_id (number)."
-        exit(1)
-    try:
-        output_file = argv[2]
-    except IndexError:
-        output_file = None
-        # output_file = "checkList.csv"  # FOR TEST
-    output_file = gene_file_to_csv(input_file, tax_id, output_file)
-    print "Wrote CSV to {}".format(output_file)
-
-# 6087

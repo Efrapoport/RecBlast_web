@@ -14,9 +14,9 @@ import queue
 from email_module import *
 # import RecBlastAWS
 
-os.environ['BLASTDB'] = "/blast/db"  # setting the $blastdb # check if it workswq
+os.environ['BLASTDB'] = "/blast/db"  # setting the $blastdb # check if it works
 
-# UPLOAD_FOLDER = r'C:\Users\Efrat\PycharmProjects\recblast\uploaded_files\'  # TODO: change later
+# UPLOAD_FOLDER = r'C:\Users\Efrat\PycharmProjects\recblast\uploaded_files\'
 UPLOAD_FOLDER = ""
 ALLOWED_EXTENSIONS = {'txt', 'csv'}
 
@@ -117,6 +117,7 @@ def validate_data(value_list):
         gene_file_path = value_list[5]
         max_allowed_genes = 10  # this is where we set the maximum allowed genes
         if exists_not_empty(gene_file_path):
+            gene_file_path = remove_commas(gene_file_path)
             if file_len(gene_file_path) > max_allowed_genes:
                 error_list.append(
                     "Genes provided exceed the maximum number of allowed genes: {}".format(max_allowed_genes))
@@ -167,7 +168,6 @@ def validate_data(value_list):
         # if is_csv:
         #     csv_path = gene_file_path  # hope it's a good and valid file...
         #     error_list.append("It's csv, we don't support it now!")
-        gene_file_path = remove_commas(gene_file_path)
 
         # else:  # if the csv is not provided, create it from a gene file
         if org_tax_id == "":
@@ -184,7 +184,8 @@ def validate_data(value_list):
         # validate taxa list
         # converting taxa names list
         taxa_file = remove_commas(taxa_file)
-        (taxa_list_file, bad_tax_list, good_tax_list, conversion_succeeded) = taxa_to_taxid.convert_tax_to_taxid(taxa_file)
+        (taxa_list_file, bad_tax_list, good_tax_list,
+         conversion_succeeded) = taxa_to_taxid.convert_tax_to_taxid(taxa_file)
         if conversion_succeeded:
             if bad_tax_list:
                 taxa_warning = "Bad taxa names found in the file provided: {}.Ignoring them.".format(

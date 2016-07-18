@@ -1,6 +1,5 @@
 #! /usr/bin/env python2
 
-# from Bio import Entrez
 from sys import exit
 import pickle
 from difflib import SequenceMatcher
@@ -45,7 +44,8 @@ def format_description(description, regex, species):
 # {gene_name: { animal1: [ [strict, not strict] ],  animal2: [],  animal3 = [], ...}}
 def update_match_results(enumerator, animal_org, target_name1, this_gene_dic, is_rbh, DEBUG, debug):
     """
-    Prints final update_match_results for each gene
+    Prints final output for each gene. Saves the output to this_gene_dic, but also returns a status which will be used
+    later to determine if the match is RBH/strict/non-strict.
     :param is_rbh: True if the value is RBH, False if not.
     :param this_gene_dic:
     :param enumerator: result number for gene_id
@@ -84,12 +84,12 @@ def write_all_output_csv(out_dict, org_list, csv_rbh_output_filename, csv_strict
     Writes formatted final output to CSV.
     :param out_dict: a dictionary of dictionaries
     :param org_list: a list of organisms
-    :param csv_rbh_output_filename:
-    :param csv_strict_output_filename:
-    :param csv_ns_output_filename:
-    :param good_tax_list:
-    :param DEBUG:
-    :param debug:
+    :param csv_rbh_output_filename: the output file path of the RBH csv
+    :param csv_strict_output_filename: the output file path of the strict csv
+    :param csv_ns_output_filename: the output file path of the non-strict csv
+    :param good_tax_list: a list of the currently good taxa (for validation)
+    :param DEBUG: the DEBUG flag (True for debug mode)
+    :param debug: the debug function
     :return:
     """
     # get all organisms
@@ -138,11 +138,11 @@ def write_all_output_csv(out_dict, org_list, csv_rbh_output_filename, csv_strict
 
 def get_definition(accession_list, DEBUG, debug, attempt_no=0):
     """
-    Receives a list of gis and returns a list of Entrez records
-    :param accession_list:
-    :param attempt_no:
-    :param DEBUG:
-    :param debug:
+    Receives a list of gis and returns a list of Entrez records.
+    :param accession_list: a list of accession numbers (or GIs)
+    :param attempt_no: How many times did we try already? (default: 0)
+    :param DEBUG: the DEBUG flag
+    :param debug: the debug function
     :return:
     """
     try:  # fetching from entrez
@@ -152,10 +152,10 @@ def get_definition(accession_list, DEBUG, debug, attempt_no=0):
         # get the definition and sequence of each gene
         results = [(res["GBSeq_definition"], res["GBSeq_sequence"]) for res in records]
         return results
+
     except Exception, e:
         print "Error connecting to server, trying again..."
         print "Error: {}".format(e)
-        print "Debug this!"
         debug("Error connecting to server, trying again...\n")
 
         # sleeping in case it's a temporary database problem
@@ -167,26 +167,26 @@ def get_definition(accession_list, DEBUG, debug, attempt_no=0):
         attempt_no += 1
         if attempt_no >= 10:  # If too many:
             print "Tried connecting to Entrez DB more than 10 times. Check your connection or try again later."
-            exit(1)
+            raise e
 
         # try again (recursive until max)
         return get_definition(accession_list, DEBUG, debug, attempt_no)  # working on all files together, from all genes
 
 
-# TODO: doc
 def prepare_candidates(file_lines_dict, index_set, enumerator, e_val_thresh, id_thresh, cov_thresh, accession_regex,
                        DEBUG, debug):
     """
-    Preparing the candidate genes for retrieval. Returning accession list.
-    :param file_lines_dict:
+    Parsing the blast lines (in several files together).
+    Preparing the candidate genes for retrieval. Returns accession list.
+    :param file_lines_dict: A dictionary with all file lines
     :param index_set: all remaining indexes for which reciprocal blast hasn't been completed. (list of nums)
     :param enumerator: current line number in each file
-    :param e_val_thresh:
-    :param id_thresh:
-    :param cov_thresh:
-    :param accession_regex:
-    :param DEBUG:
-    :param debug:
+    :param e_val_thresh: e-value threshold
+    :param id_thresh: identity threshold
+    :param cov_thresh: coverage threshold
+    :param accession_regex: the regex uses to parse the accession
+    :param DEBUG: DEBUG flag
+    :param debug: debug function
     :return:
     """
     debug("line number %s in files:" % enumerator)
@@ -230,30 +230,9 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
          csv_ns_output_filename, fasta_output_folder, DEBUG, debug, good_tax_list,
          id_dic=None, second_blast_for_ids_dict=None, gene_paths_list=None):
     """
-
-    :param second_blast_folder:
-    :param e_value_thresh:
-    :param identity_threshold:
-    :param coverage_threshold:
-    :param textual_match:
-    :param textual_sequence_match:
-    :param species:
-    :param accession_regex:
-    :param description_regex:
-    :param run_folder:
-    :param max_attempts_to_complete_rec_blast:
-    :param csv_rbh_output_filename:
-    :param csv_strict_output_filename:
-    :param csv_ns_output_filename:
-    :param good_tax_list:
-    :param fasta_output_folder:
-    :param DEBUG:
-    :param debug:
-    :param id_dic:
-    :param second_blast_for_ids_dict:
-    :param gene_paths_list:
-    :return:
+    The third part of RecBlast. Parses the blast output, compares, organizes and creates output files.
     """
+
     # deal with args in debug_func mode:
     if DEBUG:
         if not second_blast_for_ids_dict:
@@ -418,3 +397,4 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
     print "done!"
     return True
 
+# Done with part 3
