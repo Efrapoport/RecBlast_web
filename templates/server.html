@@ -34,7 +34,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="run_name">Run name</label>
+                    <label for="run_name"><abbr title="Enter a name for your run">Run name</abbr></label>
                     <input class="form-control" type="text" name="run_name" value="{{ value_dict.run_name }}"
                            placeholder="my_run" autocomplete="on">
                 </div>
@@ -48,13 +48,15 @@
 
 
                 <div class="form-group">
-                    <label for="reference_taxa">Reference taxon (Specific taxons, e.g 9606; Homo Sapiens)</label>
+                    <label for="reference_taxa"><abbr title="The query: a taxon you wish to compare to other taxa">
+                        Reference taxon (Specific taxons, e.g 9606; Homo Sapiens)</abbr></label>
                     <input class="form-control" type="text" name="reference_taxa" value="{{ value_dict.reference_taxa }}"
                            placeholder="Homo sapiens" autocomplete="on" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="taxa_list">List of taxa to check against (one species/tax_id per list, up to 10 taxa)</label>
+                    <label for="taxa_list"><abbr title="A list of taxa names or IDs (from NCBI Taxonomy)">
+                        List of taxa to check against (one species/tax_id per line, up to 10 taxa)</abbr></label>
             <textarea class="form-control" name="taxa_list" value="{{ value_dict.taxa_list }}" rows="6" placeholder="9606
 6221">9606
 6221</textarea>
@@ -67,7 +69,7 @@
 
                 <br/><br/>
                 <div class="form-group">
-                    <label for="gene_list">List of gene ids (UniProt full gene names, UniProt IDs or accession numbers, up to 10 genes)</label>
+                    <label for="gene_list"><abbr title="A list of gene IDs or names (from NCBI)">List of gene IDs (UniProt full gene names, UniProt IDs or accession numbers, up to 10 genes)</abbr></label>
             <textarea class="form-control" rows="6" name="gene_list" value="{{ value_dict.gene_list }}" placeholder="ADCY1_HUMAN
 CREB1_HUMAN">ADCY1_HUMAN
 CREB1_HUMAN</textarea>
@@ -86,29 +88,29 @@ CREB1_HUMAN</textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="evalue">eValue</label>
+                    <label for="evalue"><abbr title="e-value threshold for homologues">eValue</abbr></label>
                     <input type="number" class="form-control" name="evalue" value={{ value_dict.evalue }} max="10" min="0" size="10"
                            step="any"
                            pattern="((\d|\.|e-)*)" required>
                 </div>
                 <div class="form-group">
-                    <label for="back_evalue">eValue back (for the second BLAST against your reference taxon)</label>
+                    <label for="back_evalue"><abbr title="e-value threshold for homologues when aligned back to the reference taxon">eValue back (for the second BLAST against your reference taxon)</abbr></label>
                     <input type="number" class="form-control" name="back_evalue" value={{ value_dict.evalue }} max="10" min="0" size="10"
                            step="any"
                            pattern="((\d|\.|e-)*)">
                 </div>
                 <div class="form-group">
-                    <label for="identity">Identity</label>
+                    <label for="identity"><abbr title="Identity percent threshold for each alignment">Identity percent</abbr></label>
                     <input type="number" class="form-control" name="identity" value={{ value_dict.identity }} min="0" max="100" size="10"
                            required>
                 </div>
                 <div class="form-group">
-                    <label for="coverage">Coverage</label>
+                    <label for="coverage"><abbr title="Minimum query coverage threshold">Coverage</abbr></label>
                     <input type="number" class="form-control" name="coverage" value={{ value_dict.coverage }} min="0" max="100" size="10"
                            required>
                 </div>
                 <div class="form-group">
-                    <label for="string_similarity">String similarity</label>
+                    <label for="string_similarity"><abbr title="String similarity threshold for comparing gene descriptions">String similarity</abbr></label>
                     <input type="number" class="form-control" name="string_similarity" value={{ value_dict.string_similarity }} min="0" max="1"
                            step="any"
                            size="10"
