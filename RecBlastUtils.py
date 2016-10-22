@@ -287,7 +287,6 @@ def create_heatmap(df, path, cmap):
     """
     output_path = os.path.dirname(path)
     title = os.path.basename(path)
-    fig = plt.figure()
     plt.title(title)
     sns.heatmap(df, annot=True, fmt="d", cmap=cmap)
     output = join_folder(output_path, "%s_heatmap.png" % title)
@@ -306,7 +305,6 @@ def create_clustermap(df, path, cmap, col_cluster):
     """
     output_path = os.path.dirname(path)
     title = os.path.basename(path)
-    fig = plt.figure()
     plt.title(title)
     sns.clustermap(df, annot=True, col_cluster=col_cluster, fmt="d", cmap=cmap)
     output = join_folder(output_path, "%s_clustermap.png" % title)
