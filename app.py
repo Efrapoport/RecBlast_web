@@ -323,14 +323,12 @@ def handle_data():
 @app.route('/results/<user_id>')
 def results(user_id):
     download_path = users.get_result_by_user_id(user_id)
-    viz_dict = {
-    'non_strict_heatmap': "",
-    'non_strict_clustermap': "",
-    'strict_heatmap': "",
-    'strict_clustermap': "",
-    'rbh_heatmap': "",
-    'rbh_clustermap': ""
-    }
+    viz_dict = {'non_strict_heatmap': "",
+                'non_strict_clustermap': "",
+                'strict_heatmap': "",
+                'strict_clustermap': "",
+                'rbh_heatmap': "",
+                'rbh_clustermap': ""}
     for img in viz_dict:
         viz_dict[img] = users.get_image_for_user_id(user_id, img)  # get download URL for the image
     return render_template('results.html', user_id=user_id, download_path=download_path,
