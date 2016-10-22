@@ -25,6 +25,7 @@ def debug_func(s):
     return debug_s(s, DEBUG)
 
 
+
 def run_from_web(values_from_web, debug=debug_func):
     """
 
@@ -190,6 +191,16 @@ def run_from_web(values_from_web, debug=debug_func):
         print("part 3 done!")
         print("*******************")
 
+
+    # Visual output:
+    try:
+        image_paths = generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename,
+                                             csv_ns_output_filename)
+    except Exception, e:
+        print str(e)
+        exit(1)
+
+
     # Zip results:
     zip_output_path = zip_results(fasta_output_folder, csv_rbh_output_filename, csv_strict_output_filename,
                                   csv_ns_output_filename, run_folder)
@@ -204,6 +215,16 @@ def run_from_web(values_from_web, debug=debug_func):
     print("Generated the following link:\n{}".format(download_url))
     # set the download url for the user:
     users.set_result_for_user_id(run_id, download_url)
+
+    # uploading graphs
+    for image in image_paths:
+        image_name = os.path.basename(image)
+        image_path = '{}/{}'.format(run_id, image_name)
+        s3.upload_file(image_paths[image], s3_bucket_name, image_path)
+        download_url = generate_download_link(image_path, AWS_ACCESS_KEY, AWS_SECRET_KEY)
+        users.set_image_for_user_id(run_id, image, download_url)
+        debug("uploaded image {} to {}".format(image, download_url))
+    debug("Uploaded images.")
 
     # # cleaning:
     if not DEBUG:  # compresses and cleans everything

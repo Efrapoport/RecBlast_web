@@ -8,6 +8,10 @@ from Bio import Entrez
 import shutil
 import boto3
 import botocore
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
 
 
 TEMP_FILES_PATH = os.getcwd()  # TODO: change path for server
@@ -271,6 +275,82 @@ def generate_download_link(user_id, aws_access_key, aws_secret_key, expires=6048
     return presigned_url
 
 
+# Viz functions:
+
+def create_heatmap(df, path, cmap):
+    """
+
+    :param df: a padnas DataFrame
+    :param path: Path for the input and output file
+    :param cmap: colormap
+    :return:
+    """
+    output_path = os.path.dirname(path)
+    title = os.path.basename(path)
+    fig = plt.figure()
+    plt.title(title)
+    sns.heatmap(df, annot=True, fmt="d", cmap=cmap)
+    output = join_folder(output_path, "%s_heatmap.png" % title)
+    plt.savefig(output)
+    return output
+
+
+def create_clustermap(df, path, cmap, col_cluster):
+    """
+
+    :param df: a padnas DataFrame
+    :param path: Path for the input and output file
+    :param cmap: colormap
+    :param col_cluster: Boolean - True/False
+    :return:
+    """
+    output_path = os.path.dirname(path)
+    title = os.path.basename(path)
+    fig = plt.figure()
+    plt.title(title)
+    sns.clustermap(df, annot=True, col_cluster=col_cluster, fmt="d", cmap=cmap)
+    output = join_folder(output_path, "%s_clustermap.png" % title)
+    plt.savefig(output)
+    return output
+
+
+# generate heatmap and clustermap
+def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, csv_ns_output_filename):
+    """
+    The function generates heatmap + clustermap for the output data.
+    :param csv_rbh_output_filename:
+    :param csv_strict_output_filename:
+    :param csv_ns_output_filename:
+    :return:
+    """
+    # reading as data_frame
+    nonstrict_data = pd.read_csv(csv_ns_output_filename, index_col=0)
+    strict_data = pd.read_csv(csv_strict_output_filename, index_col=0)
+    rbh_data = pd.read_csv(csv_rbh_output_filename, index_col=0)
+
+    # transpose data
+    df_nonstrict = pd.DataFrame.transpose(nonstrict_data)
+    df_strict = pd.DataFrame.transpose(strict_data)
+    df_rbh = pd.DataFrame.transpose(rbh_data)
+
+    # clustering enabler (( one is enough because all files contains the same amount of genes ))
+    if len(df_nonstrict.columns) > 2:
+        col_cluster = True
+    else:
+        col_cluster = False
+
+    # create graph, (( title, cmap ))
+    # visual outputs:
+    viz_dict = dict()
+    viz_dict['non_strict_heatmap'] = create_heatmap(df_nonstrict, csv_ns_output_filename, "BuGn")
+    viz_dict['non_strict_clustermap'] = create_clustermap(df_nonstrict, csv_ns_output_filename, "PuBu", col_cluster)
+    viz_dict['strict_heatmap'] = create_heatmap(df_strict, csv_strict_output_filename, "Oranges")
+    viz_dict['strict_clustermap'] = create_clustermap(df_strict, csv_strict_output_filename, "YlOrRd", col_cluster)
+    viz_dict['rbh_heatmap'] = create_heatmap(df_rbh, csv_rbh_output_filename, "YiGnBu")
+    viz_dict['rbh_clustermap'] = create_clustermap(df_rbh, csv_rbh_output_filename, "bone_r", col_cluster)
+    return viz_dict
+
+
 # for efficiency
 strip = str.strip
 split = str.split
@@ -281,3 +361,4 @@ upper = str.upper
 lower = str.lower
 
 email_template = 'templates/email_templates/email_template.html'
+join_folder = os.path.join

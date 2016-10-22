@@ -14,60 +14,6 @@ import os
 
 all_genes_dict = {}
 
-def create_heatmap(df, path, cmap):
-    output_path = os.path.dirname(path)
-    title = os.path.basename(path)
-    fig = plt.figure()
-    plt.title(title)
-    sns.heatmap(df, annot=True, fmt="d", cmap=cmap)
-    output = os.path.join(output_path, "%s_heatmap.png"%title)
-    plt.savefig(output)
-
-def create_clustermap(df, path, cmap, col_cluster):
-    output_path = os.path.dirname(path)
-    title = os.path.basename(path)
-    fig = plt.figure()
-    plt.title(title)
-    sns.clustermap(df, annot=True, col_cluster=col_cluster, fmt="d", cmap="bone_r")
-    output = os.path.join(output_path, "%s_clustermap.png"%title)
-    plt.savefig(output)
-
-
-
-# generate heatmap and clustermap
-def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename,csv_ns_output_filename):
-
-    nonstrict_data = pd.read_csv(csv_ns_output_filename, index_col=0)
-    strict_data = pd.read_csv(csv_strict_output_filename, index_col=0)
-    rbh_data = pd.read_csv(csv_rbh_output_filename, index_col=0)
-
-    # read output csv files into dataframes
-    df_nonstrict = pd.DataFrame(nonstrict_data)
-    df_strict = pd.DataFrame(strict_data)
-    df_rbh = pd.DataFrame(rbh_data)
-
-    # transpose data
-    df_nonstrict = pd.DataFrame.transpose(df_nonstrict)
-    df_strict = pd.DataFrame.transpose(df_strict)
-    df_rbh = pd.DataFrame.transpose(df_rbh)
-
-    # clustering enabler (( one is enough because all files contains the same amount of genes ))
-    if len(df_nonstrict.columns) > 2:
-        col_cluster = True
-    else:
-        col_cluster = False
-
-    # create graph, (( title, cmap ))
-
-    create_heatmap(df_nonstrict, csv_ns_output_filename, "BuGn")
-    create_clustermap(df_nonstrict, csv_ns_output_filename, "PuBu", col_cluster)
-    create_heatmap(df_strict, csv_strict_output_filename, "Oranges")
-    create_clustermap(df_strict, csv_strict_output_filename, "YlOrRd", col_cluster)
-    create_heatmap(df_rbh, csv_rbh_output_filename, "YiGnBu")
-    create_clustermap(df_rbh, csv_rbh_output_filename, "bone_r", col_cluster)
-
-
-
 # find similarity between sequences
 def similar(a, b):
     """
@@ -450,10 +396,7 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
                             csv_ns_output_filename, DEBUG, debug, good_tax_list):
         print "Wrote csv output to files: {},{},{}".format(csv_rbh_output_filename, csv_strict_output_filename,
                                                            csv_ns_output_filename)
-        try:
-            generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename,csv_ns_output_filename)
-        except Exception as e:
-            print e
+
     print("Printed all the output fasta sequences to folder {}".format(fasta_output_folder))
 
     print "done!"
