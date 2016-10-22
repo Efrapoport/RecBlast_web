@@ -275,6 +275,7 @@ def generate_download_link(user_id, aws_access_key, aws_secret_key, expires=6048
     return presigned_url
 
 
+# TODO: document
 # Viz functions:
 
 def create_heatmap(df, path, cmap):
@@ -342,6 +343,7 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
     # create graph, (( title, cmap ))
     # visual outputs:
     viz_dict = dict()
+    debug("Creating heatmaps and clustermpaps:")
     viz_dict['non_strict_heatmap'] = create_heatmap(df_nonstrict, csv_ns_output_filename, "BuGn")
     viz_dict['non_strict_clustermap'] = create_clustermap(df_nonstrict, csv_ns_output_filename, "PuBu", col_cluster)
     viz_dict['strict_heatmap'] = create_heatmap(df_strict, csv_strict_output_filename, "Oranges")

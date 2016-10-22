@@ -191,16 +191,11 @@ def run_from_web(values_from_web, debug=debug_func):
         print("part 3 done!")
         print("*******************")
 
-
     # Visual output:
-    try:
-        image_paths = generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename,
-                                             csv_ns_output_filename)
-    except Exception, e:
-        print("Problem with visualizing.")
-        print str(e)
-        exit(1)
-
+    debug("Creating images:")
+    image_paths = generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename,
+                                         csv_ns_output_filename)
+    debug("Image paths saved!")
 
     # Zip results:
     zip_output_path = zip_results(fasta_output_folder, csv_rbh_output_filename, csv_strict_output_filename,
