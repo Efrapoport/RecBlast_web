@@ -9,9 +9,10 @@ import shutil
 import boto3
 import botocore
 import pandas as pd
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
-import os
 
 
 TEMP_FILES_PATH = os.getcwd()  # TODO: change path for server
