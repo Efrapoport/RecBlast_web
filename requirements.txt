@@ -11,3 +11,6 @@ redis
 rq
 boto3
 botocore
+pandas
+matplotlib
+seaborn
