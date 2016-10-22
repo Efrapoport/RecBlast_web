@@ -285,6 +285,7 @@ def create_heatmap(df, path, cmap):
     :param cmap: colormap
     :return:
     """
+    print("Creating heatmap for {}".format(path))
     output_path = os.path.dirname(path)
     title = os.path.basename(path)
     plt.title(title)
@@ -303,6 +304,7 @@ def create_clustermap(df, path, cmap, col_cluster):
     :param col_cluster: Boolean - True/False
     :return:
     """
+    print("Creating clustermap for {}".format(path))
     output_path = os.path.dirname(path)
     title = os.path.basename(path)
     plt.title(title)

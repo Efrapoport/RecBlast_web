@@ -197,6 +197,7 @@ def run_from_web(values_from_web, debug=debug_func):
         image_paths = generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename,
                                              csv_ns_output_filename)
     except Exception, e:
+        print("Problem with visualizing.")
         print str(e)
         exit(1)
 
