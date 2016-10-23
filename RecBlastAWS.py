@@ -198,26 +198,33 @@ def run_from_web(values_from_web, debug=debug_func):
     debug("Image paths saved!")
 
     # Zip results:
-    zip_output_path = zip_results(fasta_output_folder, csv_rbh_output_filename, csv_strict_output_filename,
-                                  csv_ns_output_filename, run_folder)
+    files_to_zip = [csv_rbh_output_filename, csv_strict_output_filename, csv_ns_output_filename] + image_paths.values()
+    # files_to_zip = [csv_rbh_output_filename, csv_strict_output_filename, csv_ns_output_filename] + \
+    #                [join_folder(run_folder, '{}.png'.format(x)) for x in image_paths.keys()]
+    # zip_output_path = zip_results(fasta_output_folder, csv_rbh_output_filename, csv_strict_output_filename,
+    #                               csv_ns_output_filename, run_folder)
+    zip_output_path = zip_results(fasta_output_folder, files_to_zip, run_folder)
     print("saved zip output to: {}".format(zip_output_path))
 
     # S3 client
     s3 = get_s3_client(AWS_ACCESS_KEY, AWS_SECRET_KEY)
     debug("Connected to s3 client")
+
+    # uploading ZIP file
     s3.upload_file(zip_output_path, s3_bucket_name, '{}/output.zip'.format(run_id))
     debug("Uploaded file.")
-    download_url = generate_download_link(run_id, AWS_ACCESS_KEY, AWS_SECRET_KEY)
+    download_url = generate_download_link(run_id, 'output.zip', AWS_ACCESS_KEY, AWS_SECRET_KEY)
     print("Generated the following link:\n{}".format(download_url))
     # set the download url for the user:
     users.set_result_for_user_id(run_id, download_url)
 
     # uploading graphs
     for image in image_paths:
-        image_name = os.path.basename(image)
+        image_name = os.path.basename(image_paths[image])
         image_path = '{}/{}'.format(run_id, image_name)
-        s3.upload_file(image_paths[image], s3_bucket_name, image_path)
-        download_url = generate_download_link(image_path, AWS_ACCESS_KEY, AWS_SECRET_KEY)
+        s3.upload_file(image_paths[image], s3_bucket_name, image_path)  # uploading the file
+        debug("Uploaded image {}".format(image_name))
+        download_url = generate_download_link(run_id, image_name, AWS_ACCESS_KEY, AWS_SECRET_KEY)
         users.set_image_for_user_id(run_id, image, download_url)
         debug("uploaded image {} to {}".format(image, download_url))
     debug("Uploaded images.")
