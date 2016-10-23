@@ -350,7 +350,7 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
     viz_dict['non_strict_clustermap'] = create_clustermap(df_nonstrict, csv_ns_output_filename, "PuBu", col_cluster)
     viz_dict['strict_heatmap'] = create_heatmap(df_strict, csv_strict_output_filename, "Oranges")
     viz_dict['strict_clustermap'] = create_clustermap(df_strict, csv_strict_output_filename, "YlOrRd", col_cluster)
-    viz_dict['rbh_heatmap'] = create_heatmap(df_rbh, csv_rbh_output_filename, "YiGnBu")
+    viz_dict['rbh_heatmap'] = create_heatmap(df_rbh, csv_rbh_output_filename, "YlGnBu")
     viz_dict['rbh_clustermap'] = create_clustermap(df_rbh, csv_rbh_output_filename, "bone_r", col_cluster)
     return viz_dict
 
