@@ -20,11 +20,11 @@ TEMP_FILES_PATH = os.getcwd()  # TODO: change path for server
 
 def prepare_files(items, file_name, user_id, files_path=TEMP_FILES_PATH):
     """Receives a list of items and a file to write them to, then writes them to file and returns the file path."""
-    full_path = os.path.join(files_path, "_".join([user_id, file_name]))
+    full_path = join_folder(files_path, "_".join([user_id, file_name]))
     # items = list(set(items))  # make the list unique  # unnecessary
     with open(full_path, 'w') as f:
         for item in items:
-            f.write(item + "\n")
+            f.write("{}\n".format(item))  # improved efficiency
     return full_path
 
 
@@ -57,17 +57,18 @@ def zip_results(fasta_output_path, csv_rbh_output_filename, csv_strict_output_fi
     :param output_path:
     :return:
     """
-    zip_file = os.path.join(output_path, "output.zip")
-    fastas = [os.path.join(fasta_output_path, x) for x in os.listdir(fasta_output_path)]
+    zip_file = join_folder(output_path, "output.zip")
+    fastas = [join_folder(fasta_output_path, x) for x in os.listdir(fasta_output_path)]
+    bname = os.path.basename  # for efficiency
     with zipfile.ZipFile(zip_file, mode='w') as zf:
         # adding all fasta files
         for fasta in fastas:
-            zf.write(fasta, os.path.basename(fasta))
+            zf.write(fasta, bname(fasta))
         # zf.write(csv_file_path, os.path.basename(csv_file_path))  # add csv file
         # add csv files
-        zf.write(csv_rbh_output_filename, os.path.basename(csv_rbh_output_filename))  # add csv file
-        zf.write(csv_strict_output_filename, os.path.basename(csv_strict_output_filename))  # add csv file
-        zf.write(csv_ns_output_filename, os.path.basename(csv_ns_output_filename))  # add csv file
+        zf.write(csv_rbh_output_filename, bname(csv_rbh_output_filename))  # add csv file
+        zf.write(csv_strict_output_filename, bname(csv_strict_output_filename))  # add csv file
+        zf.write(csv_ns_output_filename, bname(csv_ns_output_filename))  # add csv file
     return zip_file
 
 
@@ -344,7 +345,7 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
     # create graph, (( title, cmap ))
     # visual outputs:
     viz_dict = dict()
-    debug("Creating heatmaps and clustermpaps:")
+    print("Creating heatmaps and clustermpaps")
     viz_dict['non_strict_heatmap'] = create_heatmap(df_nonstrict, csv_ns_output_filename, "BuGn")
     viz_dict['non_strict_clustermap'] = create_clustermap(df_nonstrict, csv_ns_output_filename, "PuBu", col_cluster)
     viz_dict['strict_heatmap'] = create_heatmap(df_strict, csv_strict_output_filename, "Oranges")
@@ -360,8 +361,9 @@ split = str.split
 replace = str.replace
 re_search = re.search
 re_sub = re.sub
+re_match = re.match
 upper = str.upper
 lower = str.lower
+join_folder = os.path.join
 
 email_template = 'templates/email_templates/email_template.html'
-join_folder = os.path.join

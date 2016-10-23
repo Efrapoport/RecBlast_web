@@ -229,7 +229,7 @@ def upload(request):
         if uploaded_file and allowed_file(uploaded_file.filename):
             filename = secure_filename(uploaded_file.filename)
             print filename
-            uploaded_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            uploaded_file.save(join_folder(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('uploaded_file',
                                     filename=filename))
     return

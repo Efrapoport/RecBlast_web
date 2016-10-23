@@ -79,35 +79,35 @@ def run_from_web(values_from_web, debug=debug_func):
     os.environ['BLASTDB'] = "/blast/db"  # setting the $blastdb # check if it workswq
     # defining run folder
     # run_folder = os.getcwd()   # current folder
-    run_folder = os.path.join(storage_path, run_id)
+    run_folder = join_folder(storage_path, run_id)
 
     create_folder_if_needed(run_folder)  # creating the folder
 
     # creating the rest of the folders:
     # folders:
-    first_blast_folder = os.path.join(run_folder, "first_blast")
+    first_blast_folder = join_folder(run_folder, "first_blast")
     create_folder_if_needed(first_blast_folder)  # creating the folder
-    second_blast_folder = os.path.join(run_folder, "second_blast")
+    second_blast_folder = join_folder(run_folder, "second_blast")
     create_folder_if_needed(second_blast_folder)  # creating the folder
-    fasta_path = os.path.join(run_folder, "fasta_path")
+    fasta_path = join_folder(run_folder, "fasta_path")
     create_folder_if_needed(fasta_path)
-    fasta_output_folder = os.path.join(run_folder, "fasta_output")
+    fasta_output_folder = join_folder(run_folder, "fasta_output")
     create_folder_if_needed(fasta_output_folder)
-    csv_rbh_output_filename = os.path.join(run_folder, "output_table_RBH.csv")
-    csv_strict_output_filename = os.path.join(run_folder, "output_table_strict.csv")
-    csv_ns_output_filename = os.path.join(run_folder, "output_table_non-strict.csv")
-    # s3_output_path = os.path.join(storage_path, 'output.zip')
+    csv_rbh_output_filename = join_folder(run_folder, "output_table_RBH.csv")
+    csv_strict_output_filename = join_folder(run_folder, "output_table_strict.csv")
+    csv_ns_output_filename = join_folder(run_folder, "output_table_non-strict.csv")
+    # s3_output_path = join_folder(storage_path, 'output.zip')
     # Decide on taxa input:
-    # tax_db = os.path.join(script_folder, "db/taxdump/tax_names.txt")  # moved to web server
+    # tax_db = join_folder(script_folder, "db/taxdump/tax_names.txt")  # moved to web server
     # database location
-    db_folder = os.path.join(script_folder, "DB")
+    db_folder = join_folder(script_folder, "DB")
 
     # write csv file
-    csv_path = os.path.join(run_folder, "input_genes.csv")
+    csv_path = join_folder(run_folder, "input_genes.csv")
     with open(csv_path, 'w') as csv_file:
         csv_file.write(csv_file_content)
     # write taxa file
-    taxa_list_file = os.path.join(run_folder, "taxa_file.csv")
+    taxa_list_file = join_folder(run_folder, "taxa_file.csv")
     with open(taxa_list_file, 'w') as taxa_file:
         taxa_file.write(taxa_file_content)
 
@@ -124,14 +124,14 @@ def run_from_web(values_from_web, debug=debug_func):
     # forward db:
     db = "/blast/db/nr"  # default value. Doesn't matter at this point
 
-    target_db_folder = os.path.join(db_folder, org_tax_id)  # this is where our db should be
+    target_db_folder = join_folder(db_folder, org_tax_id)  # this is where our db should be
     # check if it exists - if so use it as a db
     if os.path.exists(target_db_folder):
-        target_db = os.path.join(target_db_folder, 'db')
+        target_db = join_folder(target_db_folder, 'db')
         print "{} already has a local version of BLASTP db!".format(org_tax_id)
     else:  # if not create an alias
         print("No local version of {} database exists. Creating a subset now.".format(org_tax_id))
-        gi_file = os.path.join(run_folder, "taxon_gi_file_list.txt")  # the path to the new file
+        gi_file = join_folder(run_folder, "taxon_gi_file_list.txt")  # the path to the new file
         target_db = subset_db(org_tax_id, gi_file, db_folder, db, False, DEBUG, debug)
 
     #################
