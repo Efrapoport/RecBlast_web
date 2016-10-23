@@ -22,8 +22,8 @@ global DEBUG
 
 
 def debug_func(s):
+    """Wrapper for the debug print function"""
     return debug_s(s, DEBUG)
-
 
 
 def run_from_web(values_from_web, debug=debug_func):
