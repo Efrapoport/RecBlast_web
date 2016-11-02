@@ -352,7 +352,7 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
     col_cluster = False
     if len(df_nonstrict.columns) > 2:
         col_cluster = True
-    elif len(df_nonstrict.rows) <= 2:
+    elif len(df_nonstrict) <= 2:
         dont_cluster = True
 
     # create graph, (( title, cmap ))
