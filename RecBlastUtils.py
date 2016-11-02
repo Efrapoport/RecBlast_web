@@ -292,15 +292,19 @@ def create_heatmap(df, path, title, cmap):
     :return:
     """
     print("Creating heatmap for {}".format(path))
+    # TODO: fix title (showing but it's not that good)
     output_path = os.path.dirname(path)
-    plt.title(title)
+    fig = plt.figure(figsize=(16, 10), dpi=180)
+    plt.title(title, fontsize=16)
     sns.heatmap(df, annot=True, fmt="d", cmap=cmap)
+    plt.yticks(fontsize=10)
+    plt.xticks(fontsize=10)
     output = join_folder(output_path, "%s_heatmap.png" % title)
     plt.savefig(output)
     return output
 
 
-def create_clustermap(df, path, title, cmap, col_cluster):
+def create_clustermap(df, path, title, cmap, col_cluster, dont_cluster):
     """
 
     :param df: a padnas DataFrame
@@ -310,10 +314,16 @@ def create_clustermap(df, path, title, cmap, col_cluster):
     :return:
     """
     print("Creating clustermap for {}".format(path))
+    # TODO: add/fix title
+    # TODO: change figure size
     output_path = os.path.dirname(path)
-    plt.title(title)
-    sns.clustermap(df, annot=True, col_cluster=col_cluster, fmt="d", cmap=cmap)
     output = join_folder(output_path, "%s_clustermap.png" % title)
+    fig = plt.figure(figsize=(16, 10), dpi=180)
+    if not dont_cluster:
+        sns.clustermap(df, annot=True, col_cluster=col_cluster, fmt="d", cmap=cmap, linewidths=.5)
+        plt.suptitle(title, fontsize=16)
+        plt.yticks(fontsize=10)
+        plt.xticks(fontsize=10)
     plt.savefig(output)
     return output
 
@@ -338,8 +348,11 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
     df_rbh = pd.DataFrame.transpose(rbh_data)
 
     # clustering enabler (( one is enough because all files contains the same amount of genes ))
+    dont_cluster = False
     if len(df_nonstrict.columns) > 2:
         col_cluster = True
+    elif df_nonstrict.columns <= 2:
+        dont_cluster = True
     else:
         col_cluster = False
 
@@ -349,12 +362,13 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
     print("Creating heatmaps and clustermpaps")
     viz_dict['non_strict_heatmap'] = create_heatmap(df_nonstrict, csv_ns_output_filename, 'non_strict', "BuGn")
     viz_dict['non_strict_clustermap'] = create_clustermap(df_nonstrict, csv_ns_output_filename, 'non_strict', "PuBu",
-                                                          col_cluster)
+                                                          col_cluster, dont_cluster)
     viz_dict['strict_heatmap'] = create_heatmap(df_strict, csv_strict_output_filename, 'strict', "Oranges")
     viz_dict['strict_clustermap'] = create_clustermap(df_strict, csv_strict_output_filename, 'strict', "YlOrRd",
-                                                      col_cluster)
+                                                      col_cluster, dont_cluster)
     viz_dict['RBH_heatmap'] = create_heatmap(df_rbh, csv_rbh_output_filename, 'RBH', "YlGnBu")
-    viz_dict['RBH_clustermap'] = create_clustermap(df_rbh, csv_rbh_output_filename, 'RBH', "bone_r", col_cluster)
+    viz_dict['RBH_clustermap'] = create_clustermap(df_rbh, csv_rbh_output_filename, 'RBH', "bone_r", col_cluster,
+                                                   dont_cluster)
     return viz_dict
 
 
