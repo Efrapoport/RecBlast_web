@@ -349,12 +349,11 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
 
     # clustering enabler (( one is enough because all files contains the same amount of genes ))
     dont_cluster = False
+    col_cluster = False
     if len(df_nonstrict.columns) > 2:
         col_cluster = True
-    elif df_nonstrict.columns <= 2:
+    elif len(df_nonstrict.rows) <= 2:
         dont_cluster = True
-    else:
-        col_cluster = False
 
     # create graph, (( title, cmap ))
     # visual outputs:
