@@ -337,8 +337,8 @@ def results(user_id):
                            nsheatmap_path= viz_dict['non_strict_heatmap'],
                            sclustermap_path=viz_dict['strict_clustermap'],
                            sheatmap_path=viz_dict['strict_heatmap'],
-                           rbhclustermap_path=viz_dict['rbh_clustermap'],
-                           rbhheatmap_path=viz_dict['rbh_heatmap'])
+                           rbhclustermap_path=viz_dict['RBH_clustermap'],
+                           rbhheatmap_path=viz_dict['RBH_heatmap'])
 
 
 @app.route('/flashio')
