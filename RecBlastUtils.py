@@ -451,14 +451,12 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
     viz_dict['non_strict_barplot'] = create_barplot(melt_df_nonstrict, csv_ns_output_filename, 'non_strict', "BuGn",
                                                     genes_list, species_list)
     viz_dict['non_strict_barplot_2'] = create_barplot_orthologues_by_species(melt_df_nonstrict, csv_ns_output_filename,
-                                                                            'non_strict', "BuGn",
+                                                                             'non_strict', "BuGn",
                                                                              genes_list, species_list)
-    viz_dict['non_strict_swarmplot'] = create_swarmplot(melt_df_nonstrict, csv_ns_output_filename,
-                                                                            'non_strict', "BuGn",
+    viz_dict['non_strict_swarmplot'] = create_swarmplot(melt_df_nonstrict, csv_ns_output_filename, 'non_strict', "BuGn",
                                                         genes_list, species_list)
     viz_dict['non_strict_barplotsum'] = create_barplot_sum(melt_df_nonstrict, csv_ns_output_filename,
-                                                                            'non_strict', "BuGn", genes_list, species_list)
-
+                                                           'non_strict', "BuGn", genes_list, species_list)
 
     viz_dict['strict_heatmap'] = create_heatmap(df_strict, csv_strict_output_filename, 'strict', "Oranges")
     viz_dict['strict_clustermap'] = create_clustermap(df_strict, csv_strict_output_filename, 'strict', "YlOrRd",
@@ -481,7 +479,6 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
                                                                             'RBH', "YlGnBu", genes_list, species_list)
     viz_dict['RBH_swarmplot'] = create_swarmplot(melt_df_rbh, csv_rbh_output_filename,
                                                                             'RBH', "YlGnBu", genes_list, species_list)
-
     viz_dict['RBH_barplotsum'] = create_barplot_sum(melt_df_rbh, csv_rbh_output_filename,
                                                                             'RBH', "YlGnBu", genes_list, species_list)
 
