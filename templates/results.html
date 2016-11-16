@@ -30,12 +30,22 @@
 
         <div class="col-md-10 col-md-offset-1">
             <h3>Graphs and data visualizations</h3>
-            <img src="{{ nsclustermap_path }}" alt="" class="nonstrict_clustermap"/><br>
-            <img src="{{ nsheatmap_path }}" alt="" class="nonstrict_heatmap"/><br>
-            <img src="{{ sclustermap_path }}" alt="" class="strict_clustermap"/><br>
-            <img src="{{ sheatmap_path }}" alt="" class="strict_heatmap"/><br>
-            <img src="{{ rbhclustermap_path }}" alt="" class="rbh_clustermap"/><br>
-            <img src="{{ rbhheatmap_path }}" alt="" class="rbh_heatmap"/><br>
+
+            <div class="same_category">
+            <img src="{{ nsclustermap_path }}" alt="" class="map" id="nonstrict_clustermap"/>
+            <img src="{{ nsheatmap_path }}" alt="" class="map" id="nonstrict_heatmap"/><br>
+            </div>
+
+            <div class="same_category">
+            <img src="{{ sclustermap_path }}" alt="" class="map" id="strict_clustermap"/>
+            <img src="{{ sheatmap_path }}" alt="" class="map" id="strict_heatmap"/><br>
+            </div>
+
+            <div class="same_category">
+            <img src="{{ rbhclustermap_path }}" alt="" class="map" id="rbh_clustermap"/>
+            <img src="{{ rbhheatmap_path }}" alt="" class="map" id="rbh_heatmap"/><br>
+            </div>
+
         </div>
 
     </div>
