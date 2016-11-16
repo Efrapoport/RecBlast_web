@@ -30,12 +30,34 @@
 
         <div class="col-md-10 col-md-offset-1">
             <h3>Graphs and data visualizations</h3>
-            <img src="{{ nsclustermap_path }}" alt="" class="nonstrict_clustermap"/><br>
-            <img src="{{ nsheatmap_path }}" alt="" class="nonstrict_heatmap"/><br>
-            <img src="{{ sclustermap_path }}" alt="" class="strict_clustermap"/><br>
-            <img src="{{ sheatmap_path }}" alt="" class="strict_heatmap"/><br>
-            <img src="{{ rbhclustermap_path }}" alt="" class="rbh_clustermap"/><br>
-            <img src="{{ rbhheatmap_path }}" alt="" class="rbh_heatmap"/><br>
+
+            <div class="same_category">
+            <a href="{{ nsclustermap_path }}"><img src="{{ nsclustermap_path }}" alt="" class="map" id="nonstrict_clustermap"/></a>
+            <img src="{{ nsheatmap_path }}" alt="" class="map" id="nonstrict_heatmap"/>
+            <img src="{{ nsbarplot_path }}" alt="" class="map" id="non_strict_barplot"/>
+            <img src="{{ nsbarplot2_path }}" alt="" class="map" id="non_strict_barplot_2"/>
+            <img src="{{ nsswarmplot_path }}" alt="" class="map" id="non_strict_swarmplot"/>
+            <img src="{{ nsbarplotsum_path }}" alt="" class="map" id="non_strict_barplotsum"/><br>
+            </div>
+
+            <div class="same_category">
+            <img src="{{ sclustermap_path }}" alt="" class="map" id="strict_clustermap"/>
+            <img src="{{ sheatmap_path }}" alt="" class="map" id="strict_heatmap"/>
+            <img src="{{ sbarplot_path }}" alt="" class="map" id="strict_barplot"/>
+            <img src="{{ sbarplot2_path }}" alt="" class="map" id="strict_barplot_2"/>
+            <img src="{{ sswarmplot_path }}" alt="" class="map" id="strict_swarmplot"/>
+            <img src="{{ sbarplotsum_path }}" alt="" class="map" id="strict_barplotsum"/><br>
+            </div>
+
+            <div class="same_category">
+            <img src="{{ rbhclustermap_path }}" alt="" class="map" id="rbh_clustermap"/>
+            <img src="{{ rbhheatmap_path }}" alt="" class="map" id="rbh_heatmap"/>
+            <img src="{{ rbhbarplot_path }}" alt="" class="map" id="RBH_barplot"/>
+            <img src="{{ rbhbarplot2_path }}" alt="" class="map" id="RBH_barplot_2"/>
+            <img src="{{ rbhswarmplot_path }}" alt="" class="map" id="RBH_swarmplot'"/>
+            <img src="{{ rbhbarplotsum_path }}" alt="" class="map" id="RBH_barplotsum"/><br>
+            </div>
+
         </div>
 
     </div>
@@ -51,7 +73,6 @@
     <title>RecBlast</title>
     <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="/static/css/normalize.css">
-    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 
 <header class="main-header">

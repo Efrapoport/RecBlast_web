@@ -283,6 +283,89 @@ def generate_download_link(user_id, fname, aws_access_key, aws_secret_key, expir
 # TODO: document
 # Viz functions:
 
+def melt(df):
+    species_columns = [x for x in df.columns if x != 'gene_name']
+    melted_df = pd.melt(df, id_vars=['gene_name'], value_vars=species_columns, var_name='Species', value_name='orthologues')
+    melted_df.columns = ['Gene Name', 'Species', 'Orthologues']
+    # species list
+    species = sorted(species_columns)
+    # genes list
+    genes = sorted(df['Gene Name'].unique().tolist())
+
+    return melted_df, species, genes
+
+
+# receives melted_df
+def create_swarmplot(df, path, title, cmap, genes, species):
+    print("Creating clustermap for {}".format(path))
+    # TODO: change figure size
+    output_path = os.path.dirname(path)
+    output = join_folder(output_path, "%s_swarmplot.png" % title)
+    fig = plt.figure(figsize=(16, 10), dpi=180)
+    sns.swarmplot(x='Gene Name', y='Orthologues', hue='Species', order=genes, hue_order=species, data=df)
+    plt.ylabel("#Orthologues")
+    plt.xlabel("Species")
+    plt.ylim(0, )
+    plt.suptitle(title, fontsize=16)
+    plt.yticks(fontsize=10)
+    plt.xticks(fontsize=10)
+    plt.savefig(output)
+    return output
+
+
+# receives melted_df
+def create_barplot(df, path, title, cmap, genes, species):
+    # print("Creating clustermap for {}".format(path))
+    # TODO: change figure size
+    output_path = os.path.dirname(path)
+    output = join_folder(output_path, "%s_barplot.png" % title)
+    fig = plt.figure(figsize=(16, 10), dpi=180)
+    sns.barplot(x='Gene Name', y='Orthologues', hue='Species', order=genes, hue_order=species, data=df)
+    plt.ylabel("#Orthologues")
+    plt.xlabel("Species")
+    plt.ylim(0, )
+    plt.suptitle(title, fontsize=16)
+    plt.yticks(fontsize=10)
+    plt.xticks(fontsize=10)
+    plt.savefig(output)
+    return output
+
+
+# receives melted_df
+def create_barplot_orthologues_by_species(df, path, title, cmap, genes, species):
+    # print("Creating clustermap for {}".format(path))
+    # TODO: change figure size
+    output_path = os.path.dirname(path)
+    output = join_folder(output_path, "%s_barplot_byspecies.png" % title)
+    fig = plt.figure(figsize=(16, 10), dpi=180)
+    sns.barplot(x='Species', y='Orthologues', hue='Gene Name', order=species, hue_order=genes, data=df)
+    plt.ylabel("#Orthologues")
+    plt.xlabel("Species")
+    plt.ylim(0, )
+    plt.suptitle(title, fontsize=16)
+    plt.yticks(fontsize=10)
+    plt.xticks(fontsize=10)
+    plt.savefig(output)
+    return output
+
+
+def create_barplot_sum(df, path, title, cmap, genes, species):
+    # print("Creating clustermap for {}".format(path))
+    # TODO: change figure size
+    output_path = os.path.dirname(path)
+    output = join_folder(output_path, "%s_barplot_sum.png" % title)
+    fig = plt.figure(figsize=(16, 10), dpi=180)
+    sns.barplot(x='Species', y='Orthologues', estimator=sum, ci=None, order=species, hue_order=genes, data=df)
+    plt.ylabel("#Orthologues")
+    plt.xlabel("Species")
+    plt.ylim(0, )
+    plt.suptitle(title, fontsize=16)
+    plt.yticks(fontsize=10)
+    plt.xticks(fontsize=10)
+    plt.savefig(output)
+    return output
+
+
 def create_heatmap(df, path, title, cmap):
     """
 
@@ -345,6 +428,11 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
     df_strict = pd.DataFrame.transpose(strict_data)
     df_rbh = pd.DataFrame.transpose(rbh_data)
 
+    # melt them!
+    melt_df_nonstrict, genes_list, species_list = melt(df_nonstrict)
+    melt_df_strict = melt(df_strict)
+    melt_df_rbh = melt(df_rbh)
+
     # clustering enabler (( one is enough because all files contains the same amount of genes ))
     dont_cluster = False
     col_cluster = False
@@ -360,12 +448,43 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
     viz_dict['non_strict_heatmap'] = create_heatmap(df_nonstrict, csv_ns_output_filename, 'non_strict', "BuGn")
     viz_dict['non_strict_clustermap'] = create_clustermap(df_nonstrict, csv_ns_output_filename, 'non_strict', "PuBu",
                                                           col_cluster, dont_cluster)
+    viz_dict['non_strict_barplot'] = create_barplot(melt_df_nonstrict, csv_ns_output_filename, 'non_strict', "BuGn",
+                                                    genes_list, species_list)
+    viz_dict['non_strict_barplot_2'] = create_barplot_orthologues_by_species(melt_df_nonstrict, csv_ns_output_filename,
+                                                                            'non_strict', "BuGn",
+                                                                             genes_list, species_list)
+    viz_dict['non_strict_swarmplot'] = create_swarmplot(melt_df_nonstrict, csv_ns_output_filename,
+                                                                            'non_strict', "BuGn",
+                                                        genes_list, species_list)
+    viz_dict['non_strict_barplotsum'] = create_barplot_sum(melt_df_nonstrict, csv_ns_output_filename,
+                                                                            'non_strict', "BuGn", genes_list, species_list)
+
+
     viz_dict['strict_heatmap'] = create_heatmap(df_strict, csv_strict_output_filename, 'strict', "Oranges")
     viz_dict['strict_clustermap'] = create_clustermap(df_strict, csv_strict_output_filename, 'strict', "YlOrRd",
                                                       col_cluster, dont_cluster)
+    viz_dict['strict_barplot'] = create_barplot(melt_df_strict, csv_strict_output_filename, 'strict', "YlOrRd",
+                                                genes_list, species_list)
+    viz_dict['strict_barplot_2'] = create_barplot_orthologues_by_species(melt_df_strict, csv_strict_output_filename,
+                                                                            'strict', "YlOrRd", genes_list, species_list)
+    viz_dict['strict_swarmplot'] = create_swarmplot(melt_df_strict, csv_strict_output_filename,
+                                                                            'strict', "YlOrRd", genes_list, species_list)
+    viz_dict['strict_barplotsum'] = create_barplot_sum(melt_df_strict, csv_strict_output_filename,
+                                                                            'strict', "BuGn", genes_list, species_list)
+
     viz_dict['RBH_heatmap'] = create_heatmap(df_rbh, csv_rbh_output_filename, 'RBH', "YlGnBu")
-    viz_dict['RBH_clustermap'] = create_clustermap(df_rbh, csv_rbh_output_filename, 'RBH', "bone_r", col_cluster,
+    viz_dict['RBH_clustermap'] = create_clustermap(df_rbh, csv_rbh_output_filename, 'RBH', "YlGnBu", col_cluster,
                                                    dont_cluster)
+    viz_dict['RBH_barplot'] = create_barplot(melt_df_rbh, csv_rbh_output_filename, 'RBH', "YlGnBu",
+                                             genes_list, species_list)
+    viz_dict['RBH_barplot_2'] = create_barplot_orthologues_by_species(melt_df_rbh, csv_rbh_output_filename,
+                                                                            'RBH', "YlGnBu", genes_list, species_list)
+    viz_dict['RBH_swarmplot'] = create_swarmplot(melt_df_rbh, csv_rbh_output_filename,
+                                                                            'RBH', "YlGnBu", genes_list, species_list)
+
+    viz_dict['RBH_barplotsum'] = create_barplot_sum(melt_df_rbh, csv_rbh_output_filename,
+                                                                            'RBH', "YlGnBu", genes_list, species_list)
+
     return viz_dict
 
 

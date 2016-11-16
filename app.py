@@ -326,19 +326,48 @@ def results(user_id):
     download_path = users.get_result_by_user_id(user_id)
     viz_dict = {'non_strict_heatmap': "",
                 'non_strict_clustermap': "",
+                'non_strict_barplot': "",
+                'non_strict_barplot_2': "",
+                'non_strict_swarmplot': "",
+                'non_strict_barplotsum': "",
                 'strict_heatmap': "",
                 'strict_clustermap': "",
+                'strict_barplot': "",
+                'strict_barplot_2': "",
+                'strict_swarmplot': "",
+                'strict_barplotsum': "",
                 'RBH_heatmap': "",
-                'RBH_clustermap': ""}
+                'RBH_clustermap': "",
+                'RBH_barplot': "",
+                'RBH_barplot_2': "",
+                'RBH_swarmplot': "",
+                'RBH_barplotsum': ""
+                }
     for img in viz_dict:
         viz_dict[img] = users.get_image_for_user_id(user_id, img)  # get download URL for the image
     return render_template('results.html', user_id=user_id, download_path=download_path,
                            nsclustermap_path=viz_dict['non_strict_clustermap'],
                            nsheatmap_path=viz_dict['non_strict_heatmap'],
+                           nsbarplot_path=viz_dict['non_strict_barplot'],
+                           nsbarplot2_path=viz_dict['non_strict_barplot_2'],
+                           nsswarmplot_path=viz_dict['non_strict_swarmplot'],
+                           nsbarplotsum_path = viz_dict['non_strict_barplotsum'],
+
                            sclustermap_path=viz_dict['strict_clustermap'],
                            sheatmap_path=viz_dict['strict_heatmap'],
+                           sbarplot_path = viz_dict['strict_barplot'],
+                           sbarplot2_path=viz_dict['strict_barplot_2'],
+                           sswarmplot_path=viz_dict['strict_swarmplot'],
+                           sbarplotsum_path=viz_dict['strict_barplotsum'],
+
                            rbhclustermap_path=viz_dict['RBH_clustermap'],
-                           rbhheatmap_path=viz_dict['RBH_heatmap'])
+                           rbhheatmap_path=viz_dict['RBH_heatmap'],
+                           rbhbarplot_path = viz_dict['RBH_barplot'],
+                           rbhbarplot2_path=viz_dict['RBH_barplot_2'],
+                           rbhswarmplot_path=viz_dict['RBH_swarmplot'],
+                           rbhbarplotsum_path=viz_dict['RBH_barplotsum'])
+
+
 
 
 @app.route('/flashio')

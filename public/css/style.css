@@ -209,6 +209,24 @@ img {
     width: 40%;
 }
 
+/* new */
+
+div {
+    display: block;
+}
+
+.same_category .map {
+    display: inline-block;
+    margin: 0 auto;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
+    vertical-align: middle;
+    width: 40%;
+    height: 40%;
+}
+
+
+
 
 /* =================================
   Media Queries
