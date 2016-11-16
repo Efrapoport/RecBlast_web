@@ -297,7 +297,7 @@ def melt(df):
 
 # receives melted_df
 def create_swarmplot(df, path, title, cmap, genes, species):
-    print("Creating clustermap for {}".format(path))
+    print("Creating swarmplot for {}".format(path))
     # TODO: change figure size
     output_path = os.path.dirname(path)
     output = join_folder(output_path, "%s_swarmplot.png" % title)
@@ -315,7 +315,7 @@ def create_swarmplot(df, path, title, cmap, genes, species):
 
 # receives melted_df
 def create_barplot(df, path, title, cmap, genes, species):
-    # print("Creating clustermap for {}".format(path))
+    print("Creating barplot for {}".format(path))
     # TODO: change figure size
     output_path = os.path.dirname(path)
     output = join_folder(output_path, "%s_barplot.png" % title)
@@ -333,7 +333,7 @@ def create_barplot(df, path, title, cmap, genes, species):
 
 # receives melted_df
 def create_barplot_orthologues_by_species(df, path, title, cmap, genes, species):
-    # print("Creating clustermap for {}".format(path))
+    print("Creating barplot_species for {}".format(path))
     # TODO: change figure size
     output_path = os.path.dirname(path)
     output = join_folder(output_path, "%s_barplot_byspecies.png" % title)
@@ -350,7 +350,7 @@ def create_barplot_orthologues_by_species(df, path, title, cmap, genes, species)
 
 
 def create_barplot_sum(df, path, title, cmap, genes, species):
-    # print("Creating clustermap for {}".format(path))
+    print("Creating barplot_sum for {}".format(path))
     # TODO: change figure size
     output_path = os.path.dirname(path)
     output = join_folder(output_path, "%s_barplot_sum.png" % title)
@@ -439,7 +439,8 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
     if len(df_nonstrict.columns) > 2:
         col_cluster = True
     elif len(df_nonstrict) <= 2:
-        dont_cluster = True
+        # dont_cluster = True
+        dont_cluster = False  # I removed it for now
 
     # create graph, (( title, cmap ))
     # visual outputs:
@@ -457,19 +458,19 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
                                                         genes_list, species_list)
     viz_dict['non_strict_barplotsum'] = create_barplot_sum(melt_df_nonstrict, csv_ns_output_filename,
                                                            'non_strict', "BuGn", genes_list, species_list)
-
+    # strict
     viz_dict['strict_heatmap'] = create_heatmap(df_strict, csv_strict_output_filename, 'strict', "Oranges")
     viz_dict['strict_clustermap'] = create_clustermap(df_strict, csv_strict_output_filename, 'strict', "YlOrRd",
                                                       col_cluster, dont_cluster)
     viz_dict['strict_barplot'] = create_barplot(melt_df_strict, csv_strict_output_filename, 'strict', "YlOrRd",
                                                 genes_list, species_list)
     viz_dict['strict_barplot_2'] = create_barplot_orthologues_by_species(melt_df_strict, csv_strict_output_filename,
-                                                                            'strict', "YlOrRd", genes_list, species_list)
+                                                                         'strict', "YlOrRd", genes_list, species_list)
     viz_dict['strict_swarmplot'] = create_swarmplot(melt_df_strict, csv_strict_output_filename,
-                                                                            'strict', "YlOrRd", genes_list, species_list)
+                                                    'strict', "YlOrRd", genes_list, species_list)
     viz_dict['strict_barplotsum'] = create_barplot_sum(melt_df_strict, csv_strict_output_filename,
-                                                                            'strict', "BuGn", genes_list, species_list)
-
+                                                       'strict', "YlOrRd", genes_list, species_list)
+    # RBH
     viz_dict['RBH_heatmap'] = create_heatmap(df_rbh, csv_rbh_output_filename, 'RBH', "YlGnBu")
     viz_dict['RBH_clustermap'] = create_clustermap(df_rbh, csv_rbh_output_filename, 'RBH', "YlGnBu", col_cluster,
                                                    dont_cluster)
