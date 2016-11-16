@@ -67,7 +67,8 @@ def serve_css(filename):
 def server():
     value_dict = {"evalue": 1e-5, "back_evalue": 1e-5, "identity": 37,
                   "coverage": 50, "reference_taxa": "Homo sapiens", "run_name": "", "string_similarity": 0.4,
-                  "email": "", "taxa_list": "9606\n\r10090", "gene_list": "ADCY1_HUMAN\r\nP16220"}
+                  "email": "", "taxa_list": "6087\n\r10090", "gene_list": "ADCY1_HUMAN\r\nCREB1_HUMAN"}
+                      # "ADCY1_HUMAN\r\nP16220"}
     return render_template("server.html", value_dict=value_dict)
 
 
@@ -327,17 +328,17 @@ def results(user_id):
                 'non_strict_clustermap': "",
                 'strict_heatmap': "",
                 'strict_clustermap': "",
-                'rbh_heatmap': "",
-                'rbh_clustermap': ""}
+                'RBH_heatmap': "",
+                'RBH_clustermap': ""}
     for img in viz_dict:
         viz_dict[img] = users.get_image_for_user_id(user_id, img)  # get download URL for the image
     return render_template('results.html', user_id=user_id, download_path=download_path,
                            nsclustermap_path=viz_dict['non_strict_clustermap'],
-                           nsheatmap_path= viz_dict['non_strict_heatmap'],
+                           nsheatmap_path=viz_dict['non_strict_heatmap'],
                            sclustermap_path=viz_dict['strict_clustermap'],
                            sheatmap_path=viz_dict['strict_heatmap'],
-                           rbhclustermap_path=viz_dict['rbh_clustermap'],
-                           rbhheatmap_path=viz_dict['rbh_heatmap'])
+                           rbhclustermap_path=viz_dict['RBH_clustermap'],
+                           rbhheatmap_path=viz_dict['RBH_heatmap'])
 
 
 @app.route('/flashio')

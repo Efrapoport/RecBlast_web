@@ -46,8 +46,9 @@ def remove_commas(file_name):
     return file_name
 
 
-def zip_results(fasta_output_path, csv_rbh_output_filename, csv_strict_output_filename, csv_ns_output_filename,
-                output_path):
+# def zip_results(fasta_output_path, csv_rbh_output_filename, csv_strict_output_filename, csv_ns_output_filename,
+# output_path):
+def zip_results(fasta_output_path, zip_list, output_path):
     """
     Receives a folder containing fasta sequences and a csv file, adds them all to zip.
     :param fasta_output_path:
@@ -66,9 +67,11 @@ def zip_results(fasta_output_path, csv_rbh_output_filename, csv_strict_output_fi
             zf.write(fasta, bname(fasta))
         # zf.write(csv_file_path, os.path.basename(csv_file_path))  # add csv file
         # add csv files
-        zf.write(csv_rbh_output_filename, bname(csv_rbh_output_filename))  # add csv file
-        zf.write(csv_strict_output_filename, bname(csv_strict_output_filename))  # add csv file
-        zf.write(csv_ns_output_filename, bname(csv_ns_output_filename))  # add csv file
+        for f_to_zip in zip_list:
+            zf.write(f_to_zip, bname(f_to_zip))
+        # zf.write(csv_rbh_output_filename, bname(csv_rbh_output_filename))  # add csv file
+        # zf.write(csv_strict_output_filename, bname(csv_strict_output_filename))  # add csv file
+        # zf.write(csv_ns_output_filename, bname(csv_ns_output_filename))  # add csv file
     return zip_file
 
 
@@ -261,7 +264,7 @@ def get_s3_client(aws_access_key, aws_secret_key):
                         config=botocore.client.Config(signature_version='s3v4'))
 
 
-def generate_download_link(user_id, aws_access_key, aws_secret_key, expires=604800):
+def generate_download_link(user_id, fname, aws_access_key, aws_secret_key, expires=604800):
     """Generates S3 download link that expires after 1 week."""
     session = botocore.session.get_session()
     session.set_credentials(aws_access_key, aws_secret_key)
@@ -272,7 +275,7 @@ def generate_download_link(user_id, aws_access_key, aws_secret_key, expires=6048
                                    config=botocore.client.Config(signature_version='s3v4')
                                    )
     presigned_url = client.generate_presigned_url('get_object', Params={'Bucket': 'recblastdata',
-                                                                        'Key': '{}/output.zip'.format(user_id)},
+                                                                        'Key': '{}/{}'.format(user_id, fname)},
                                                   ExpiresIn=expires)
     return presigned_url
 
@@ -280,7 +283,7 @@ def generate_download_link(user_id, aws_access_key, aws_secret_key, expires=6048
 # TODO: document
 # Viz functions:
 
-def create_heatmap(df, path, cmap):
+def create_heatmap(df, path, title, cmap):
     """
 
     :param df: a padnas DataFrame
@@ -289,16 +292,19 @@ def create_heatmap(df, path, cmap):
     :return:
     """
     print("Creating heatmap for {}".format(path))
+    # TODO: fix title (showing but it's not that good)
     output_path = os.path.dirname(path)
-    title = os.path.basename(path)
-    plt.title(title)
+    fig = plt.figure(figsize=(16, 10), dpi=180)
+    plt.title(title, fontsize=16)
     sns.heatmap(df, annot=True, fmt="d", cmap=cmap)
+    plt.yticks(fontsize=10)
+    plt.xticks(fontsize=10)
     output = join_folder(output_path, "%s_heatmap.png" % title)
     plt.savefig(output)
     return output
 
 
-def create_clustermap(df, path, cmap, col_cluster):
+def create_clustermap(df, path, title, cmap, col_cluster, dont_cluster):
     """
 
     :param df: a padnas DataFrame
@@ -308,11 +314,16 @@ def create_clustermap(df, path, cmap, col_cluster):
     :return:
     """
     print("Creating clustermap for {}".format(path))
+    # TODO: add/fix title
+    # TODO: change figure size
     output_path = os.path.dirname(path)
-    title = os.path.basename(path)
-    plt.title(title)
-    sns.clustermap(df, annot=True, col_cluster=col_cluster, fmt="d", cmap=cmap)
     output = join_folder(output_path, "%s_clustermap.png" % title)
+    fig = plt.figure(figsize=(16, 10), dpi=180)
+    if not dont_cluster:
+        sns.clustermap(df, annot=True, col_cluster=col_cluster, fmt="d", cmap=cmap, linewidths=.5)
+        plt.suptitle(title, fontsize=16)
+        plt.yticks(fontsize=10)
+        plt.xticks(fontsize=10)
     plt.savefig(output)
     return output
 
@@ -337,21 +348,26 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
     df_rbh = pd.DataFrame.transpose(rbh_data)
 
     # clustering enabler (( one is enough because all files contains the same amount of genes ))
+    dont_cluster = False
+    col_cluster = False
     if len(df_nonstrict.columns) > 2:
         col_cluster = True
-    else:
-        col_cluster = False
+    elif len(df_nonstrict) <= 2:
+        dont_cluster = True
 
     # create graph, (( title, cmap ))
     # visual outputs:
     viz_dict = dict()
     print("Creating heatmaps and clustermpaps")
-    viz_dict['non_strict_heatmap'] = create_heatmap(df_nonstrict, csv_ns_output_filename, "BuGn")
-    viz_dict['non_strict_clustermap'] = create_clustermap(df_nonstrict, csv_ns_output_filename, "PuBu", col_cluster)
-    viz_dict['strict_heatmap'] = create_heatmap(df_strict, csv_strict_output_filename, "Oranges")
-    viz_dict['strict_clustermap'] = create_clustermap(df_strict, csv_strict_output_filename, "YlOrRd", col_cluster)
-    viz_dict['rbh_heatmap'] = create_heatmap(df_rbh, csv_rbh_output_filename, "YlGnBu")
-    viz_dict['rbh_clustermap'] = create_clustermap(df_rbh, csv_rbh_output_filename, "bone_r", col_cluster)
+    viz_dict['non_strict_heatmap'] = create_heatmap(df_nonstrict, csv_ns_output_filename, 'non_strict', "BuGn")
+    viz_dict['non_strict_clustermap'] = create_clustermap(df_nonstrict, csv_ns_output_filename, 'non_strict', "PuBu",
+                                                          col_cluster, dont_cluster)
+    viz_dict['strict_heatmap'] = create_heatmap(df_strict, csv_strict_output_filename, 'strict', "Oranges")
+    viz_dict['strict_clustermap'] = create_clustermap(df_strict, csv_strict_output_filename, 'strict', "YlOrRd",
+                                                      col_cluster, dont_cluster)
+    viz_dict['RBH_heatmap'] = create_heatmap(df_rbh, csv_rbh_output_filename, 'RBH', "YlGnBu")
+    viz_dict['RBH_clustermap'] = create_clustermap(df_rbh, csv_rbh_output_filename, 'RBH', "bone_r", col_cluster,
+                                                   dont_cluster)
     return viz_dict
 
 
