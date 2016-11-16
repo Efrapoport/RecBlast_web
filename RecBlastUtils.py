@@ -292,7 +292,6 @@ def create_heatmap(df, path, title, cmap):
     :return:
     """
     print("Creating heatmap for {}".format(path))
-    # TODO: fix title (showing but it's not that good)
     output_path = os.path.dirname(path)
     fig = plt.figure(figsize=(16, 10), dpi=180)
     plt.title(title, fontsize=16)
@@ -314,7 +313,6 @@ def create_clustermap(df, path, title, cmap, col_cluster, dont_cluster):
     :return:
     """
     print("Creating clustermap for {}".format(path))
-    # TODO: add/fix title
     # TODO: change figure size
     output_path = os.path.dirname(path)
     output = join_folder(output_path, "%s_clustermap.png" % title)
