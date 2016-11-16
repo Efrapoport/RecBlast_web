@@ -290,7 +290,7 @@ def melt(df):
     # species list
     species = sorted(species_columns)
     # genes list
-    genes = sorted(df['Gene Name'].unique().tolist())
+    genes = sorted(melted_df['Gene Name'].unique().tolist())
 
     return melted_df, species, genes
 
