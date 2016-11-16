@@ -300,7 +300,7 @@ def create_swarmplot(df, path, title, cmap, genes, species):
     print("Creating clustermap for {}".format(path))
     # TODO: change figure size
     output_path = os.path.dirname(path)
-    output = join_folder(output_path, "%s_swarmplot.png" % title)  # TODO change
+    output = join_folder(output_path, "%s_swarmplot.png" % title)
     fig = plt.figure(figsize=(16, 10), dpi=180)
     sns.swarmplot(x='Gene Name', y='Orthologues', hue='Species', order=genes, hue_order=species, data=df)
     plt.ylabel("#Orthologues")
@@ -318,7 +318,7 @@ def create_barplot(df, path, title, cmap, genes, species):
     # print("Creating clustermap for {}".format(path))
     # TODO: change figure size
     output_path = os.path.dirname(path)
-    output = join_folder(output_path, "%s_barplot.png" % title)  # TODO change
+    output = join_folder(output_path, "%s_barplot.png" % title)
     fig = plt.figure(figsize=(16, 10), dpi=180)
     sns.barplot(x='Gene Name', y='Orthologues', hue='Species', order=genes, hue_order=species, data=df)
     plt.ylabel("#Orthologues")
@@ -336,7 +336,7 @@ def create_barplot_orthologues_by_species(df, path, title, cmap, genes, species)
     # print("Creating clustermap for {}".format(path))
     # TODO: change figure size
     output_path = os.path.dirname(path)
-    output = join_folder(output_path, "%s_barplot_byspecies.png" % title)  # TODO change
+    output = join_folder(output_path, "%s_barplot_byspecies.png" % title)
     fig = plt.figure(figsize=(16, 10), dpi=180)
     sns.barplot(x='Species', y='Orthologues', hue='Gene Name', order=species, hue_order=genes, data=df)
     plt.ylabel("#Orthologues")
@@ -353,7 +353,7 @@ def create_barplot_sum(df, path, title, cmap, genes, species):
     # print("Creating clustermap for {}".format(path))
     # TODO: change figure size
     output_path = os.path.dirname(path)
-    output = join_folder(output_path, "%s_barplot_sum.png" % title)  # TODO change
+    output = join_folder(output_path, "%s_barplot_sum.png" % title)
     fig = plt.figure(figsize=(16, 10), dpi=180)
     sns.barplot(x='Species', y='Orthologues', estimator=sum, ci=None, order=species, hue_order=genes, data=df)
     plt.ylabel("#Orthologues")
