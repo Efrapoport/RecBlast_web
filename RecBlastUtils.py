@@ -423,23 +423,21 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
     :param csv_ns_output_filename:
     :return:
     """
-    # reading as data_frame
+    # reading as data_frame (for heat/clustermaps)
     nonstrict_data = pd.read_csv(csv_ns_output_filename, index_col=0)
     strict_data = pd.read_csv(csv_strict_output_filename, index_col=0)
     rbh_data = pd.read_csv(csv_rbh_output_filename, index_col=0)
 
     # transpose data
-    df_nonstrict_no_t = pd.DataFrame(nonstrict_data)
-    df_strict_no_t = pd.DataFrame(strict_data)
-    df_rbh_no_t = pd.DataFrame(rbh_data)
     df_nonstrict = pd.DataFrame.transpose(nonstrict_data)
     df_strict = pd.DataFrame.transpose(strict_data)
     df_rbh = pd.DataFrame.transpose(rbh_data)
 
-    # melt them!
-    melt_df_nonstrict, genes_list, species_list = melt(df_nonstrict_no_t)
-    melt_df_strict, genes_list, species_list = melt(df_strict_no_t)
-    melt_df_rbh, genes_list, species_list = melt(df_rbh_no_t)
+    # reading for other plots and melting them:
+    melt_df_nonstrict, genes_list, species_list = melt(pd.read_csv(csv_ns_output_filename))
+    melt_df_strict, genes_list, species_list = melt(pd.read_csv(csv_strict_output_filename))
+    melt_df_rbh, genes_list, species_list = melt(pd.read_csv(csv_rbh_output_filename))
+    del nonstrict_data, strict_data, rbh_data
 
     # clustering enabler (( one is enough because all files contains the same amount of genes ))
     dont_cluster = False
