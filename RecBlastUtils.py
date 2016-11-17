@@ -285,7 +285,7 @@ def generate_download_link(user_id, fname, aws_access_key, aws_secret_key, expir
 
 def melt(df):
     species_columns = [x for x in df.columns if x != 'gene_name']
-    melted_df = pd.melt(df, id_vars=['gene_name'], value_vars=species_columns, var_name='Species', value_name='orthologues')
+    melted_df = pd.melt(df, id_vars=['gene_name'], value_vars=species_columns, var_name='Species', value_name='Orthologues')
     melted_df.columns = ['Gene Name', 'Species', 'Orthologues']
     # species list
     species = sorted(species_columns)
@@ -303,13 +303,13 @@ def create_swarmplot(df, path, title, cmap, genes, species):
     fig = plt.figure(figsize=(16, 10), dpi=180)
     sns.swarmplot(x='Gene Name', y='Orthologues', hue='Species', order=genes, hue_order=species, data=df, palette=cmap)
     plt.ylabel("#Orthologues")
-    plt.xlabel("Species")
+    plt.xlabel("Gene Name")
     plt.ylim(0, )
-    plt.suptitle(title, fontsize=16)
+    # plt.suptitle(title, fontsize=16)
     plt.yticks(fontsize=10)
     plt.xticks(fontsize=10)
     plt.savefig(output)
-    plt.close(fig)
+    plt.close()
     return output
 
 
@@ -322,13 +322,13 @@ def create_barplot(df, path, title, cmap, genes, species):
     fig = plt.figure(figsize=(16, 10), dpi=180)
     sns.barplot(x='Gene Name', y='Orthologues', hue='Species', order=genes, hue_order=species, data=df, palette=cmap)
     plt.ylabel("#Orthologues")
-    plt.xlabel("Species")
+    plt.xlabel("Gene Name")
     plt.ylim(0, )
-    plt.suptitle(title, fontsize=16)
+    # plt.suptitle(title, fontsize=16)
     plt.yticks(fontsize=10)
     plt.xticks(fontsize=10)
     plt.savefig(output)
-    plt.close(fig)
+    plt.close()
     return output
 
 
@@ -339,15 +339,15 @@ def create_barplot_orthologues_by_species(df, path, title, cmap, genes, species)
     output_path = os.path.dirname(path)
     output = join_folder(output_path, "%s_barplot_byspecies.png" % title)
     fig = plt.figure(figsize=(16, 10), dpi=180)
-    sns.barplot(x='Species', y='Orthologues', hue='Gene Name', order=species, hue_order=genes, data=df, palette=cmap)
+    sns.barplot(x='Species', y='Orthologues', hue='Gene Name', data=df, order=species, hue_order=genes, palette=cmap)
     plt.ylabel("#Orthologues")
     plt.xlabel("Species")
     plt.ylim(0, )
-    plt.suptitle(title, fontsize=16)
+    # plt.suptitle(title, fontsize=16)
     plt.yticks(fontsize=10)
     plt.xticks(fontsize=10)
     plt.savefig(output)
-    plt.close(fig)
+    plt.close()
     return output
 
 
@@ -357,15 +357,15 @@ def create_barplot_sum(df, path, title, cmap, genes, species):
     output_path = os.path.dirname(path)
     output = join_folder(output_path, "%s_barplot_sum.png" % title)
     fig = plt.figure(figsize=(16, 10), dpi=180)
-    sns.barplot(x='Species', y='Orthologues', estimator=sum, ci=None, order=species, hue_order=genes, data=df, palette=cmap)
+    sns.barplot(x='Species', y='Orthologues', estimator=sum, ci=None, data=df, order=species, palette=cmap)
     plt.ylabel("#Orthologues")
     plt.xlabel("Species")
     plt.ylim(0, )
-    plt.suptitle(title, fontsize=16)
+    # plt.suptitle(title, fontsize=16)
     plt.yticks(fontsize=10)
     plt.xticks(fontsize=10)
     plt.savefig(output)
-    plt.close(fig)
+    plt.close()
     return output
 
 
@@ -386,7 +386,7 @@ def create_heatmap(df, path, title, cmap):
     plt.xticks(fontsize=10)
     output = join_folder(output_path, "%s_heatmap.png" % title)
     plt.savefig(output)
-    plt.close(fig)
+    plt.close()
     return output
 
 
@@ -410,7 +410,7 @@ def create_clustermap(df, path, title, cmap, col_cluster, dont_cluster):
         plt.yticks(fontsize=10)
         plt.xticks(fontsize=10)
     plt.savefig(output)
-    plt.close(fig)
+    plt.close()
     return output
 
 
@@ -429,14 +429,17 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
     rbh_data = pd.read_csv(csv_rbh_output_filename, index_col=0)
 
     # transpose data
+    df_nonstrict_no_t = pd.DataFrame(nonstrict_data)
+    df_strict_no_t = pd.DataFrame(strict_data)
+    df_rbh_no_t = pd.DataFrame(rbh_data)
     df_nonstrict = pd.DataFrame.transpose(nonstrict_data)
     df_strict = pd.DataFrame.transpose(strict_data)
     df_rbh = pd.DataFrame.transpose(rbh_data)
 
     # melt them!
-    melt_df_nonstrict, genes_list, species_list = melt(df_nonstrict)
-    melt_df_strict, genes_list, species_list = melt(df_strict)
-    melt_df_rbh, genes_list, species_list = melt(df_rbh)
+    melt_df_nonstrict, genes_list, species_list = melt(df_nonstrict_no_t)
+    melt_df_strict, genes_list, species_list = melt(df_strict_no_t)
+    melt_df_rbh, genes_list, species_list = melt(df_rbh_no_t)
 
     # clustering enabler (( one is enough because all files contains the same amount of genes ))
     dont_cluster = False
