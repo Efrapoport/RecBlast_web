@@ -406,7 +406,7 @@ def create_clustermap(df, path, title, cmap, col_cluster, dont_cluster):
     fig = plt.figure(figsize=(16, 10), dpi=180)
     if not dont_cluster:
         sns.clustermap(df, annot=True, col_cluster=col_cluster, fmt="d", cmap=cmap, linewidths=.5)
-        plt.suptitle(title, fontsize=16)
+        # plt.suptitle(title, fontsize=16)
         plt.yticks(fontsize=10)
         plt.xticks(fontsize=10)
     plt.savefig(output)
