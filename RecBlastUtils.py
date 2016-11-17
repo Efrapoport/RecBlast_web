@@ -430,8 +430,8 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
 
     # melt them!
     melt_df_nonstrict, genes_list, species_list = melt(df_nonstrict)
-    melt_df_strict = melt(df_strict)
-    melt_df_rbh = melt(df_rbh)
+    melt_df_strict, genes_list, species_list = melt(df_strict)
+    melt_df_rbh, genes_list, species_list = melt(df_rbh)
 
     # clustering enabler (( one is enough because all files contains the same amount of genes ))
     dont_cluster = False
