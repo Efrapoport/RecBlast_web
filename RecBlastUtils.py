@@ -291,7 +291,6 @@ def melt(df):
     species = sorted(species_columns)
     # genes list
     genes = sorted(melted_df['Gene Name'].unique().tolist())
-
     return melted_df, species, genes
 
 
@@ -302,7 +301,7 @@ def create_swarmplot(df, path, title, cmap, genes, species):
     output_path = os.path.dirname(path)
     output = join_folder(output_path, "%s_swarmplot.png" % title)
     fig = plt.figure(figsize=(16, 10), dpi=180)
-    sns.swarmplot(x='Gene Name', y='Orthologues', hue='Species', order=genes, hue_order=species, data=df)
+    sns.swarmplot(x='Gene Name', y='Orthologues', hue='Species', order=genes, hue_order=species, data=df, palette=cmap)
     plt.ylabel("#Orthologues")
     plt.xlabel("Species")
     plt.ylim(0, )
@@ -310,6 +309,7 @@ def create_swarmplot(df, path, title, cmap, genes, species):
     plt.yticks(fontsize=10)
     plt.xticks(fontsize=10)
     plt.savefig(output)
+    plt.close(fig)
     return output
 
 
@@ -320,7 +320,7 @@ def create_barplot(df, path, title, cmap, genes, species):
     output_path = os.path.dirname(path)
     output = join_folder(output_path, "%s_barplot.png" % title)
     fig = plt.figure(figsize=(16, 10), dpi=180)
-    sns.barplot(x='Gene Name', y='Orthologues', hue='Species', order=genes, hue_order=species, data=df)
+    sns.barplot(x='Gene Name', y='Orthologues', hue='Species', order=genes, hue_order=species, data=df, palette=cmap)
     plt.ylabel("#Orthologues")
     plt.xlabel("Species")
     plt.ylim(0, )
@@ -328,6 +328,7 @@ def create_barplot(df, path, title, cmap, genes, species):
     plt.yticks(fontsize=10)
     plt.xticks(fontsize=10)
     plt.savefig(output)
+    plt.close(fig)
     return output
 
 
@@ -338,7 +339,7 @@ def create_barplot_orthologues_by_species(df, path, title, cmap, genes, species)
     output_path = os.path.dirname(path)
     output = join_folder(output_path, "%s_barplot_byspecies.png" % title)
     fig = plt.figure(figsize=(16, 10), dpi=180)
-    sns.barplot(x='Species', y='Orthologues', hue='Gene Name', order=species, hue_order=genes, data=df)
+    sns.barplot(x='Species', y='Orthologues', hue='Gene Name', order=species, hue_order=genes, data=df, palette=cmap)
     plt.ylabel("#Orthologues")
     plt.xlabel("Species")
     plt.ylim(0, )
@@ -346,6 +347,7 @@ def create_barplot_orthologues_by_species(df, path, title, cmap, genes, species)
     plt.yticks(fontsize=10)
     plt.xticks(fontsize=10)
     plt.savefig(output)
+    plt.close(fig)
     return output
 
 
@@ -355,7 +357,7 @@ def create_barplot_sum(df, path, title, cmap, genes, species):
     output_path = os.path.dirname(path)
     output = join_folder(output_path, "%s_barplot_sum.png" % title)
     fig = plt.figure(figsize=(16, 10), dpi=180)
-    sns.barplot(x='Species', y='Orthologues', estimator=sum, ci=None, order=species, hue_order=genes, data=df)
+    sns.barplot(x='Species', y='Orthologues', estimator=sum, ci=None, order=species, hue_order=genes, data=df, palette=cmap)
     plt.ylabel("#Orthologues")
     plt.xlabel("Species")
     plt.ylim(0, )
@@ -363,6 +365,7 @@ def create_barplot_sum(df, path, title, cmap, genes, species):
     plt.yticks(fontsize=10)
     plt.xticks(fontsize=10)
     plt.savefig(output)
+    plt.close(fig)
     return output
 
 
@@ -383,6 +386,7 @@ def create_heatmap(df, path, title, cmap):
     plt.xticks(fontsize=10)
     output = join_folder(output_path, "%s_heatmap.png" % title)
     plt.savefig(output)
+    plt.close(fig)
     return output
 
 
@@ -406,6 +410,7 @@ def create_clustermap(df, path, title, cmap, col_cluster, dont_cluster):
         plt.yticks(fontsize=10)
         plt.xticks(fontsize=10)
     plt.savefig(output)
+    plt.close(fig)
     return output
 
 

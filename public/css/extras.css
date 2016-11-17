@@ -2,14 +2,17 @@
     background: url('/imgs/congruent_pentagon.png');
 }
 
-.same_category .map {
+.map {
     display: inline-block;
-    margin: 0 auto;
-    padding-left: 2.5%;
-    padding-right: 2.5%;
+    margin: 3% auto;
+    padding-left: 2%;
+    padding-right: 2%;
     vertical-align: middle;
     width: 10%;
-    height: 40%;
 }
 
-
+.same_category {
+    display: block;
+    float: left;
+    margin: 1%;
+}
