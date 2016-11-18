@@ -302,7 +302,7 @@ def create_swarmplot(df, path, title, cmap, genes, species):
     output = join_folder(output_path, "%s_swarmplot.png" % title)
     fig = plt.figure(figsize=(16, 10), dpi=180)
     sns.swarmplot(x='Gene Name', y='Orthologues', hue='Species', order=genes, hue_order=species, data=df, palette=cmap)
-    plt.ylabel("#Orthologues")
+    plt.ylabel("# Orthologues")
     plt.xlabel("Gene Name")
     plt.ylim(0, )
     # plt.suptitle(title, fontsize=16)
@@ -437,7 +437,8 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
     melt_df_nonstrict, genes_list, species_list = melt(pd.read_csv(csv_ns_output_filename))
     melt_df_strict, genes_list, species_list = melt(pd.read_csv(csv_strict_output_filename))
     melt_df_rbh, genes_list, species_list = melt(pd.read_csv(csv_rbh_output_filename))
-    del nonstrict_data, strict_data, rbh_data
+    print "Species list is: {}".format(species_list)
+    print "Genes list is: {}".format(genes_list)
 
     # clustering enabler (( one is enough because all files contains the same amount of genes ))
     dont_cluster = False
