@@ -284,6 +284,7 @@ def generate_download_link(user_id, fname, aws_access_key, aws_secret_key, expir
 # Viz functions:
 
 def melt(df):
+    """Melting the dataframe, returning a melted df, a list of species and a list of genes."""
     species_columns = [x for x in df.columns if x != 'gene_name']
     melted_df = pd.melt(df, id_vars=['gene_name'], value_vars=species_columns, var_name='Species', value_name='Orthologues')
     melted_df.columns = ['Gene Name', 'Species', 'Orthologues']
@@ -434,9 +435,9 @@ def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, 
     df_rbh = pd.DataFrame.transpose(rbh_data)
 
     # reading for other plots and melting them:
-    melt_df_nonstrict, genes_list, species_list = melt(pd.read_csv(csv_ns_output_filename))
-    melt_df_strict, genes_list, species_list = melt(pd.read_csv(csv_strict_output_filename))
-    melt_df_rbh, genes_list, species_list = melt(pd.read_csv(csv_rbh_output_filename))
+    melt_df_nonstrict, species_list, genes_list = melt(pd.read_csv(csv_ns_output_filename))
+    melt_df_strict, species_list, genes_list = melt(pd.read_csv(csv_strict_output_filename))
+    melt_df_rbh, species_list, genes_list = melt(pd.read_csv(csv_rbh_output_filename))
     print "Species list is: {}".format(species_list)
     print "Genes list is: {}".format(genes_list)
 
