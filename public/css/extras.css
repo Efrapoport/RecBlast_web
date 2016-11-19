@@ -33,14 +33,13 @@
     margin: 1%;
 }
 
-h5 {
+.type {
     font-size: 1em;
-    font-family: "Times New Roman", Times, serif;
+    font-family: 'Open Sans', sans-serif;
     display: inline-block;
     margin: 1% auto;
     vertical-align: middle;
     width: 15%;
-
 }
 
 .type_heading {
