@@ -40,6 +40,7 @@
     margin: 1% auto;
     vertical-align: middle;
     width: 15%;
+    white-space: nowrap;
 }
 
 .type_heading {
