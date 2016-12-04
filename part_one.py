@@ -13,6 +13,7 @@ import subprocess
 # this dictionary holds information about the genes we set out to check. structure:
 # {protein_inner_id (index: 0,1,2..) = [common_id, full_id, uniprot_id]}
 id_dic = {}  # initialize
+local_id_dic = {}  # initialize
 
 
 # this functions returns a FASTA sequence according to uniprot id.
@@ -35,7 +36,7 @@ def get_uni(uni_id, contact):
 
 
 def main(file_path, contact, run_folder, fasta_path, first_blast_folder, fasta_output_folder, blastp_path, db,
-         taxa_list_file, outfmt, max_target_seqs, e_value_thresh, coverage_threshold, cpu, DEBUG, debug):
+         taxa_list_file, outfmt, max_target_seqs, e_value_thresh, coverage_threshold, cpu, run_all, DEBUG, debug):
     """
     Main function of part_one. Performs most
     :param file_path: The gene list file
@@ -72,7 +73,7 @@ def main(file_path, contact, run_folder, fasta_path, first_blast_folder, fasta_o
         gene_id_index = 1  # matching genes
 
         for line in f:
-            if csv_line_index > 0:  # skipping the header
+            if csv_line_index > 0 and line != '\n':  # skipping the header and empty lines
                 try:
                     # generates a FASTA sequence from each protein in the input CSV
                     gene_line_res = re_search(gene_line_regex, strip(line))  # using regex to search
@@ -87,22 +88,35 @@ def main(file_path, contact, run_folder, fasta_path, first_blast_folder, fasta_o
                     fa = re_sub(regex, '', fa)
                     fa = replace(fa, "\n", "")
                     fa = replace(fa, "|", "")
+                    grouped_res = result.group()
+                    local_seq_id = split(grouped_res, ' ')[0][1:]  # this is the seq_id used by blast
+                    debug("local_seq_id is {}".format(local_seq_id))
                     sequence = fa  # before we add the header to the fasta, we want to keep the sequence itself
-                    fa = "\n".join([result.group(), fa])  # header and sequence
+                    fa = "\n".join([grouped_res, fa])  # header and sequence
                     # building a dictionary of the proteins we are going to check:
                     # {protein_inner_id: [fasta, common_id, full_id, uniprot_id]}
-                    id_dic[gene_id_index] = [fa, common_id, full_id, uniprot_id, sequence]  # save in a dictionary
+                    id_dic[gene_id_index] = [fa, common_id, full_id, uniprot_id, sequence, local_seq_id]  # added
                     gene_id_index += 1  # moving to the next gene on the list
 
                 except Exception, e:  # in case uniprot doesn't work, please notify!
-                    print "There is a problem with retrieving the sequences from UniProt. " \
-                          "Please try again later.\n{}".format(e)
+                    print "There is a problem with retrieving the sequences from UniProt, in line:\n{0}" \
+                          "Please try again later.\n{1}".format(line, e)
             csv_line_index += 1  # next row
 
     # creating a file with the information about the genes we are checking in this run.
     # this pickle will be used for reference later
     pickle.dump(id_dic, open(join_folder(run_folder, 'genes_for_inspection_full.p'), 'wb'))
     debug("Success in updating genes_for_inspection file")
+
+    # This part is for running the sequences together and not individually
+    if run_all:
+        all_fasta_filename = join_folder(fasta_path, "all_fasta.fasta")
+        all_blast_output_file = join_folder(first_blast_folder, "all_results.txt")
+        filtered_all_blast_out_filename = join_folder(first_blast_folder, "all_results.taxa_filtered.txt")
+        # checking if the file already exists from a previous run:
+        if exists_not_empty(all_fasta_filename):
+            debug("Fasta file {} already exists, deleting and starting a new one.".format(all_fasta_filename))
+            os.remove(all_fasta_filename)
 
     # generating FASTA files and performing the blast:
     for gene_id_index, valueList in id_dic.iteritems():
@@ -114,7 +128,12 @@ def main(file_path, contact, run_folder, fasta_path, first_blast_folder, fasta_o
         blast_out_filename = "{}_full.txt".format(job_name)  # BLAST update_match_results file
         # the update_match_results file after filtering taxa:
         filtered_blast_out_filename = "{}.taxa_filtered.txt".format(job_name)
+        local_id_dic[valueList[5]] = (fasta_filename, filtered_blast_out_filename)
         with open(fasta_filename, 'w') as output:
+            output.write("{}\n\n".format(valueList[0]))  # write fasta to update_match_results file
+
+        # Adding writing to the unified file
+        with open(all_fasta_filename, 'a') as output:
             output.write("{}\n\n".format(valueList[0]))  # write fasta to update_match_results file
 
         blast_output_file = join_folder(first_blast_folder, blast_out_filename)
@@ -123,41 +142,81 @@ def main(file_path, contact, run_folder, fasta_path, first_blast_folder, fasta_o
         # copy the fasta file to the fasta_output folder
         fasta_output_name = replace(fasta_filename, '.fasta', '')
         fasta_output_filename_rbh = join_folder(fasta_output_folder,
-                                                 os.path.basename(fasta_output_name) + '_RBH.fasta')
+                                                os.path.basename(fasta_output_name) + '_RBH.fasta')
         fasta_output_filename_ns = join_folder(fasta_output_folder,
-                                                os.path.basename(fasta_output_name) + '_non-strict.fasta')
+                                               os.path.basename(fasta_output_name) + '_non-strict.fasta')
         fasta_output_filename_strict = join_folder(fasta_output_folder,
-                                                    os.path.basename(fasta_output_name) + '_strict.fasta')
+                                                   os.path.basename(fasta_output_name) + '_strict.fasta')
         # 3 fasta output files:
         shutil.copy(fasta_filename, fasta_output_filename_rbh)  # copy
         shutil.copy(fasta_filename, fasta_output_filename_ns)  # copy
         shutil.copy(fasta_filename, fasta_output_filename_strict)  # copy
 
-        # command line to run:
-        command_line = "{0} -query {1} -db {2} -outfmt '{3}' -max_target_seqs {4} -evalue {5} -max_hsps 1 " \
-                       "-qcov_hsp_perc {6} -num_threads {7} -out {8}\n" \
-                       "grep -v ';' {8} | grep -w -f {9} > {10}\nrm {8}\n".format(blastp_path, fasta_filename, db,
-                                                                                  outfmt, max_target_seqs,
-                                                                                  e_value_thresh, coverage_threshold,
-                                                                                  cpu, blast_output_file,
-                                                                                  taxa_list_file,
-                                                                                  filtered_blast_out_filename)
+        if not run_all:
+            # command line to run:
+            command_line = "{0} -query {1} -db {2} -outfmt '{3}' -max_target_seqs {4} -evalue {5} -max_hsps 1 " \
+                           "-qcov_hsp_perc {6} -num_threads {7} -out {8}\n" \
+                           "grep -v ';' {8} | grep -w -f {9} > {10}\nrm {8}\n".format(blastp_path, fasta_filename, db,
+                                                                                      outfmt, max_target_seqs,
+                                                                                      e_value_thresh,
+                                                                                      coverage_threshold,
+                                                                                      cpu, blast_output_file,
+                                                                                      taxa_list_file,
+                                                                                      filtered_blast_out_filename)
 
-        debug("Running the following line:\n{}".format(command_line))
+            debug("Running the following line:\n{}".format(command_line))
 
-        # writing the command to file and running the file
-        script_path = write_blast_run_script(command_line)
-        subprocess.check_call(script_path)
+            # writing the command to file and running the file
+            try:
+                script_path = write_blast_run_script(command_line, run_folder)
+                subprocess.check_call(script_path)
+            except subprocess.CalledProcessError:                 # restarting the process (with a little sleep period)
+                debug("Had a little problem with running this command: "
+                      "{}\nSo we are running it again.".format(command_line))
+                sleep(10)
+                script_path = write_blast_run_script(command_line, run_folder)
+                sleep(20)
+                subprocess.check_call(script_path)
+
+            print "Finished running {0}.".format(job_name)
 
         # adding the filtered file name here:
         blast_one_output_files.append(filtered_blast_out_filename)
 
-        print "Finished running {0}.".format(job_name)
+        # Running on the
+    if run_all:
+        # command line to run:
+        command_line = "{0} -query {1} -db {2} -outfmt '{3}' -max_target_seqs {4} -evalue {5} -max_hsps 1 " \
+                       "-qcov_hsp_perc {6} -num_threads {7} -out {8}\n" \
+                       "grep -v ';' {8} | grep -w -f {9} > {10}\nrm {8}\n".format(blastp_path, all_fasta_filename,
+                                                                                  db,
+                                                                                  outfmt, max_target_seqs,
+                                                                                  e_value_thresh,
+                                                                                  coverage_threshold,
+                                                                                  cpu, all_blast_output_file,
+                                                                                  taxa_list_file,
+                                                                                  filtered_all_blast_out_filename)
+
+        debug("Running the following line:\n{}".format(command_line))
+
+        # writing the command to file and running the file
+        try:  # this try paragraph was added later to handle
+            script_path = write_blast_run_script(command_line, run_folder)  # I/O operations, delay in read/write
+            subprocess.check_call(script_path)  # operations, etc.
+        except subprocess.CalledProcessError:  # restarting the process (with a little sleep period)
+            debug("Had a little problem with running this command: "
+                  "{}\nSo we are running it again.".format(command_line))
+            sleep(10)
+            script_path = write_blast_run_script(command_line, run_folder)
+            sleep(20)
+            subprocess.check_call(script_path)
+
+        print "Finished running all sequences."
 
     print "Prepared and ran first BLAST on all FASTA files."
     # dumping id_dic file for pickle:
     pickle.dump(id_dic, open(join_folder(run_folder, "id_dic.p"), 'wb'))
     print "Part 1 done at {}".format(strftime('%H:%M:%S'))
-    return id_dic, blast_one_output_files
+    return id_dic, blast_one_output_files, local_id_dic
 
 # DONE with part 1

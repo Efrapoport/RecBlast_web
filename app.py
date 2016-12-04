@@ -7,12 +7,13 @@ from werkzeug.utils import secure_filename
 import csv_transformer
 import taxa_to_taxid
 import users
-# import RecBlastUtils
 from taxa import get_name_by_value, get_value_by_name
 from RecBlastUtils import *
 import queue
 from email_module import *
-# import RecBlastAWS
+
+# this is the RecBlast web server version.
+__version__ = "1.1.1"
 
 os.environ['BLASTDB'] = "/blast/db"  # setting the $blastdb # check if it works
 
@@ -68,7 +69,7 @@ def server():
     value_dict = {"evalue": 1e-5, "back_evalue": 1e-5, "identity": 37,
                   "coverage": 50, "reference_taxa": "Homo sapiens", "run_name": "", "string_similarity": 0.4,
                   "email": "", "taxa_list": "6087\n\r10090", "gene_list": "ADCY1_HUMAN\r\nCREB1_HUMAN"}
-                      # "ADCY1_HUMAN\r\nP16220"}
+                # "ADCY1_HUMAN\r\nP16220"}
     return render_template("server.html", value_dict=value_dict)
 
 
@@ -185,8 +186,8 @@ def validate_data(value_list):
         # validate taxa list
         # converting taxa names list
         taxa_file = remove_commas(taxa_file)
-        (taxa_list_file, bad_tax_list, good_tax_list,
-         conversion_succeeded) = taxa_to_taxid.convert_tax_to_taxid(taxa_file)
+        (taxa_list_file, bad_tax_list, good_tax_list, conversion_succeeded) = \
+            taxa_to_taxid.convert_tax_to_taxid(taxa_file, origin_species, org_tax_id)
         if conversion_succeeded:
             if bad_tax_list:
                 taxa_warning = "Bad taxa names found in the file provided: {}.Ignoring them.".format(
@@ -245,7 +246,7 @@ def form_input_to_list(string_input):
         string_input = string_input.stream.read()
 
     items = string_input.strip().split("\n")
-    return [i.strip() for i in items]
+    return [strip(i) for i in items]
 
 
 # unique output page per user, displays one out of several options:
@@ -297,10 +298,6 @@ def handle_data():
         return render_template("server.html", errors=message_list, user_id=user_id, value_dict=value_dict)
 
     elif not message_list:
-        # temp_email_string = "Someone sent a new job on RecBlast online!\n" \
-        #                 "email: {0}, run name: {1}, , run_id: {2}, species of origin: {3} (taxid: {4}), ip: {5}\n" \
-        #                     "Started at: {6}".format(email, run_name, user_id, reference_taxa, value_list[8], user_ip,
-        #                                              strftime('%H:%M:%S'))
         # new_value_list = ["recblast@gmail.com", run_name, user_id, temp_email_string]
         # success = send_job_to_backend(value_list)
         success = send_job_to_backend(value_list)  # temp
@@ -366,14 +363,6 @@ def results(user_id):
                            rbhbarplot2_path=viz_dict['RBH_barplot_2'],
                            rbhswarmplot_path=viz_dict['RBH_swarmplot'],
                            rbhbarplotsum_path=viz_dict['RBH_barplotsum'])
-
-
-
-
-@app.route('/flashio')
-def flashio():
-    flash('yo yo yo!')
-    return 'ok'
 
 
 @app.route('/BingSiteAuth.xml')

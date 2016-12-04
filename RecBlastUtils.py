@@ -8,14 +8,9 @@ from Bio import Entrez
 import shutil
 import boto3
 import botocore
-import pandas as pd
-import matplotlib as mpl
-mpl.use('Agg')
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 
-TEMP_FILES_PATH = os.getcwd()  # TODO: change path for server
+TEMP_FILES_PATH = os.getcwd()
 
 
 def prepare_files(items, file_name, user_id, files_path=TEMP_FILES_PATH):
@@ -29,6 +24,7 @@ def prepare_files(items, file_name, user_id, files_path=TEMP_FILES_PATH):
 
 
 def file_to_string(file_name):
+    """Reads a file (file_name) and returns the text in it as a string."""
     with open(file_name, 'r') as f:
         text = f.read()
     # delete original file
@@ -52,9 +48,6 @@ def zip_results(fasta_output_path, zip_list, output_path):
     """
     Receives a folder containing fasta sequences and a csv file, adds them all to zip.
     :param fasta_output_path:
-    :param csv_rbh_output_filename:
-    :param csv_strict_output_filename:
-    :param csv_ns_output_filename:
     :param output_path:
     :return:
     """
@@ -135,12 +128,30 @@ def cleanup(path, storage_folder, run_id):
     return True
 
 
-def write_blast_run_script(command_line):
+def write_blast_run_script(command_line, write_folder):
     """Writing a blast run script, and giving it run permissions."""
-    script_path = "/tmp/blastp_run.sh"  # default script location
+    # script_path = "/tmp/blastp_run.sh"  # default script location
+    script_path = join_folder(write_folder, "blastp_run.sh")  # script location
     with open(script_path, 'w') as script:
         script.write("#! /bin/tcsh\n")
         script.write("# The script is designed to run the following blastp command from RecBlast\n")
+        script.write(command_line)
+        # run permissions for the script:
+    os.chmod(script_path, 0751)
+    return script_path
+
+
+def write_sort_command_script(filename_to_sort, sorted_filename, write_folder):
+    """Writing a sort uniq script to edit the gene csv file."""
+    # script_path = "/tmp/sort_script.sh"  # default script location
+    script_path = join_folder(write_folder, "sort_script.sh")  # script location
+    with open(script_path, 'w') as script:
+        script.write("#! /bin/tcsh\n")
+        script.write("# The script is designed to run sort, uniq command from RecBlast\n")
+        command_line = "cat {0} | sort | uniq > {1}.temp; " \
+                       "echo 'gene_id,gene_name,uniprot_id' > {1}; cat {1}.temp >> {1}; " \
+                       "rm {1}.temp\n".format(filename_to_sort, sorted_filename)
+        # changed to make sure the title only comes after the genes
         script.write(command_line)
         # run permissions for the script:
     os.chmod(script_path, 0751)
@@ -166,6 +177,7 @@ def is_number(s):
         return False
 
 
+# We don't need the following function:
 # def blastdb_exit():
 #     """Exiting if we can't find the $BLASTDB on the local machine"""
 #     print("$BLASTDB was not found! Please set the blast DB path to the right location.")
@@ -236,7 +248,7 @@ def subset_db(tax_id, gi_file_path, db_path, big_db, run_anyway, DEBUG, debug, a
         subprocess.check_call(aliastool_command)
         print("Created DB subset from nr protein for {}".format(tax_id))
         return target_db
-    except subprocess.CalledProcessError:
+    except subprocess.CalledProcessError, e:
         print("Problem with creating DB for tax_id {} from nr.".format(tax_id))
         if run_anyway:
             print("Running with the heavy nr option. Do some stretches, it might be a long run.")
@@ -278,221 +290,6 @@ def generate_download_link(user_id, fname, aws_access_key, aws_secret_key, expir
                                                                         'Key': '{}/{}'.format(user_id, fname)},
                                                   ExpiresIn=expires)
     return presigned_url
-
-
-# TODO: document
-# Viz functions:
-
-def melt(df):
-    """Melting the dataframe, returning a melted df, a list of species and a list of genes."""
-    species_columns = [x for x in df.columns if x != 'gene_name']
-    melted_df = pd.melt(df, id_vars=['gene_name'], value_vars=species_columns, var_name='Species', value_name='Orthologues')
-    melted_df.columns = ['Gene Name', 'Species', 'Orthologues']
-    # species list
-    species = sorted(species_columns)
-    # genes list
-    genes = sorted(melted_df['Gene Name'].unique().tolist())
-    return melted_df, species, genes
-
-
-# receives melted_df
-def create_swarmplot(df, path, title, cmap, genes, species):
-    print("Creating swarmplot for {}".format(path))
-    # TODO: change figure size
-    output_path = os.path.dirname(path)
-    output = join_folder(output_path, "%s_swarmplot.png" % title)
-    fig = plt.figure(figsize=(16, 10), dpi=180)
-    sns.swarmplot(x='Gene Name', y='Orthologues', hue='Species', order=genes, hue_order=species, data=df, palette=cmap)
-    plt.ylabel("# Orthologues")
-    plt.xlabel("Gene Name")
-    plt.ylim(0, )
-    # plt.suptitle(title, fontsize=16)
-    plt.yticks(fontsize=10)
-    plt.xticks(fontsize=10)
-    plt.savefig(output)
-    plt.close()
-    return output
-
-
-# receives melted_df
-def create_barplot(df, path, title, cmap, genes, species):
-    print("Creating barplot for {}".format(path))
-    # TODO: change figure size
-    output_path = os.path.dirname(path)
-    output = join_folder(output_path, "%s_barplot.png" % title)
-    fig = plt.figure(figsize=(16, 10), dpi=180)
-    sns.barplot(x='Gene Name', y='Orthologues', hue='Species', order=genes, hue_order=species, data=df, palette=cmap)
-    plt.ylabel("#Orthologues")
-    plt.xlabel("Gene Name")
-    plt.ylim(0, )
-    # plt.suptitle(title, fontsize=16)
-    plt.yticks(fontsize=10)
-    plt.xticks(fontsize=10)
-    plt.savefig(output)
-    plt.close()
-    return output
-
-
-# receives melted_df
-def create_barplot_orthologues_by_species(df, path, title, cmap, genes, species):
-    print("Creating barplot_species for {}".format(path))
-    # TODO: change figure size
-    output_path = os.path.dirname(path)
-    output = join_folder(output_path, "%s_barplot_byspecies.png" % title)
-    fig = plt.figure(figsize=(16, 10), dpi=180)
-    sns.barplot(x='Species', y='Orthologues', hue='Gene Name', data=df, order=species, hue_order=genes, palette=cmap)
-    plt.ylabel("#Orthologues")
-    plt.xlabel("Species")
-    plt.ylim(0, )
-    # plt.suptitle(title, fontsize=16)
-    plt.yticks(fontsize=10)
-    plt.xticks(fontsize=10)
-    plt.savefig(output)
-    plt.close()
-    return output
-
-
-def create_barplot_sum(df, path, title, cmap, genes, species):
-    print("Creating barplot_sum for {}".format(path))
-    # TODO: change figure size
-    output_path = os.path.dirname(path)
-    output = join_folder(output_path, "%s_barplot_sum.png" % title)
-    fig = plt.figure(figsize=(16, 10), dpi=180)
-    sns.barplot(x='Species', y='Orthologues', estimator=sum, ci=None, data=df, order=species, palette=cmap)
-    plt.ylabel("#Orthologues")
-    plt.xlabel("Species")
-    plt.ylim(0, )
-    # plt.suptitle(title, fontsize=16)
-    plt.yticks(fontsize=10)
-    plt.xticks(fontsize=10)
-    plt.savefig(output)
-    plt.close()
-    return output
-
-
-def create_heatmap(df, path, title, cmap):
-    """
-
-    :param df: a padnas DataFrame
-    :param path: Path for the input and output file
-    :param cmap: colormap
-    :return:
-    """
-    print("Creating heatmap for {}".format(path))
-    output_path = os.path.dirname(path)
-    fig = plt.figure(figsize=(16, 10), dpi=180)
-    plt.title(title, fontsize=16)
-    sns.heatmap(df, annot=True, fmt="d", cmap=cmap)
-    plt.yticks(fontsize=10)
-    plt.xticks(fontsize=10)
-    output = join_folder(output_path, "%s_heatmap.png" % title)
-    plt.savefig(output)
-    plt.close()
-    return output
-
-
-def create_clustermap(df, path, title, cmap, col_cluster, dont_cluster):
-    """
-
-    :param df: a padnas DataFrame
-    :param path: Path for the input and output file
-    :param cmap: colormap
-    :param col_cluster: Boolean - True/False
-    :return:
-    """
-    print("Creating clustermap for {}".format(path))
-    # TODO: change figure size
-    output_path = os.path.dirname(path)
-    output = join_folder(output_path, "%s_clustermap.png" % title)
-    fig = plt.figure(figsize=(16, 10), dpi=180)
-    if not dont_cluster:
-        sns.clustermap(df, annot=True, col_cluster=col_cluster, fmt="d", cmap=cmap, linewidths=.5)
-        # plt.suptitle(title, fontsize=16)
-        plt.yticks(fontsize=10)
-        plt.xticks(fontsize=10)
-    plt.savefig(output)
-    plt.close()
-    return output
-
-
-# generate heatmap and clustermap
-def generate_visual_graphs(csv_rbh_output_filename, csv_strict_output_filename, csv_ns_output_filename):
-    """
-    The function generates heatmap + clustermap for the output data.
-    :param csv_rbh_output_filename:
-    :param csv_strict_output_filename:
-    :param csv_ns_output_filename:
-    :return:
-    """
-    # reading as data_frame (for heat/clustermaps)
-    nonstrict_data = pd.read_csv(csv_ns_output_filename, index_col=0)
-    strict_data = pd.read_csv(csv_strict_output_filename, index_col=0)
-    rbh_data = pd.read_csv(csv_rbh_output_filename, index_col=0)
-
-    # transpose data
-    df_nonstrict = pd.DataFrame.transpose(nonstrict_data)
-    df_strict = pd.DataFrame.transpose(strict_data)
-    df_rbh = pd.DataFrame.transpose(rbh_data)
-
-    # reading for other plots and melting them:
-    melt_df_nonstrict, species_list, genes_list = melt(pd.read_csv(csv_ns_output_filename))
-    melt_df_strict, species_list, genes_list = melt(pd.read_csv(csv_strict_output_filename))
-    melt_df_rbh, species_list, genes_list = melt(pd.read_csv(csv_rbh_output_filename))
-    print "Species list is: {}".format(species_list)
-    print "Genes list is: {}".format(genes_list)
-
-    # clustering enabler (( one is enough because all files contains the same amount of genes ))
-    dont_cluster = False
-    col_cluster = False
-    if len(df_nonstrict.columns) > 2:
-        col_cluster = True
-    elif len(df_nonstrict) <= 2:
-        # dont_cluster = True
-        dont_cluster = False  # I removed it for now
-
-    # create graph, (( title, cmap ))
-    # visual outputs:
-    viz_dict = dict()
-    print("Creating heatmaps and clustermpaps")
-    # non-strict
-    viz_dict['non_strict_heatmap'] = create_heatmap(df_nonstrict, csv_ns_output_filename, 'non_strict', "BuGn")
-    viz_dict['non_strict_clustermap'] = create_clustermap(df_nonstrict, csv_ns_output_filename, 'non_strict', "PuBu",
-                                                          col_cluster, dont_cluster)
-    viz_dict['non_strict_barplot'] = create_barplot(melt_df_nonstrict, csv_ns_output_filename, 'non_strict', "BuGn",
-                                                    genes_list, species_list)
-    viz_dict['non_strict_barplot_2'] = create_barplot_orthologues_by_species(melt_df_nonstrict, csv_ns_output_filename,
-                                                                             'non_strict', "BuGn",
-                                                                             genes_list, species_list)
-    viz_dict['non_strict_swarmplot'] = create_swarmplot(melt_df_nonstrict, csv_ns_output_filename, 'non_strict', "BuGn",
-                                                        genes_list, species_list)
-    viz_dict['non_strict_barplotsum'] = create_barplot_sum(melt_df_nonstrict, csv_ns_output_filename,
-                                                           'non_strict', "BuGn", genes_list, species_list)
-    # strict
-    viz_dict['strict_heatmap'] = create_heatmap(df_strict, csv_strict_output_filename, 'strict', "Oranges")
-    viz_dict['strict_clustermap'] = create_clustermap(df_strict, csv_strict_output_filename, 'strict', "YlOrRd",
-                                                      col_cluster, dont_cluster)
-    viz_dict['strict_barplot'] = create_barplot(melt_df_strict, csv_strict_output_filename, 'strict', "YlOrRd",
-                                                genes_list, species_list)
-    viz_dict['strict_barplot_2'] = create_barplot_orthologues_by_species(melt_df_strict, csv_strict_output_filename,
-                                                                         'strict', "YlOrRd", genes_list, species_list)
-    viz_dict['strict_swarmplot'] = create_swarmplot(melt_df_strict, csv_strict_output_filename,
-                                                    'strict', "YlOrRd", genes_list, species_list)
-    viz_dict['strict_barplotsum'] = create_barplot_sum(melt_df_strict, csv_strict_output_filename,
-                                                       'strict', "YlOrRd", genes_list, species_list)
-    # RBH
-    viz_dict['RBH_heatmap'] = create_heatmap(df_rbh, csv_rbh_output_filename, 'RBH', "YlGnBu")
-    viz_dict['RBH_clustermap'] = create_clustermap(df_rbh, csv_rbh_output_filename, 'RBH', "YlGnBu", col_cluster,
-                                                   dont_cluster)
-    viz_dict['RBH_barplot'] = create_barplot(melt_df_rbh, csv_rbh_output_filename, 'RBH', "YlGnBu", genes_list,
-                                             species_list)
-    viz_dict['RBH_barplot_2'] = create_barplot_orthologues_by_species(melt_df_rbh, csv_rbh_output_filename, 'RBH',
-                                                                      "YlGnBu", genes_list, species_list)
-    viz_dict['RBH_swarmplot'] = create_swarmplot(melt_df_rbh, csv_rbh_output_filename,'RBH', "YlGnBu",
-                                                 genes_list, species_list)
-    viz_dict['RBH_barplotsum'] = create_barplot_sum(melt_df_rbh, csv_rbh_output_filename, 'RBH', "YlGnBu",
-                                                    genes_list, species_list)
-
-    return viz_dict
 
 
 # for efficiency

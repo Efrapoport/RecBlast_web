@@ -1,6 +1,5 @@
 #! /usr/bin/env python2
 
-from sys import exit
 import pickle
 from difflib import SequenceMatcher
 from itertools import islice
@@ -25,11 +24,7 @@ def similar(a, b):
 
 def format_description(description, regex, species):
     """
-
-    :param description:
-    :param regex:
-    :param species:
-    :return:
+    Reformat the description for consistency.
     """
     species = lower(str(species))
     description = replace(lower(str(description)), "predicted: ", "")
@@ -95,16 +90,14 @@ def write_all_output_csv(out_dict, org_list, csv_rbh_output_filename, csv_strict
     """
     # get all organisms
     all_org_list = sorted(list(set(org_list + good_tax_list)))
-    # with open(csv_out_filename, 'w') as csv_file:  # 3 files!
+    # open 3 files:
+    header_line = "{}\n".format(",".join(["gene_name"] + all_org_list))
     with open(csv_rbh_output_filename, 'w') as csv_rbh_file:
-        csv_rbh_file.write(",".join(["gene_name"] + all_org_list))  # write header
-        csv_rbh_file.write("\n")
+        csv_rbh_file.write(header_line)  # write header
         with open(csv_strict_output_filename, 'w') as csv_strict_file:
-            csv_strict_file.write(",".join(["gene_name"] + all_org_list))  # write header
-            csv_strict_file.write("\n")
+            csv_strict_file.write(header_line)  # write header
             with open(csv_ns_output_filename, 'w') as csv_nonstrict_file:
-                csv_nonstrict_file.write(",".join(["gene_name"] + all_org_list))  # write header
-                csv_nonstrict_file.write("\n")
+                csv_nonstrict_file.write(header_line)  # write header
 
                 for gene_name in out_dict:  # write every line
                     assert type(gene_name) == str, "Gene name is not a string!"
@@ -126,9 +119,7 @@ def write_all_output_csv(out_dict, org_list, csv_rbh_output_filename, csv_strict
                             out_line_rbh.append("0")
                             out_line_strict.append("0")
                             out_line_non_strict.append("0")
-                            # out_line.append("[0-0-0]")  # if we want the output that way...
-                    # formatting and printing the line
-                    # out_line = [replace(str(x), ', ', '-') for x in out_line]
+
                     # writing to each line:
                     csv_rbh_file.write("{}\n".format(",".join(out_line_rbh)))
                     csv_strict_file.write("{}\n".format(",".join(out_line_strict)))
@@ -155,9 +146,7 @@ def get_definition(accession_list, DEBUG, debug, attempt_no=0):
         return results
 
     except Exception, e:
-        print "Error connecting to server, trying again..."
-        print "Error: {}".format(e)
-        debug("Error connecting to server, trying again...\n")
+        debug("Error: {}\nError connecting to server, trying again...".format(e))
 
         # sleeping in case it's a temporary database problem
         sleep_period = 180
@@ -228,18 +217,11 @@ def prepare_candidates(file_lines_dict, index_set, enumerator, e_val_thresh, id_
 def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_threshold, textual_match,
          textual_sequence_match, species, accession_regex, description_regex, run_folder,
          max_attempts_to_complete_rec_blast, csv_rbh_output_filename, csv_strict_output_filename,
-         csv_ns_output_filename, fasta_output_folder, DEBUG, debug, good_tax_list,
-         id_dic=None, second_blast_for_ids_dict=None, gene_paths_list=None):
+         csv_ns_output_filename, fasta_output_folder, DEBUG, debug, good_tax_list, id_dic=None,
+         second_blast_for_ids_dict=None, gene_paths_list=None):
     """
     The third part of RecBlast. Parses the blast output, compares, organizes and creates output files.
     """
-
-    # funcs for improving efficiency:
-    strip = str.strip
-    split = str.split
-    upper = str.upper
-    capitalize = str.capitalize
-    join_folder = os.path.join
 
     # deal with args in debug_func mode:
     if DEBUG:
@@ -296,7 +278,7 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
                 index_files_dict[index] = list(islice(index_infile, max_attempts_to_complete_rec_blast))
 
         index_set = set(indexes_per_id)  # converting to set
-        debug("indexes per id: {}".format(index_set))  # DEBUG print
+        debug(index_set)  # DEBUG print
 
         enumerator = 0  # current line number in each index file
         while index_set:
@@ -319,7 +301,6 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
                 indexes_to_remove = set()  # set of indexes to remove each round
                 index_count = 0
                 loci_list = list(index_set)  # the gene position
-                debug("loci_list: {}".format(loci_list))
 
                 # string comparison:
                 for candidate in candidates:  # for each definition
@@ -352,10 +333,6 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
                                                             DEBUG, debug)
                         debug("Calculated matches for gene_id {0} enumerator {1}".format(gene_id, enumerator))
                         # add the fasta sequence to this fasta output (declared in part 1)
-                        # getting all file names:
-                        # fasta_output_file_name = join_folder(fasta_output_folder,
-                        #                                       "fasta-{0}-{1}.fasta".format(gene_id, target_name1))
-                        # basic name for all output files
                         fasta_output_file_name = join_folder(fasta_output_folder,
                                                              "fasta-{0}-{1}".format(gene_id, target_name1))  # basename
                         # fasta_output_filename_rbh = fasta_output_file_name + '_RBH.fasta'
@@ -397,7 +374,7 @@ def main(second_blast_folder, e_value_thresh, identity_threshold, coverage_thres
         all_organisms += [x for x in this_gene_dic.keys()]  # a list of the organisms with results
 
     # writing final csv output:
-    good_tax_list = [capitalize(x) for x in good_tax_list]  # doing this to avoid duplicate names
+    good_tax_list = [x.capitalize() for x in good_tax_list]  # doing this to avoid duplicate names
     if write_all_output_csv(all_genes_dict, all_organisms, csv_rbh_output_filename, csv_strict_output_filename,
                             csv_ns_output_filename, DEBUG, debug, good_tax_list):
         print "Wrote csv output to files: {},{},{}".format(csv_rbh_output_filename, csv_strict_output_filename,

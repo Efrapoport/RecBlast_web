@@ -1,7 +1,7 @@
 #! /usr/bin/env python2
 
-# from RecBlastParams import *
 from RecBlastUtils import *
+from RecBlastFigures import *
 # import csv_transformer
 # import taxa_to_taxid
 # from uuid import uuid4
@@ -12,6 +12,9 @@ from email_module import *
 import users
 import botocore
 import boto3
+
+# this is the RecBlast web server version.
+__version__ = "1.1.1"
 
 # value_list = [evalue, back_evalue, identity, coverage, string_similarity, gene_list, taxa_list,
 #               reference_taxa, run_name, email, run_id]
@@ -27,14 +30,10 @@ def debug_func(s):
 
 
 def run_from_web(values_from_web, debug=debug_func):
-    """
-
-    :param values_from_web:
-    :param debug:
-    :return:
-    """
+    """Running the entire RecBlast program from the web server interface. """
     # (e_value_thresh, back_e_value_thresh, identity_threshold, coverage_threshold, textual_match, gene_list_file,
     #  taxa_list_file, reference_taxa, run_name, user_email, run_id, user_ip) = values_from_web  # old list
+    # receiving values from the web server:
     (e_value_thresh, back_e_value_thresh, identity_threshold, coverage_threshold, textual_match, csv_file_content,
      taxa_file_content, origin_species, org_tax_id, run_name, user_email, run_id, user_ip,
      tax_list_original_input, gene_list_original_input, good_tax_list) = values_from_web
@@ -47,6 +46,7 @@ def run_from_web(values_from_web, debug=debug_func):
     max_target_seqs = '1000000'
     max_attempts_to_complete_rec_blast = 100
     cpu = 8  # default cpu: 8
+    run_all = False
 
     # fixed:
     outfmt = '6 staxids sseqid pident qcovs evalue sscinames sblastnames'
@@ -58,7 +58,7 @@ def run_from_web(values_from_web, debug=debug_func):
     textual_seq_match = 0.99  # comparison
 
     # DEBUG flags
-    DEBUG = True  # TODO: change it
+    DEBUG = True
     global DEBUG
 
     # locating BLASTP path on your system
@@ -160,14 +160,16 @@ def run_from_web(values_from_web, debug=debug_func):
 
     # part 1:
     print("starting to perform part_one.py")
-    id_dic, blast1_output_files = part_one.main(csv_path, app_contact_email, run_folder, fasta_path, first_blast_folder,
-                                                fasta_output_folder, blastp_path, db, taxa_list_file, outfmt,
-                                                max_target_seqs, e_value_thresh, coverage_threshold, cpu, DEBUG, debug)
+    id_dic, blast1_output_files, local_id_dic = part_one.main(csv_path, app_contact_email, run_folder, fasta_path,
+                                                              first_blast_folder, fasta_output_folder, blastp_path, db,
+                                                              taxa_list_file, outfmt, max_target_seqs, e_value_thresh,
+                                                              coverage_threshold, cpu, run_all, DEBUG, debug)
     print("BLASTP part 1 done!")  # should find a way to make sure the data is okay...
     print("*******************")
 
     # part 2:
-    second_blast_for_ids_dict, blast2_output_files, blast2_gene_id_paths = part_two.main(first_blast_folder,
+    second_blast_for_ids_dict, blast2_output_files, blast2_gene_id_paths = part_two.main(local_id_dic,
+                                                                                         first_blast_folder,
                                                                                          second_blast_folder,
                                                                                          original_id, e_value_thresh,
                                                                                          identity_threshold,
@@ -176,7 +178,7 @@ def run_from_web(values_from_web, debug=debug_func):
                                                                                          blastp_path, target_db, outfmt,
                                                                                          max_target_seqs,
                                                                                          back_e_value_thresh, cpu,
-                                                                                         org_tax_id, DEBUG,
+                                                                                         org_tax_id, run_all, DEBUG,
                                                                                          debug,
                                                                                          input_list=blast1_output_files)
     print("BLASTP part 2 done!")
@@ -262,9 +264,3 @@ def run_from_web(values_from_web, debug=debug_func):
     users.delete_user_id_for_email(user_email)
     return True
 
-
-# create new s3 folder for user
-# move result zip to s3
-# set expiration date for s3 file
-# del user from redis
-# send email to user with the result path (and to us!)
