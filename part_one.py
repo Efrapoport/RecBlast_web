@@ -109,14 +109,13 @@ def main(file_path, contact, run_folder, fasta_path, first_blast_folder, fasta_o
     debug("Success in updating genes_for_inspection file")
 
     # This part is for running the sequences together and not individually
-    if run_all:
-        all_fasta_filename = join_folder(fasta_path, "all_fasta.fasta")
-        all_blast_output_file = join_folder(first_blast_folder, "all_results.txt")
-        filtered_all_blast_out_filename = join_folder(first_blast_folder, "all_results.taxa_filtered.txt")
-        # checking if the file already exists from a previous run:
-        if exists_not_empty(all_fasta_filename):
-            debug("Fasta file {} already exists, deleting and starting a new one.".format(all_fasta_filename))
-            os.remove(all_fasta_filename)
+    all_fasta_filename = join_folder(fasta_path, "all_fasta.fasta")
+    all_blast_output_file = join_folder(first_blast_folder, "all_results.txt")
+    filtered_all_blast_out_filename = join_folder(first_blast_folder, "all_results.taxa_filtered.txt")
+    # checking if the file already exists from a previous run:
+    if exists_not_empty(all_fasta_filename):
+        debug("Fasta file {} already exists, deleting and starting a new one.".format(all_fasta_filename))
+        os.remove(all_fasta_filename)
 
     # generating FASTA files and performing the blast:
     for gene_id_index, valueList in id_dic.iteritems():
