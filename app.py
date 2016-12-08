@@ -246,7 +246,7 @@ def form_input_to_list(string_input):
         string_input = string_input.stream.read()
 
     items = string_input.strip().split("\n")
-    return [strip(i) for i in items]
+    return [i.strip() for i in items]
 
 
 # unique output page per user, displays one out of several options:
