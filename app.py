@@ -118,20 +118,28 @@ def validate_data(value_list):
         # check if files/lists are not empty and not too long:
         gene_file_path = value_list[5]
         max_allowed_genes = 10  # this is where we set the maximum allowed genes
+        min_allowed_genes = 2
         if exists_not_empty(gene_file_path):
             gene_file_path = remove_commas(gene_file_path)
             if file_len(gene_file_path) > max_allowed_genes:
                 error_list.append(
                     "Genes provided exceed the maximum number of allowed genes: {}".format(max_allowed_genes))
+            elif file_len(gene_file_path) < min_allowed_genes:
+                error_list.append(
+                    "Please provide at least {} genes".format(min_allowed_genes))
         else:
             error_list.append("No gene list or gene file provided!")
 
         taxa_file = value_list[6]
         max_allowed_taxa = 10  # this is where we set the maximum allowed taxa
+        min_allowed_taxa = 2
         if exists_not_empty(taxa_file):
             if file_len(taxa_file) > max_allowed_taxa:
                 error_list.append(
                     "Genes provided exceed the maximum number of allowed taxa: {}".format(max_allowed_taxa))
+            elif file_len(taxa_file) < min_allowed_taxa:
+                error_list.append(
+                    "Please provide more than {} taxa".format(min_allowed_taxa))
         else:
             error_list.append("No taxa list or gene file provided!")
 
