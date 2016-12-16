@@ -33,13 +33,14 @@
             <p>Click the image to enlarge.</p><br>
             <div class="same_category">
                 <h4 class="type_heading">Non-strict results</h4><br>
+                <table id="t01" class="table table-bordered">
                 <tr>
-                <td><h5 class="type">Cluster map</h5></td>
-                <td><h5 class="type">Heat map</h5></td>
-                <td><h5 class="type">Orthologues per gene</h5></td>
-                <td><h5 class="type">Orthologues per species</h5></td>
-                <td><h5 class="type">Orthologues per gene</h5>
-                <td><h5 class="type">Total orthologues per species</h5></td></tr>
+                <th><h5 class="type">Cluster map</h5></th>
+                <th><h5 class="type">Heat map</h5></th>
+                <th><h5 class="type">Orthologues per gene</h5></th>
+                <th><h5 class="type">Orthologues per species</h5></th>
+                <th><h5 class="type">Orthologues per gene</h5>
+                <th><h5 class="type">Total orthologues per species</h5></th></tr>
 
                 <tr>
                 <td><a href="{{ nsclustermap_path }}" target="_blank"><img src="{{ nsclustermap_path }}" alt="nonstrict_clustermap" class="map" id="nonstrict_clustermap"/></a></td>
@@ -49,6 +50,7 @@
                 <td><a href="{{ nsswarmplot_path }}" target="_blank"><img src="{{ nsswarmplot_path }}" alt="non_strict_swarmplot" class="map" id="non_strict_swarmplot"/></a></td>
                 <td><a href="{{ nsbarplotsum_path }}" target="_blank"><img src="{{ nsbarplotsum_path }}" alt="non_strict_barplotsum" class="map" id="non_strict_barplotsum"/></a></td>
                 </tr>
+                    </table>
             </div>
             <br>
             <div class="same_category">
