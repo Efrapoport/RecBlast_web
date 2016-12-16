@@ -139,7 +139,7 @@ def validate_data(value_list):
                     "Genes provided exceed the maximum number of allowed taxa: {}".format(max_allowed_taxa))
             elif file_len(taxa_file) < min_allowed_taxa:
                 error_list.append(
-                    "Please provide more than {} taxa".format(min_allowed_taxa))
+                    "Please provide at least {} taxa".format(min_allowed_taxa))
         else:
             error_list.append("No taxa list or gene file provided!")
 
