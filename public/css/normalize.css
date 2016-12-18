@@ -203,6 +203,8 @@ ul {
 
 img {
     float:inherit;
+    height: 5%;
+    width: auto;
 }
 
 
