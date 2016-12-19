@@ -207,6 +207,12 @@ img {
     width: auto;
 }
 
+.imgs {
+
+    height: 5%;
+    width: auto;
+
+}
 
 /* =================================
   Media Queries
