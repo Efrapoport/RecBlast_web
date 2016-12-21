@@ -34,45 +34,107 @@
             <div class="same_category">
                 <h4 class="type_heading">Non-strict results</h4><br>
                 <table id="t01" class="table table-bordered">
-                <tr>
-                <th><h5 class="type">Cluster map</h5></th>
-                <th><h5 class="type">Heat map</h5></th>
-                <th><h5 class="type">Orthologues per gene</h5></th>
-                <th><h5 class="type">Orthologues per species</h5></th>
-                <th><h5 class="type">Orthologues per gene</h5>
-                <th><h5 class="type">Total orthologues per species</h5></th></tr>
+                    <tr>
+                        <th><h5 class="type">Cluster map</h5></th>
+                        <th><h5 class="type">Heat map</h5></th>
+                        <th><h5 class="type">Orthologues per gene</h5></th>
+                        <th><h5 class="type">Orthologues per species</h5></th>
+                        <th><h5 class="type">Orthologues per gene</h5>
+                        <th><h5 class="type">Total orthologues per species</h5></th>
+                    </tr>
 
-                <tr height="100">
-                <td><a href="{{ nsclustermap_path }}" target="_blank"><img src="{{ nsclustermap_path }}" alt="nonstrict_clustermap" class="imgs" id="nonstrict_clustermap"/></a></td>
-                <td><a href="{{ nsheatmap_path }}" target="_blank"><img src="{{ nsheatmap_path }}" alt="nonstrict_heatmap" class="imgs" id="nonstrict_heatmap"/></a></td>
-                <td><a href="{{ nsbarplot_path }}" target="_blank"><img src="{{ nsbarplot_path }}" alt="non_strict_barplot" class="imgs" id="non_strict_barplot"/></a></td>
-                <td><a href="{{ nsbarplot2_path }}" target="_blank"><img src="{{ nsbarplot2_path }}" alt="non_strict_barplot_2" class="imgs" id="non_strict_barplot_2"/></a></td>
-                <td><a href="{{ nsswarmplot_path }}" target="_blank"><img src="{{ nsswarmplot_path }}" alt="non_strict_swarmplot" class="imgs" id="non_strict_swarmplot"/></a></td>
-                <td><a href="{{ nsbarplotsum_path }}" target="_blank"><img src="{{ nsbarplotsum_path }}" alt="non_strict_barplotsum" class="imgs" id="non_strict_barplotsum"/></a></td>
-                </tr>
-                    </table>
+                    <tr>
+                        <td><a href="{{ nsclustermap_path }}" target="_blank"><img src="{{ nsclustermap_path }}"
+                                                                                   alt="nonstrict_clustermap"
+                                                                                   class="imgs"
+                                                                                   id="nonstrict_clustermap"/></a></td>
+                        <td><a href="{{ nsheatmap_path }}" target="_blank"><img src="{{ nsheatmap_path }}"
+                                                                                alt="nonstrict_heatmap" class="imgs"
+                                                                                id="nonstrict_heatmap"/></a></td>
+                        <td><a href="{{ nsbarplot_path }}" target="_blank"><img src="{{ nsbarplot_path }}"
+                                                                                alt="non_strict_barplot" class="imgs"
+                                                                                id="non_strict_barplot"/></a></td>
+                        <td><a href="{{ nsbarplot2_path }}" target="_blank"><img src="{{ nsbarplot2_path }}"
+                                                                                 alt="non_strict_barplot_2" class="imgs"
+                                                                                 id="non_strict_barplot_2"/></a></td>
+                        <td><a href="{{ nsswarmplot_path }}" target="_blank"><img src="{{ nsswarmplot_path }}"
+                                                                                  alt="non_strict_swarmplot"
+                                                                                  class="imgs"
+                                                                                  id="non_strict_swarmplot"/></a></td>
+                        <td><a href="{{ nsbarplotsum_path }}" target="_blank"><img src="{{ nsbarplotsum_path }}"
+                                                                                   alt="non_strict_barplotsum"
+                                                                                   class="imgs"
+                                                                                   id="non_strict_barplotsum"/></a></td>
+                    </tr>
+                </table>
             </div>
             <br>
             <div class="same_category">
                 <h4 class="type_heading">Strict results</h4><br>
-                <h5 class="type">Cluster map</h5><h5 class="type">Heat map</h5><h5 class="type">Orthologues per gene</h5><h5 class="type">Orthologues per species</h5><h5 class="type">Orthologues per gene</h5><h5 class="type">Total orthologues per species</h5><br>
-                <a href="{{ sclustermap_path }}" target="_blank"><img src="{{ sclustermap_path }}" alt="strict_clustermap" class="map" id="strict_clustermap"/></a>
-                <a href="{{ sheatmap_path }}" target="_blank"><img src="{{ sheatmap_path }}" alt="strict_heatmap" class="map" id="strict_heatmap"/></a>
-                <a href="{{ sbarplot_path }}" target="_blank"><img src="{{ sbarplot_path }}" alt="strict_barplot" class="map" id="strict_barplot"/></a>
-                <a href="{{ sbarplot2_path }}" target="_blank"><img src="{{ sbarplot2_path }}" alt="strict_barplot_2" class="map" id="strict_barplot_2"/></a>
-                <a href="{{ sswarmplot_path }}" target="_blank"><img src="{{ sswarmplot_path }}" alt="strict_swarmplot" class="map" id="strict_swarmplot"/></a>
-                <a href="{{ sbarplotsum_path }}" target="_blank"><img src="{{ sbarplotsum_path }}" alt="strict_barplotsum" class="map" id="strict_barplotsum"/></a>
+                <table id="t01" class="table table-bordered">
+                    <tr>
+                        <th><h5 class="type">Cluster map</h5></th>
+                        <th><h5 class="type">Heat map</h5></th>
+                        <th><h5 class="type">Orthologues per gene</h5></th>
+                        <th><h5 class="type">Orthologues per species</h5></th>
+                        <th><h5 class="type">Orthologues per gene</h5>
+                        <th><h5 class="type">Total orthologues per species</h5></th>
+                    </tr>
+                    <tr>
+                        <td><a href="{{ sclustermap_path }}" target="_blank"><img src="{{ sclustermap_path }}"
+                                                                                  alt="strict_clustermap" class="map"
+                                                                                  id="strict_clustermap"/></a></td>
+                        <td><a href="{{ sheatmap_path }}" target="_blank"><img src="{{ sheatmap_path }}"
+                                                                               alt="strict_heatmap" class="map"
+                                                                               id="strict_heatmap"/></a></td>
+                        <td><a href="{{ sbarplot_path }}" target="_blank"><img src="{{ sbarplot_path }}"
+                                                                               alt="strict_barplot" class="map"
+                                                                               id="strict_barplot"/></a></td>
+                        <td><a href="{{ sbarplot2_path }}" target="_blank"><img src="{{ sbarplot2_path }}"
+                                                                                alt="strict_barplot_2" class="map"
+                                                                                id="strict_barplot_2"/></a></td>
+                        <td><a href="{{ sswarmplot_path }}" target="_blank"><img src="{{ sswarmplot_path }}"
+                                                                                 alt="strict_swarmplot" class="map"
+                                                                                 id="strict_swarmplot"/></a></td>
+                        <td><a href="{{ sbarplotsum_path }}" target="_blank"><img src="{{ sbarplotsum_path }}"
+                                                                                  alt="strict_barplotsum" class="map"
+                                                                                  id="strict_barplotsum"/></a></td>
+                    </tr>
+                </table>
             </div>
             <br>
             <div class="same_category">
                 <h4 class="type_heading">RBH results</h4><br>
-                <h5 class="type">Cluster map</h5><h5 class="type">Heat map</h5><h5 class="type">Orthologues per gene</h5><h5 class="type">Orthologues per species</h5><h5 class="type">Orthologues per gene</h5><h5 class="type">Total orthologues per species</h5><br>
-                <a href="{{ rbhclustermap_path }}" target="_blank"><img src="{{ rbhclustermap_path }}" alt="rbh_clustermap" class="map" id="rbh_clustermap"/></a>
-                <a href="{{ rbhheatmap_path }}" target="_blank"><img src="{{ rbhheatmap_path }}" alt="rbh_heatmap" class="map" id="rbh_heatmap"/></a>
-                <a href="{{ rbhbarplot_path }}" target="_blank"><img src="{{ rbhbarplot_path }}" alt="RBH_barplot" class="map" id="RBH_barplot"/></a>
-                <a href="{{ rbhbarplot2_path }}" target="_blank"><img src="{{ rbhbarplot2_path }}" alt="RBH_barplot_2" class="map" id="RBH_barplot_2"/></a>
-                <a href="{{ rbhswarmplot_path }}" target="_blank"><img src="{{ rbhswarmplot_path }}" alt="RBH_swarmplot" class="map" id="RBH_swarmplot'"/></a>
-                <a href="{{ rbhbarplotsum_path }}" target="_blank"><img src="{{ rbhbarplotsum_path }}" alt="RBH_barplotsum" class="map" id="RBH_barplotsum"/></a>
+                <table id="t01" class="table table-bordered">
+                    <tr>
+                        <th><h5 class="type">Cluster map</h5></th>
+                        <th><h5 class="type">Heat map</h5></th>
+                        <th><h5 class="type">Orthologues per gene</h5></th>
+                        <th><h5 class="type">Orthologues per species</h5></th>
+                        <th><h5 class="type">Orthologues per gene</h5>
+                        <th><h5 class="type">Total orthologues per species</h5></th>
+                    </tr>
+                    <tr>
+                        <td><a href="{{ rbhclustermap_path }}" target="_blank"><img src="{{ rbhclustermap_path }}"
+                                                                                    alt="rbh_clustermap" class="map"
+                                                                                    id="rbh_clustermap"/></a></td>
+                        <td><a href="{{ rbhheatmap_path }}" target="_blank"><img src="{{ rbhheatmap_path }}"
+                                                                                 alt="rbh_heatmap" class="map"
+                                                                                 id="rbh_heatmap"/></a></td>
+                        <td><a href="{{ rbhbarplot_path }}" target="_blank"><img src="{{ rbhbarplot_path }}"
+                                                                                 alt="RBH_barplot" class="map"
+                                                                                 id="RBH_barplot"/></a></td>
+                        <td><a href="{{ rbhbarplot2_path }}" target="_blank"><img src="{{ rbhbarplot2_path }}"
+                                                                                  alt="RBH_barplot_2" class="map"
+                                                                                  id="RBH_barplot_2"/></a></td>
+                        <td><a href="{{ rbhswarmplot_path }}" target="_blank"><img src="{{ rbhswarmplot_path }}"
+                                                                                   alt="RBH_swarmplot" class="map"
+                                                                                   id="RBH_swarmplot'"/></a></td>
+                        <td><a href="{{ rbhbarplotsum_path }}" target="_blank"><img src="{{ rbhbarplotsum_path }}"
+                                                                                    alt="RBH_barplotsum" class="map"
+                                                                                    id="RBH_barplotsum"/></a></td>
+                    </tr>
+                </table>
             </div>
 
         </div>
