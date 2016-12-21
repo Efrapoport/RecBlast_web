@@ -1,31 +1,6 @@
 .welcome-banner {
     background: url('/imgs/congruent_pentagon.png');
 }
-
-.map {
-    display: inline-block;
-    margin: 3% auto;
-    padding-left: 1%;
-    padding-right: 1%;
-    vertical-align: middle;
-    width: 15%;
-    border: inset 1px;
-    border-radius: 5px;
-}
-
-.map:hover {
-    opacity: 0.7;
-    border: solid black 1px;
-    transition: 0.3s;
-}
-
-.map:active {
-    opacity: 0.7;
-    border: solid black 1px;
-    transition: 0.1s;
-    background-color: deepskyblue;
-}
-
 .same_category {
     display: block;
     text-align: center;
@@ -34,7 +9,7 @@
 }
 
 .type {
-    font-size: 1em;
+    font-size: 0.9em;
     font-family: 'Open Sans', sans-serif;
     display: inline-block;
     margin: 1% auto;
@@ -54,7 +29,34 @@
     vertical-align: middle;
 }
 
+th {
+    text-align: center;
+}
+tr:hover {
+    background-color: #f5f5f5
+}
+
 .imgs {
-   height: 5%;
-   width: auto;
+    display: inline-block;
+    margin: 3% auto;
+    padding-left: 1%;
+    padding-right: 1%;
+    vertical-align: middle;
+    height: 5%;
+    width: auto;
+    border: inset 1px;
+    border-radius: 5px;
+}
+
+.imgs:hover {
+    opacity: 0.7;
+    border: solid black 1px;
+    transition: 0.3s;
+}
+
+.imgs:active {
+    opacity: 0.7;
+    border: solid black 1px;
+    transition: 0.1s;
+    background-color: deepskyblue;
 }
