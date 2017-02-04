@@ -31,7 +31,7 @@ def gi_to_fasta(awaiting_second_blast, accession_list, matching_orgs, rbh_dict_o
     :return:
     """
     try:  # connecting to ENTREZ nuc DB
-        handle = Entrez.efetch(db="nucleotide", id=accession_list, retmode="xml")
+        handle = Entrez.efetch(db="protein", id=accession_list, retmode="xml")
         records = Entrez.read(handle)
         debug("successfully connected")
 
