@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}RecBlast: Results {% endblock %}
+{% block content %}
+
+    <div class="jumbotron welcome-banner">
+        <h1>Results: Demonstration Run</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+
+            <h2>The data for this demonstration run was retrieved from the Eukaryotic Protein Database (KOGs) </h2>
+
+            <h3>Downloadable files</h3>
+
+            <table id="t01" class="table table-bordered">
+                <tr>
+                    <th>File name</th>
+                    <th>File description</th>
+                    <th>File format</th>
+                    <th>Link</th>
+                </tr>
+
+                <tr>
+                    <td>Dataset</td>
+                    <td>KOG genes used for this run</td>
+                    <td>fasta</td>
+                    <td><a href="{{ kog_link }}">dataset.fasta</a></td>
+                </tr>
+
+                <tr>
+                    <td>Full Run Results</td>
+                    <td>Output of demonstration run</td>
+                    <td>zip</td>
+                    <td><a href="{{ results }}">demonstration_results.zip</a></td>
+                </tr>
+
+            </table>
+        </div>
+
+
+            </div>
+
+
+
+{% endblock %}
+
