@@ -56,7 +56,7 @@ def sample():
     results = 'https://s3.eu-central-1.amazonaws.com/recblastdata/example_data/kog_output.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Expires=3600&X-Amz-Credential=AKIAISOVBXCFDI3V4XKA%2F20170218%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-SignedHeaders=host&X-Amz-Date=20170218T181902Z&X-Amz-Signature=ee60301b3dc745525e9b2006ba3563d01537ee562bd4199f72235ac56a8ffc1e'
     kog_link = 'http://korflab.ucdavis.edu/datasets/cegma/core_genome/H.sapiens.tx'
 
-    return render_template('sample.html', results, kog_link )
+    return render_template('sample.html', results=results, kog_link=kog_link)
 
 
 @app.route('/cloudimage')
