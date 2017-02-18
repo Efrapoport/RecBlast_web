@@ -52,6 +52,10 @@ def downloads():
     return render_template('downloads.html')
 
 
+@app.route('/cloudimage')
+def cloud():
+    return render_template('cloud.html')
+
 @app.route('/imgs/<path:filename>')
 def serve_images(filename):
     return send_from_directory('public/imgs',
